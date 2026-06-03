@@ -1,0 +1,77 @@
+[
+  {
+    "userId": 1,
+    "top_genres": [
+      "Family",
+      "Western",
+      "Adventure"
+    ]
+  },
+  {
+    "userId": 2,
+    "top_genres": [
+      "Action",
+      "Animation"
+    ]
+  },
+  {
+    "userId": 3,
+    "top_genres": [
+      "Drama",
+      "Fantasy"
+    ]
+  },
+  {
+    "userId": 4,
+    "top_genres": [
+      "Biographical",
+      "Action",
+      "Sports",
+      "Drama"
+    ]
+  },
+  {
+    "userId": 5,
+    "top_genres": [
+      "Sports",
+      "Western",
+      "Fantasy"
+    ]
+  },
+  {
+    "userId": 6,
+    "top_genres": [
+      "Historical",
+      "Family",
+      "Horror"
+    ]
+  },
+  {
+    "userId": 7,
+    "top_genres": [
+      "Action",
+      "Documentary",
+      "Western",
+      "Romance"
+    ]
+  },
+  {
+    "userId": 8,
+    "top_genres": [
+      "Horror",
+      "Crime"
+    ]
+  },
+  {
+    "userId": 9,
+    "top_genres": [
+      "Drama"
+    ]
+  },
+  {
+    "userId": 10,
+    "top_genres": [
+      "Romance"
+    ]
+  }
+]

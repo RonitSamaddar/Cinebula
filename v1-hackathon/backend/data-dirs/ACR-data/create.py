@@ -10,19 +10,24 @@ from datetime import datetime, timedelta, timezone
 BASE     = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = BASE
 
-with open(os.path.join(DATA_DIR, "movies.json")) as f:
+with open(os.path.join(DATA_DIR, "../global-data/movies.json")) as f:
     movies = json.load(f)
 
-with open(os.path.join(DATA_DIR, "shows.json")) as f:
+with open(os.path.join(DATA_DIR, "../global-data/shows.json")) as f:
     shows = json.load(f)
 
-with open(os.path.join(DATA_DIR, "user.json")) as f:
+with open(os.path.join(DATA_DIR, "../users/users.json")) as f:
     users = json.load(f)
 
-# Attach stable IDs and type tag to each content item
+# Attach stable IDs and type tag to each content item.
+# Normalize movies.json field names (movieName→title, genre→genres).
 for i, m in enumerate(movies):
     m["_id"]   = f"ALP-MOVIE-{100 + i}"
     m["_type"] = "movie"
+    if "title" not in m:
+        m["title"] = m.get("movieName", "")
+    if "genres" not in m:
+        m["genres"] = m.get("genre", [])
 
 for i, s in enumerate(shows):
     s["_id"]   = f"ALP-SHOW-{100 + i}"
@@ -83,6 +88,8 @@ def random_device_id() -> str:
 
 
 def get_user_genres(user: dict) -> list:
+    if "top_genres" in user:
+        return user["top_genres"]
     if "favoriteGenres" in user:
         return user["favoriteGenres"]
     return [user["favoriteGenre"]]

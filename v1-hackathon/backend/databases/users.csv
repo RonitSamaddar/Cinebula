@@ -1,0 +1,7 @@
+user_id,name,age,gender,top_genres,created_at
+1,Alice,25,female,"[""Sci-Fi"",""Action"",""Drama""]",2026-06-03T18:19:55Z
+2,Alice,25,female,"[""Sci-Fi"",""Action"",""Drama"",""Thriller"",""Comedy"",""Horror"",""Crime"",""Mystery"",""Adventure""]",2026-06-03T18:20:12Z
+3,Pratikesh,22,male,"[""Sci-Fi"",""Action"",""Drama"",""Thriller"",""Comedy"",""Horror"",""Crime"",""Mystery"",""Adventure""]",2026-06-03T18:25:06Z
+4,Pratikesh,22,male,"[""Sci-Fi"",""Action"",""Drama"",""Thriller"",""Comedy"",""Horror"",""Crime"",""Mystery"",""Adventure""]",2026-06-03T18:36:28Z
+5,Test,22,male,"[""Sci-Fi"",""Action"",""Drama""]",2026-06-03T18:41:44Z
+6,Pratikesh,22,male,"[""Sci-Fi"",""Action"",""Drama"",""Thriller"",""Comedy"",""Horror"",""Crime"",""Mystery"",""Adventure""]",2026-06-03T18:44:56Z
