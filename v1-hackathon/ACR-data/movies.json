@@ -1,0 +1,202 @@
+[
+  {
+    "title": "Inception",
+    "genres": ["Action", "Sci-Fi", "Thriller"]
+  },
+  {
+    "title": "The Dark Knight",
+    "genres": ["Action", "Crime", "Drama"]
+  },
+  {
+    "title": "Interstellar",
+    "genres": ["Adventure", "Drama", "Sci-Fi"]
+  },
+  {
+    "title": "The Shawshank Redemption",
+    "genres": ["Drama"]
+  },
+  {
+    "title": "Pulp Fiction",
+    "genres": ["Crime", "Drama", "Thriller"]
+  },
+  {
+    "title": "The Godfather",
+    "genres": ["Crime", "Drama"]
+  },
+  {
+    "title": "Forrest Gump",
+    "genres": ["Comedy", "Drama", "Romance"]
+  },
+  {
+    "title": "The Matrix",
+    "genres": ["Action", "Sci-Fi"]
+  },
+  {
+    "title": "Schindler's List",
+    "genres": ["Biography", "Drama", "History"]
+  },
+  {
+    "title": "Parasite",
+    "genres": ["Comedy", "Drama", "Thriller"]
+  },
+  {
+    "title": "Coherence",
+    "genres": ["Mystery", "Sci-Fi", "Thriller"]
+  },
+  {
+    "title": "Primer",
+    "genres": ["Drama", "Sci-Fi", "Thriller"]
+  },
+  {
+    "title": "The Wailing",
+    "genres": ["Horror", "Mystery", "Thriller"]
+  },
+  {
+    "title": "A Tale of Two Sisters",
+    "genres": ["Drama", "Horror", "Mystery"]
+  },
+  {
+    "title": "Bone Tomahawk",
+    "genres": ["Horror", "Mystery", "Western"]
+  },
+  {
+    "title": "Martyrs",
+    "genres": ["Horror", "Mystery"]
+  },
+  {
+    "title": "Timecrimes",
+    "genres": ["Sci-Fi", "Thriller"]
+  },
+  {
+    "title": "The Invitation",
+    "genres": ["Drama", "Horror", "Mystery"]
+  },
+  {
+    "title": "Under the Shadow",
+    "genres": ["Drama", "Horror", "War"]
+  },
+  {
+    "title": "Cure",
+    "genres": ["Crime", "Horror", "Mystery"]
+  },
+  {
+    "title": "Pontypool",
+    "genres": ["Horror", "Mystery", "Thriller"]
+  },
+  {
+    "title": "The Fits",
+    "genres": ["Drama", "Mystery"]
+  },
+  {
+    "title": "The Rover",
+    "genres": ["Drama", "Sci-Fi", "Thriller"]
+  },
+  {
+    "title": "Frailty",
+    "genres": ["Crime", "Drama", "Horror"]
+  },
+  {
+    "title": "I Saw the Devil",
+    "genres": ["Action", "Crime", "Horror"]
+  },
+  {
+    "title": "Dogtooth",
+    "genres": ["Drama"]
+  },
+  {
+    "title": "The Hunt",
+    "genres": ["Drama", "Thriller"]
+  },
+  {
+    "title": "Birdman of Alcatraz",
+    "genres": ["Biography", "Crime", "Drama"]
+  },
+  {
+    "title": "Man from Earth",
+    "genres": ["Drama", "Sci-Fi"]
+  },
+  {
+    "title": "Ink",
+    "genres": ["Drama", "Fantasy", "Thriller"]
+  },
+  {
+    "title": "Trollhunter",
+    "genres": ["Adventure", "Fantasy", "Horror"]
+  },
+  {
+    "title": "The Endless",
+    "genres": ["Horror", "Mystery", "Sci-Fi"]
+  },
+  {
+    "title": "Resolution",
+    "genres": ["Horror", "Mystery", "Thriller"]
+  },
+  {
+    "title": "Spring",
+    "genres": ["Drama", "Horror", "Romance"]
+  },
+  {
+    "title": "Turbo Kid",
+    "genres": ["Action", "Adventure", "Sci-Fi"]
+  },
+  {
+    "title": "The Similars",
+    "genres": ["Horror", "Mystery", "Sci-Fi"]
+  },
+  {
+    "title": "Lake Mungo",
+    "genres": ["Drama", "Horror", "Mystery"]
+  },
+  {
+    "title": "Autopsy of Jane Doe",
+    "genres": ["Horror", "Mystery", "Thriller"]
+  },
+  {
+    "title": "We Are What We Are",
+    "genres": ["Drama", "Horror", "Mystery"]
+  },
+  {
+    "title": "Baskin",
+    "genres": ["Fantasy", "Horror", "Mystery"]
+  },
+  {
+    "title": "The Neon Demon",
+    "genres": ["Horror", "Mystery", "Thriller"]
+  },
+  {
+    "title": "The Witch",
+    "genres": ["Drama", "Fantasy", "Horror"]
+  },
+  {
+    "title": "It Follows",
+    "genres": ["Horror", "Mystery", "Thriller"]
+  },
+  {
+    "title": "A Ghost Story",
+    "genres": ["Drama", "Fantasy", "Romance"]
+  },
+  {
+    "title": "The Lobster",
+    "genres": ["Comedy", "Drama", "Romance"]
+  },
+  {
+    "title": "Force Majeure",
+    "genres": ["Comedy", "Drama", "Thriller"]
+  },
+  {
+    "title": "Leviathan",
+    "genres": ["Crime", "Drama", "Thriller"]
+  },
+  {
+    "title": "Caché",
+    "genres": ["Drama", "Mystery", "Thriller"]
+  },
+  {
+    "title": "The Piano Teacher",
+    "genres": ["Drama", "Romance", "Thriller"]
+  },
+  {
+    "title": "Toni Erdmann",
+    "genres": ["Comedy", "Drama"]
+  }
+]
