@@ -7,15 +7,20 @@
 package main
 
 import (
+	"bytes"
 	"encoding/csv"
+	"encoding/json"
 	"flag"
 	"fmt"
+	"io"
 	"math/rand"
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // ---------------------------------------------------------------------------
@@ -210,12 +215,164 @@ with open(%q, 'w', newline='') as f:
 }
 
 // ---------------------------------------------------------------------------
+// OpenSearch vector storage
+// ---------------------------------------------------------------------------
+
+const (
+	opensearchURL = "http://localhost:9200"
+	indexName     = "movie-vectors"
+)
+
+// waitForOpenSearch waits until OpenSearch is reachable (up to 30s).
+func waitForOpenSearch() bool {
+	for i := 0; i < 30; i++ {
+		resp, err := http.Get(opensearchURL)
+		if err == nil {
+			resp.Body.Close()
+			if resp.StatusCode == 200 {
+				return true
+			}
+		}
+		time.Sleep(1 * time.Second)
+	}
+	return false
+}
+
+// createIndexIfNotExists creates the knn index with the correct dimension.
+func createIndexIfNotExists(dim int) error {
+	// Check if index exists
+	resp, err := http.Get(opensearchURL + "/" + indexName)
+	if err != nil {
+		return err
+	}
+	resp.Body.Close()
+	if resp.StatusCode == 200 {
+		return nil // already exists
+	}
+
+	mapping := map[string]interface{}{
+		"settings": map[string]interface{}{
+			"index": map[string]interface{}{
+				"knn": true,
+			},
+		},
+		"mappings": map[string]interface{}{
+			"properties": map[string]interface{}{
+				"movie": map[string]interface{}{
+					"type": "text",
+				},
+				"movie_keyword": map[string]interface{}{
+					"type": "keyword",
+				},
+				"vector": map[string]interface{}{
+					"type":      "knn_vector",
+					"dimension": dim,
+				},
+			},
+		},
+	}
+
+	body, _ := json.Marshal(mapping)
+	req, _ := http.NewRequest("PUT", opensearchURL+"/"+indexName, bytes.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	resp, err = http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode >= 300 {
+		b, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("failed to create index: %s", string(b))
+	}
+	return nil
+}
+
+// documentExists checks if a movie document already exists in the index.
+func documentExists(movie string) bool {
+	query := map[string]interface{}{
+		"query": map[string]interface{}{
+			"term": map[string]interface{}{
+				"movie_keyword": movie,
+			},
+		},
+	}
+	body, _ := json.Marshal(query)
+	resp, err := http.Post(opensearchURL+"/"+indexName+"/_search", "application/json", bytes.NewReader(body))
+	if err != nil {
+		return false
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		Hits struct {
+			Total struct {
+				Value int `json:"value"`
+			} `json:"total"`
+		} `json:"hits"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return false
+	}
+	return result.Hits.Total.Value > 0
+}
+
+// storeVector stores a single movie vector in OpenSearch.
+func storeVector(movie string, vector []float64) error {
+	doc := map[string]interface{}{
+		"movie":         movie,
+		"movie_keyword": movie,
+		"vector":        vector,
+	}
+	body, _ := json.Marshal(doc)
+	resp, err := http.Post(opensearchURL+"/"+indexName+"/_doc", "application/json", bytes.NewReader(body))
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode >= 300 {
+		b, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("failed to index document: %s", string(b))
+	}
+	return nil
+}
+
+// storeVectorsInOpenSearch stores all vectors from the CSV into OpenSearch,
+// skipping any that already exist.
+func storeVectorsInOpenSearch(labels []string, vectors [][]float64) {
+	if !waitForOpenSearch() {
+		fmt.Println("⚠ OpenSearch not reachable at", opensearchURL, "— skipping vector storage")
+		return
+	}
+	fmt.Println("\nConnected to OpenSearch")
+
+	dim := len(vectors[0])
+	if err := createIndexIfNotExists(dim); err != nil {
+		fmt.Printf("⚠ Failed to create index: %v\n", err)
+		return
+	}
+
+	stored, skipped := 0, 0
+	for i, label := range labels {
+		if documentExists(label) {
+			skipped++
+			continue
+		}
+		if err := storeVector(label, vectors[i]); err != nil {
+			fmt.Printf("⚠ Failed to store %q: %v\n", label, err)
+			continue
+		}
+		stored++
+	}
+	fmt.Printf("OpenSearch: stored %d vectors, skipped %d (already present)\n", stored, skipped)
+}
+
+// ---------------------------------------------------------------------------
 // main
 // ---------------------------------------------------------------------------
 
 func main() {
-	method := flag.String("method", "", "Reduction method: tsne, umap, or pca")
-	csvPath := flag.String("csv", "", "Path to CSV file with vectors (each row = one vector)")
+	method := flag.String("method", "tsne", "Reduction method: tsne, umap, or pca")
+	csvPath := flag.String("csv", "sample.csv", "Path to CSV file with vectors (each row = one vector)")
 	output := flag.String("output", "", "Path to save the 2D output as CSV")
 	flag.Parse()
 
@@ -226,6 +383,8 @@ func main() {
 		labels, vectors = loadVectorsFromCSV(*csvPath)
 		fmt.Printf("Loaded %d vectors of %d dimensions from %s\n",
 			len(vectors), len(vectors[0]), *csvPath)
+		// Store vectors in OpenSearch (skips if already present)
+		storeVectorsInOpenSearch(labels, vectors)
 	} else {
 		rng := rand.New(rand.NewSource(0))
 		k, n := 50, 10
