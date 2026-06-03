@@ -17,9 +17,10 @@ except ImportError:
     UMAP_AVAILABLE = False
 
 
-def reduce_tsne(vectors: np.ndarray, perplexity: int = 30, random_state: int = 42) -> np.ndarray:
+def reduce_tsne(vectors: np.ndarray, perplexity: int = 30, random_state: int = 42, scale: float = 1000.0) -> np.ndarray:
     perplexity = min(perplexity, len(vectors) - 1)
-    return TSNE(n_components=2, perplexity=perplexity, random_state=random_state).fit_transform(vectors)
+    result = TSNE(n_components=2, perplexity=perplexity, random_state=random_state).fit_transform(vectors)
+    return result * scale
 
 
 def reduce_umap(vectors: np.ndarray, n_neighbors: int = 15, random_state: int = 42) -> np.ndarray:
@@ -45,11 +46,28 @@ def load_vectors_from_csv(filepath: str):
     labels = []
     rows = []
     with open(filepath, "r") as f:
-        reader = csv.reader(f)
-        header = next(reader, None)  # skip header
-        for row in reader:
-            labels.append(row[0])
-            rows.append([float(v) for v in row[1:]])
+        lines = f.readlines()
+    # Skip header
+    for line in lines[1:]:
+        line = line.strip()
+        if not line:
+            continue
+        # Find numeric values from the right — label may contain commas
+        parts = line.split(',')
+        # Walk from the end to find where numbers stop and label begins
+        vec = []
+        label_end = 0
+        for i in range(len(parts) - 1, 0, -1):
+            try:
+                vec.append(float(parts[i]))
+            except ValueError:
+                label_end = i
+                break
+        vec.reverse()
+        label = ','.join(parts[:label_end + 1]).strip()
+        if vec and label:
+            labels.append(label)
+            rows.append(vec)
     return labels, np.array(rows)
 
 

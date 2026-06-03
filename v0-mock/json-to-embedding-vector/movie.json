@@ -1,0 +1,763 @@
+[
+  {
+    "rank": 1,
+    "movie": "The Shawshank Redemption",
+    "tags": "prison, hope, friendship, freedom, injustice, resilience, escape, redemption, institutionalization, corruption, survival, brotherhood, loyalty, patience, perseverance, wrongful conviction, crime, drama, emotional, inspirational, Andy Dufresne, Red, prison life, warden, abuse of power, secret plan, tunnel, rock hammer, library, education, human spirit, dignity, despair, trust, mentorship, time, endurance, self-belief, justice, rain scene, letter, Mexico, Zihuatanejo, banking, intelligence, quiet rebellion, classic, tragedy, catharsis, life sentence"
+  },
+  {
+    "rank": 2,
+    "movie": "The Godfather",
+    "tags": "mafia, crime, family, power, loyalty, betrayal, legacy, violence, organized crime, corruption, father-son, succession, tragedy, revenge, drama, Vito Corleone, Michael Corleone, Don, Sicilian, mob family, respect, honor, business, murder, politics, intimidation, wedding, omerta, Italian-American, transformation, moral decay, patriarchy, empire, control, strategy, protection, enemies, assassination, brotherhood, inheritance, darkness, family duty, criminal empire, classic, power struggle, masculinity, negotiation, crime dynasty, betrayal within family, rise to power, iconic"
+  },
+  {
+    "rank": 3,
+    "movie": "The Dark Knight",
+    "tags": "superhero, Batman, Joker, chaos, morality, crime, vigilante, sacrifice, justice, corruption, Gotham, psychological, action, thriller, duality, Bruce Wayne, Harvey Dent, Two-Face, Rachel Dawes, anarchy, terrorism, fear, ethical dilemma, heroism, antihero, detective, clown, social experiment, interrogation, bank robbery, darkness, order vs chaos, city, law, symbol, moral compromise, sacrifice for society, tragedy, comic book, intense, Nolan, philosophical, identity, mask, madness, escalation, organized crime, betrayal, pressure, legend, iconic villain"
+  },
+  {
+    "rank": 4,
+    "movie": "The Godfather: Part II",
+    "tags": "mafia, crime, family, power, betrayal, legacy, corruption, ambition, immigrant story, father-son, tragedy, organized crime, revenge, drama, Michael Corleone, Vito Corleone, Sicily, New York, Cuba, Senate hearing, business empire, moral isolation, family destruction, loyalty, brother betrayal, Fredo, Kay, power consolidation, parallel story, rise and fall, criminal dynasty, coldness, paranoia, assassination, revenge killing, guilt, empire building, American dream, immigrant struggle, corruption of power, generational trauma, mob politics, classic, darkness, loneliness, leadership, betrayal within family, control, sacrifice, legacy collapse"
+  },
+  {
+    "rank": 5,
+    "movie": "12 Angry Men",
+    "tags": "courtroom, jury, justice, prejudice, morality, doubt, debate, legal drama, human nature, persuasion, truth, responsibility, ethics, classic, tense, reasonable doubt, murder trial, deliberation, bias, evidence, civic duty, conscience, group psychology, conflict, logic, empathy, social pressure, critical thinking, justice system, innocence, guilt, racism, class prejudice, anger, stubbornness, leadership, courage, minority opinion, claustrophobic, dialogue-driven, real-time, black-and-white, character study, moral responsibility, democracy, fairness, accountability, persuasion, human flaws, truth-seeking, legal ethics, timeless"
+  },
+  {
+    "rank": 6,
+    "movie": "The Lord of the Rings: The Return of the King",
+    "tags": "fantasy, epic, adventure, friendship, war, sacrifice, good vs evil, Middle-earth, heroism, destiny, kingship, courage, fellowship, magic, battle, Frodo, Sam, Aragorn, Gandalf, Sauron, Mordor, Mount Doom, ring, final battle, hope, loyalty, temptation, burden, redemption, honor, courage under fear, journey, mythology, elves, hobbits, men, orcs, siege, Minas Tirith, coronation, emotional farewell, triumph, darkness, light, loyalty, endurance, cinematic epic, fantasy war, prophecy, friendship saves world, epic conclusion, legendary"
+  },
+  {
+    "rank": 7,
+    "movie": "Schindler's List",
+    "tags": "holocaust, war, survival, humanity, tragedy, genocide, compassion, sacrifice, history, biography, moral awakening, World War II, Jews, emotional, redemption, Oskar Schindler, Nazi Germany, concentration camps, Krakow, persecution, antisemitism, suffering, courage, rescue, moral courage, guilt, industrialist, list, black-and-white, historical drama, trauma, atrocity, oppression, empathy, human rights, loss, brutality, remembrance, resistance, conscience, dignity, hope amid horror, salvation, Holocaust memory, innocence, power, evil, humanity in darkness, devastating, educational"
+  },
+  {
+    "rank": 8,
+    "movie": "The Lord of the Rings: The Fellowship of the Ring",
+    "tags": "fantasy, adventure, friendship, fellowship, Middle-earth, quest, ring, good vs evil, magic, courage, destiny, sacrifice, epic, journey, heroism, Frodo, Sam, Gandalf, Aragorn, Legolas, Gimli, Boromir, hobbits, Shire, Rivendell, Mordor, Sauron, temptation, burden, mythology, elves, dwarves, wizards, orcs, loyalty, innocence, corruption, prophecy, chosen path, courage, companionship, dark forces, ancient evil, ring bearer, road movie, fantasy world, brotherhood, emotional, cinematic, beginning of quest"
+  },
+  {
+    "rank": 9,
+    "movie": "Pulp Fiction",
+    "tags": "crime, nonlinear, dark comedy, violence, gangsters, hitmen, pop culture, drugs, redemption, chaos, cult classic, dialogue, Tarantino, irony, anthology, Jules, Vincent, Mia Wallace, Marsellus Wallace, Butch, Los Angeles, briefcase, diner, dance scene, accidental death, black comedy, cool, stylish, profanity, crime underworld, fate, chance, absurdity, moral ambiguity, revenge, boxing, heroin, adrenaline shot, foot massage, narrative puzzle, violence and humor, 90s cinema, iconic dialogue, soundtrack, pulp, postmodern, unpredictable, criminal life, resurrection, philosophical"
+  },
+  {
+    "rank": 10,
+    "movie": "The Good, the Bad and the Ugly",
+    "tags": "western, gunslinger, treasure hunt, Civil War, revenge, greed, duel, antihero, adventure, desert, bounty hunter, betrayal, survival, classic, epic, Blondie, Tuco, Angel Eyes, spaghetti western, gold, cemetery, standoff, moral ambiguity, outlaws, violence, dust, frontier, lawlessness, friendship, rivalry, deception, war backdrop, sharpshooter, greed and survival, iconic music, Ennio Morricone, widescreen, tension, Mexican standoff, lone gunman, bandits, prison camp, escape, treasure map, rugged, cynical, epic journey, western myth, legendary, final duel"
+  },
+  {
+    "rank": 11,
+    "movie": "The Lord of the Rings: The Two Towers",
+    "tags": "fantasy, epic, adventure, war, friendship, Middle-earth, battle, good vs evil, courage, sacrifice, fellowship, darkness, hope, heroism, magic, Frodo, Sam, Gollum, Aragorn, Gandalf, Legolas, Gimli, Rohan, Helm’s Deep, Saruman, Sauron, Ents, betrayal, temptation, loyalty, burden, split journey, kingdom, siege, resistance, alliance, ancient evil, redemption, inner conflict, trust, epic battle, fantasy warfare, mythic quest, darkness rising, companionship, survival, bravery, ring, moral struggle, cinematic spectacle, emotional"
+  },
+  {
+    "rank": 12,
+    "movie": "Forrest Gump",
+    "tags": "life journey, romance, friendship, innocence, destiny, history, Vietnam War, family, perseverance, love, emotional, comedy-drama, American history, loss, hope, Forrest, Jenny, Bubba, Lieutenant Dan, running, shrimp business, mother-son, disability, kindness, simplicity, fate, coincidence, nostalgia, war trauma, friendship loyalty, childhood, coming-of-age, pop culture, historical events, football, ping pong, grief, fatherhood, unconditional love, resilience, optimism, heartbreak, life lessons, storytelling, innocence in chaos, personal growth, bittersweet, iconic quotes, Americana, emotional journey"
+  },
+  {
+    "rank": 13,
+    "movie": "Fight Club",
+    "tags": "psychological, identity, consumerism, masculinity, rebellion, anarchy, split personality, violence, nihilism, cult classic, mental illness, underground, chaos, satire, twist, Tyler Durden, narrator, insomnia, soap, Project Mayhem, anti-capitalism, self-destruction, alienation, corporate life, existential crisis, toxic masculinity, underground fighting, dissociation, unreliable narrator, social critique, obsession, freedom, destruction, materialism, loneliness, antihero, urban decay, manipulation, rage, masculinity crisis, dark humor, cult, radicalization, emotional numbness, rebellion fantasy, psychological thriller, identity collapse, modern malaise, anarchism"
+  },
+  {
+    "rank": 14,
+    "movie": "Inception",
+    "tags": "sci-fi, dreams, heist, mind, subconscious, reality, time, grief, illusion, action, thriller, memory, guilt, layered worlds, ambiguous ending, Cobb, Mal, Ariadne, Arthur, Eames, Fischer, dream sharing, limbo, totem, spinning top, extraction, inception, architecture, folding city, zero gravity, emotional trauma, fatherhood, loss, manipulation, corporate espionage, maze, subconscious projection, dream logic, time dilation, surreal, Nolan, psychological, mission, layered narrative, reality vs dream, mind bending, high concept, cerebral, guilt, redemption, spectacle"
+  },
+  {
+    "rank": 15,
+    "movie": "The Empire Strikes Back",
+    "tags": "sci-fi, space, Star Wars, Jedi, Sith, rebellion, empire, father-son, destiny, betrayal, training, adventure, battle, force, dark side, Luke Skywalker, Darth Vader, Leia, Han Solo, Yoda, Hoth, Dagobah, Cloud City, lightsaber, revelation, hero’s journey, mentorship, romance, sacrifice, pursuit, imperial power, galactic war, family secret, freezing chamber, bounty hunter, Boba Fett, friendship, courage, temptation, myth, space opera, sequel, darkness, loss, cliffhanger, iconic twist, good vs evil, training montage, resistance, legendary"
+  },
+  {
+    "rank": 16,
+    "movie": "The Matrix",
+    "tags": "sci-fi, cyberpunk, simulation, reality, AI, rebellion, chosen one, philosophy, action, dystopia, hackers, machines, identity, awakening, martial arts, Neo, Morpheus, Trinity, Agent Smith, red pill, blue pill, virtual reality, control, free will, prophecy, kung fu, bullet time, consciousness, illusion, techno-thriller, resistance, artificial intelligence, human battery, cyber reality, existentialism, hacker culture, sunglasses, trench coats, digital world, liberation, mind over matter, system, questioning reality, philosophical action, iconic, cyber rebellion, machine war, truth, transformation, revolution"
+  },
+  {
+    "rank": 17,
+    "movie": "Goodfellas",
+    "tags": "mafia, crime, gangsters, loyalty, betrayal, violence, organized crime, rise and fall, drugs, greed, corruption, friendship, narration, drama, paranoia, Henry Hill, Jimmy Conway, Tommy DeVito, mob life, Italian-American, Brooklyn, heist, Lufthansa robbery, prison, cocaine, informant, FBI, nightclub, family, criminal glamour, violence spiral, betrayal, ambition, street life, money, status, intimidation, murder, excess, downfall, Scorsese, realistic crime, wiseguys, power, fear, toxic loyalty, marriage, crime lifestyle, classic, fast-paced, brutal"
+  },
+  {
+    "rank": 18,
+    "movie": "Interstellar",
+    "tags": "sci-fi, space, father-daughter, love, time dilation, black hole, wormhole, survival, humanity, emotion, sacrifice, gravity, NASA, future, exploration, Cooper, Murph, Brand, TARS, CASE, Gargantua, relativity, fifth dimension, tesseract, space travel, climate crisis, dust bowl, blight, extinction, hope, family, separation, grief, exoplanets, Miller’s planet, Mann’s planet, Edmunds’ planet, cryosleep, mission, Plan A, Plan B, science, quantum physics, astrophysics, docking, no time for caution, time, legacy, reunion, cosmic, emotional sci-fi"
+  },
+  {
+    "rank": 19,
+    "movie": "One Flew Over the Cuckoo's Nest",
+    "tags": "mental hospital, rebellion, freedom, authority, individuality, oppression, friendship, tragedy, psychology, drama, institutionalization, power, resistance, humanity, emotional, McMurphy, Nurse Ratched, mental illness, control, conformity, abuse of power, sanity, dignity, patients, manipulation, group therapy, rebellion against system, tragedy, lobotomy, compassion, masculinity, vulnerability, escape, friendship, social control, anti-authoritarian, psychological drama, emotional liberation, institutional cruelty, outsider, hope, despair, human spirit, classic, counterculture, moral conflict, personal freedom, unforgettable"
+  },
+  {
+    "rank": 20,
+    "movie": "Se7en",
+    "tags": "crime, thriller, serial killer, investigation, sins, darkness, morality, detective, horror, mystery, psychological, obsession, justice, twist ending, nihilism, Somerset, Mills, John Doe, seven deadly sins, murder, urban decay, rain, despair, police procedural, religious symbolism, wrath, envy, greed, gluttony, sloth, pride, lust, moral corruption, suspense, grim, body horror, clues, crime scene, bleak, philosophy, punishment, manipulation, revenge, shocking ending, psychological horror, darkness of humanity, Brad Pitt, Morgan Freeman, David Fincher"
+  },
+  {
+    "rank": 21,
+    "movie": "It's a Wonderful Life",
+    "tags": "Christmas, family, hope, community, sacrifice, redemption, life, angel, depression, love, small town, kindness, fantasy, emotional, classic, George Bailey, Bedford Falls, guardian angel, alternate timeline, gratitude, self-worth, suicide prevention, friendship, generosity, dreams deferred, marriage, fatherhood, community support, banking, Mr Potter, moral goodness, holiday film, human value, second chance, inspirational, faith, compassion, helping others, ordinary hero, emotional awakening, family love, classic Hollywood, nostalgia, miracle, purpose, kindness matters, life impact, heartwarming"
+  },
+  {
+    "rank": 22,
+    "movie": "The Silence of the Lambs",
+    "tags": "crime, thriller, serial killer, FBI, psychological, horror, investigation, Hannibal Lecter, manipulation, fear, trauma, suspense, profiling, dark, mystery, Clarice Starling, Buffalo Bill, cannibal, prison interview, mind games, forensic psychology, abduction, female protagonist, vulnerability, courage, cat-and-mouse, psychological manipulation, childhood trauma, lambs, night vision, investigation, behavioral science, intense, disturbing, police procedural, horror thriller, obsession, identity, predator, victim rescue, intelligence, power dynamics, gothic, crime horror, iconic villain, tension, trauma memory, survival"
+  },
+  {
+    "rank": 23,
+    "movie": "Seven Samurai",
+    "tags": "samurai, action, honor, sacrifice, village, warriors, teamwork, feudal Japan, courage, battle, duty, strategy, classic, epic, survival, Kurosawa, ronin, farmers, bandits, protection, recruitment, leadership, class divide, loyalty, discipline, sword fighting, rain battle, heroism, poverty, community, warrior code, mentorship, sacrifice for strangers, tactical planning, ensemble, Japanese cinema, moral duty, humility, courage under pressure, village defense, death, brotherhood, tradition, battlefield, black-and-white, historical, social hierarchy, cinematic masterpiece, influence, legendary"
+  },
+  {
+    "rank": 24,
+    "movie": "Saving Private Ryan",
+    "tags": "war, World War II, soldiers, sacrifice, brotherhood, duty, survival, Normandy, courage, patriotism, rescue mission, grief, trauma, battlefield, heroism, D-Day, Omaha Beach, Captain Miller, Private Ryan, combat, realism, violence, loss, military, mission, comradeship, leadership, moral duty, family, honor, fear, courage under fire, sacrifice for one, war trauma, fallen soldiers, battlefield chaos, historical, emotional, Spielberg, invasion, platoon, sacrifice, duty vs survival, humanity in war, veteran, memory, brutal realism, hero’s cost, war epic"
+  },
+  {
+    "rank": 25,
+    "movie": "The Green Mile",
+    "tags": "prison, supernatural, injustice, compassion, death row, miracle, racism, empathy, tragedy, healing, morality, emotional, innocence, redemption, drama, John Coffey, Paul Edgecomb, execution, electric chair, prison guards, spiritual power, wrongful punishment, mercy, suffering, cruelty, friendship, faith, humanity, magical realism, death, dignity, abuse of power, Southern Gothic, mouse, Mr Jingles, pain, forgiveness, moral dilemma, gentle giant, tears, healing touch, evil, compassion in prison, injustice system, heartbreaking, Stephen King, emotional drama"
+  },
+  {
+    "rank": 26,
+    "movie": "City of God",
+    "tags": "crime, favela, violence, poverty, gangs, survival, coming-of-age, Brazil, photography, youth, drugs, ambition, realism, corruption, tragedy, Rio de Janeiro, Rocket, Li’l Zé, street crime, childhood, gang war, social inequality, urban violence, slums, narration, crime cycle, fear, murder, power, community, police corruption, journalism, lost innocence, friendship, brutality, revenge, chaos, survival instinct, realistic drama, Latin American cinema, poverty trap, criminal rise, youth violence, social realism, kinetic, documentary style, destiny, violence spiral, heartbreaking"
+  },
+  {
+    "rank": 27,
+    "movie": "Life Is Beautiful",
+    "tags": "holocaust, family, father-son, comedy-drama, survival, love, sacrifice, tragedy, World War II, hope, imagination, innocence, emotional, resilience, humanity, Guido, Giosue, concentration camp, Jewish persecution, fascism, Italy, humor, protection, parental love, fantasy game, shielding child, courage, bittersweet, optimism, loss, love story, fatherhood, wartime, human spirit, tragedy and comedy, moral courage, innocence preserved, sacrifice for son, hope amid horror, emotional ending, resilience through imagination, compassion, historical drama, heartbreaking, uplifting, family bond, memory, survival game, poetic"
+  },
+  {
+    "rank": 28,
+    "movie": "Terminator 2: Judgment Day",
+    "tags": "sci-fi, action, time travel, AI, robots, apocalypse, future war, protector, survival, mother-son, cyborg, chase, technology, sacrifice, judgment day, Terminator, T-800, T-1000, Sarah Connor, John Connor, Skynet, nuclear war, liquid metal, machine uprising, destiny, free will, robotics, cybernetic organism, blockbuster, chase scenes, transformation, redemption, artificial intelligence, future resistance, time loop, protection mission, villain robot, explosive action, family bond, human-machine friendship, fate, technology fear, cyberpunk, iconic, sequel, sacrifice ending, no fate, survivalist"
+  },
+  {
+    "rank": 29,
+    "movie": "Star Wars",
+    "tags": "sci-fi, space, adventure, Jedi, rebellion, empire, force, hero journey, destiny, princess, droids, good vs evil, battle, fantasy, classic, Luke Skywalker, Darth Vader, Leia, Han Solo, Obi-Wan Kenobi, Death Star, lightsaber, space opera, galaxy, rebellion, stormtroopers, desert planet, Tatooine, mentor, chosen path, rescue mission, dogfight, friendship, courage, myth, heroism, laser battles, galactic empire, hope, adventure cinema, iconic score, father figure, rebels, mystical power, coming-of-age, fantasy sci-fi, classic villain, epic"
+  },
+  {
+    "rank": 30,
+    "movie": "Back to the Future",
+    "tags": "sci-fi, time travel, comedy, adventure, family, past, future, paradox, teenage, friendship, invention, destiny, romance, nostalgia, DeLorean, Marty McFly, Doc Brown, 1955, 1985, flux capacitor, high school, parents, timeline, rock and roll, skateboarding, clock tower, lightning, alternate history, family destiny, humor, fish out of water, coming-of-age, science experiment, cause and effect, youthful energy, retro, 80s classic, time machine, mistaken identity, romance fix, adventure comedy, clever plot, iconic, friendship, feel-good, pop culture, temporal paradox"
+  },
+  {
+    "rank": 31,
+    "movie": "Spirited Away",
+    "tags": "animation, fantasy, coming-of-age, spirits, courage, identity, magic, childhood, adventure, transformation, friendship, greed, environmental, dreamlike, Studio Ghibli, Chihiro, Haku, No-Face, Yubaba, bathhouse, parents transformed, spirit world, Japanese folklore, resilience, innocence, work, growth, memory, name, river spirit, compassion, wonder, surreal, magical realism, self-discovery, courage under fear, loneliness, kindness, transformation, girl protagonist, visual poetry, Miyazaki, fantasy journey, childhood anxiety, spiritual, imaginative, empathy, classic animation, enchanting"
+  },
+  {
+    "rank": 32,
+    "movie": "The Pianist",
+    "tags": "holocaust, war, survival, music, World War II, tragedy, loneliness, Jewish history, resilience, occupation, grief, biography, emotional, humanity, art, Wladyslaw Szpilman, Warsaw, pianist, Nazi occupation, ghetto, persecution, starvation, hiding, loss, family separation, classical music, trauma, destruction, isolation, human endurance, survival instinct, historical drama, antisemitism, brutality, compassion, ruins, silence, despair, hope, art as survival, loneliness in war, Polish history, oppression, rescue, memory, suffering, devastating, dignity, war horror"
+  },
+  {
+    "rank": 33,
+    "movie": "Gladiator",
+    "tags": "epic, Rome, revenge, honor, betrayal, warrior, empire, slavery, arena, family, justice, heroism, action, tragedy, loyalty, Maximus, Commodus, emperor, Roman Empire, general, gladiator, Colosseum, vengeance, murdered family, political intrigue, courage, leadership, battlefield, freedom, corruption, power, spectacle, ancient Rome, brother-sister, destiny, moral honor, combat, sword fighting, sacrifice, crowd, betrayal by ruler, fallen hero, loyalty to Rome, afterlife, emotional, historical action, heroic journey, epic drama, iconic"
+  },
+  {
+    "rank": 34,
+    "movie": "Parasite",
+    "tags": "class divide, poverty, wealth, satire, thriller, family, deception, social inequality, dark comedy, suspense, greed, survival, capitalism, twist, tragedy, Kim family, Park family, basement, house, infiltration, con artist, inequality, social mobility, resentment, rainstorm, smell, hidden bunker, rich vs poor, Korean cinema, Oscar winner, black comedy, tension, domestic work, economic desperation, status, humiliation, privilege, violence, social critique, modern society, class rage, survival strategy, envy, secrets, family loyalty, moral ambiguity, shocking, Bong Joon-ho, masterpiece"
+  },
+  {
+    "rank": 35,
+    "movie": "Psycho",
+    "tags": "horror, thriller, motel, murder, psychological, suspense, identity, madness, mother, crime, classic, slasher, mystery, paranoia, twist, Norman Bates, Marion Crane, Bates Motel, shower scene, Hitchcock, black-and-white, split identity, voyeurism, guilt, theft, runaway, taxidermy, isolation, creepy house, suspense cinema, psychological horror, mother complex, investigation, fear, secrets, murder mystery, iconic music, stabbing, obsession, disguise, madness reveal, horror classic, tension, unexpected death, crime thriller, taboo, manipulation, classic villain, paranoia"
+  },
+  {
+    "rank": 36,
+    "movie": "Grave of the Fireflies",
+    "tags": "animation, war, tragedy, siblings, survival, World War II, grief, innocence, starvation, family, loss, emotional, anti-war, childhood, devastation, Seita, Setsuko, Japan, fireflies, bombing, orphaned children, hunger, desperation, civilian suffering, wartime trauma, brother-sister, responsibility, innocence lost, heartbreaking, poverty, pride, neglect, memory, suffering, tragedy of war, Studio Ghibli, realism, childhood survival, sadness, family bond, despair, historical drama, emotional devastation, anti-war message, sacrifice, vulnerability, loss of innocence, tears, human cost, unforgettable"
+  },
+  {
+    "rank": 37,
+    "movie": "The Lion King",
+    "tags": "animation, family, coming-of-age, kingdom, father-son, destiny, grief, betrayal, animals, adventure, music, courage, redemption, legacy, Disney, Simba, Mufasa, Scar, Nala, Timon, Pumbaa, Pride Rock, circle of life, exile, guilt, identity, responsibility, hakuna matata, savanna, lions, villain uncle, murder, reclaiming throne, childhood, friendship, leadership, hero journey, songs, nostalgia, courage to return, family legacy, growth, loss, royal drama, animated classic, emotional, good vs evil, nature, self-discovery, triumph"
+  },
+  {
+    "rank": 38,
+    "movie": "Harakiri",
+    "tags": "samurai, honor, revenge, feudal Japan, tragedy, hypocrisy, social critique, ritual, justice, family, dignity, drama, betrayal, sacrifice, classic, seppuku, ronin, bushido, poverty, clan, vengeance, moral hypocrisy, social cruelty, father-in-law, daughter, suffering, institutional pride, honor code, truth, storytelling, flashback, sword, shame, power abuse, compassion, class injustice, Japanese cinema, black-and-white, suspense, moral confrontation, grief, ritual suicide, anti-samurai myth, dramatic tension, family tragedy, dignity under oppression, revenge drama, masterpiece"
+  },
+  {
+    "rank": 39,
+    "movie": "The Departed",
+    "tags": "crime, undercover, mafia, police, betrayal, identity, corruption, Boston, thriller, deception, loyalty, violence, mole, suspense, tragedy, Billy Costigan, Colin Sullivan, Frank Costello, Irish mob, state police, informant, double life, paranoia, surveillance, organized crime, cat-and-mouse, masculinity, deception within law, moral ambiguity, crime boss, identity crisis, guilt, loyalty conflict, murder, tension, undercover cop, criminal infiltrator, psychological pressure, secrets, power, Scorsese, brutal, urban crime, duplicity, betrayal, shocking deaths, twist"
+  },
+  {
+    "rank": 40,
+    "movie": "Whiplash",
+    "tags": "music, jazz, ambition, obsession, teacher-student, perfection, psychological, abuse, drums, pressure, sacrifice, success, discipline, tension, rivalry, Andrew Neiman, Fletcher, conservatory, practice, greatness, mentorship, cruelty, humiliation, artistic obsession, performance, competition, blood, sweat, tempo, not my tempo, power dynamics, toxic mentorship, sacrifice for art, anxiety, perfectionism, emotional intensity, jazz band, final performance, psychological drama, determination, manipulation, rage, greatness vs happiness, music school, talent, fear, resilience, explosive ending, obsession with excellence"
+  },
+  {
+    "rank": 41,
+    "movie": "The Prestige",
+    "tags": "magic, rivalry, obsession, illusion, sacrifice, mystery, deception, revenge, science, Nikola Tesla, twins, secrets, tragedy, twist, ambition, Angier, Borden, magician, stagecraft, Victorian era, showmanship, identity, double life, teleportation, machine, audience, sacrifice for art, competition, jealousy, betrayal, diary, misdirection, reveal, cloning, sacrifice, cost of obsession, theatricality, illusion vs reality, revenge spiral, friendship turned rivalry, professional envy, death, secret life, puzzle narrative, Nolan, dark mystery, dramatic twist, obsession destroys"
+  },
+  {
+    "rank": 42,
+    "movie": "American History X",
+    "tags": "racism, redemption, hate, violence, family, neo-Nazi, prison, ideology, tragedy, brotherhood, reform, prejudice, social drama, anger, consequences, Derek Vinyard, Danny Vinyard, white supremacy, extremism, hate crime, gang, prison transformation, racial hatred, father influence, indoctrination, regret, violence cycle, education, family trauma, social commentary, intolerance, revenge, identity, reform, moral awakening, racism consequences, youth radicalization, grief, hatred, compassion, tragedy ending, black-and-white flashbacks, redemption attempt, brother influence, ideology collapse, powerful drama, anti-racism"
+  },
+  {
+    "rank": 43,
+    "movie": "Leon: The Professional",
+    "tags": "crime, assassin, mentorship, friendship, revenge, loneliness, girl, hitman, action, corruption, tragedy, found family, violence, emotional, survival, Leon, Mathilda, Stansfield, New York, professional killer, orphan, protection, revenge mission, unlikely bond, police corruption, innocence, trauma, training, isolation, morality, father figure, plant, apartment, gunfight, emotional bond, vengeance, crime thriller, coming-of-age, loss, brutality, stylized action, protector, vulnerability, dangerous world, loneliness, sacrifice, tragic ending, cult classic, survival bond, revenge drama"
+  },
+  {
+    "rank": 44,
+    "movie": "Spider-Man: Across the Spider-Verse",
+    "tags": "animation, superhero, multiverse, Spider-Man, coming-of-age, family, destiny, identity, action, comic book, sacrifice, friendship, alternate realities, emotion, adventure, Miles Morales, Gwen Stacy, Spider-Society, Miguel O’Hara, canon events, portals, visual style, comic animation, parents, responsibility, belonging, rebellion, fate vs choice, teenage hero, multiverse conflict, Spider-Punk, Spider-Man India, Brooklyn, identity crisis, family secrets, artistic innovation, colorful, emotional stakes, heroism, choice, self-definition, sequel, cliffhanger, spectacular animation, cross-dimensional, spider powers, friendship tension"
+  },
+  {
+    "rank": 45,
+    "movie": "Cinema Paradiso",
+    "tags": "cinema, nostalgia, childhood, friendship, love, memory, coming-of-age, small town, filmmaking, mentor, romance, loss, emotional, Italy, art, Toto, Alfredo, movie theater, projectionist, Sicily, childhood dreams, love of movies, village life, bittersweet, memories, first love, growing up, farewell, mentorship, old cinema, film reels, community, passion, creativity, artistic awakening, emotional ending, nostalgia for cinema, lost love, homecoming, life journey, dreams, regret, remembrance, classic, tender, sentimental, artistic legacy, cinema history, heartfelt, childhood wonder"
+  },
+  {
+    "rank": 46,
+    "movie": "Casablanca",
+    "tags": "romance, war, sacrifice, love, World War II, nightclub, resistance, refugees, moral choice, classic, heartbreak, patriotism, drama, loyalty, farewell, Rick Blaine, Ilsa Lund, Victor Laszlo, Morocco, Vichy France, sacrifice for cause, lost love, political intrigue, letters of transit, anti-fascism, cynicism, redemption, idealism, exile, wartime romance, piano, As Time Goes By, moral awakening, love triangle, duty, resistance movement, bittersweet ending, classic Hollywood, iconic dialogue, black-and-white, emotional restraint, noble sacrifice, espionage, freedom, corruption, hope, timeless romance"
+  },
+  {
+    "rank": 47,
+    "movie": "The Intouchables",
+    "tags": "friendship, disability, comedy-drama, caregiving, class divide, healing, joy, unlikely bond, life, hope, humor, emotional, inspiration, compassion, trust, Philippe, Driss, wheelchair, caretaker, aristocrat, working class, second chance, human connection, dignity, laughter, music, personal growth, empathy, social differences, warmth, companionship, healing friendship, culture clash, freedom, emotional recovery, optimism, bromance, disability representation, trust building, joie de vivre, French cinema, feel-good, support, vulnerability, class contrast, mutual transformation, kindness, life lessons, heartfelt, uplifting"
+  },
+  {
+    "rank": 48,
+    "movie": "The Usual Suspects",
+    "tags": "crime, mystery, deception, twist ending, investigation, criminals, unreliable narrator, thriller, Keyser Soze, manipulation, heist, suspense, identity, betrayal, noir, Verbal Kint, police interrogation, lineup, con, criminal conspiracy, storytelling, lies, fear, myth, mastermind, puzzle, manipulation of truth, flashback, deception narrative, crime boss, paranoia, false identity, shocking reveal, neo-noir, suspenseful, clever, criminal underworld, betrayal, legend, interrogation room, unreliable memory, twist, hidden villain, manipulation, mystery thriller, cult classic, dark, intricate plot, final reveal"
+  },
+  {
+    "rank": 49,
+    "movie": "Alien",
+    "tags": "sci-fi, horror, space, survival, alien, spaceship, isolation, monster, suspense, body horror, crew, fear, corporate greed, creature feature, claustrophobic, Ripley, Nostromo, xenomorph, facehugger, chestburster, android, Ash, Weyland-Yutani, deep space, distress signal, unknown planet, survival horror, dark corridors, predator, paranoia, science fiction horror, female survivor, tension, creature design, H.R. Giger, cosmic horror, infection, contamination, crew conflict, betrayal, space truckers, fear of unknown, atmospheric, suspense cinema, monster movie, iconic alien, survival instinct, nightmare, classic"
+  },
+  {
+    "rank": 50,
+    "movie": "Modern Times",
+    "tags": "silent film, comedy, satire, industrialization, capitalism, poverty, factory, worker, Chaplin, social critique, romance, survival, machines, classic, slapstick, Tramp, assembly line, Great Depression, labor, automation, unemployment, class struggle, social inequality, mechanical age, human dignity, physical comedy, factory work, exploitation, hunger, resilience, police, prison, street life, orphan girl, hope, industrial society, dehumanization, work pressure, absurdity, visual comedy, social commentary, timeless, optimism, romance comedy, hardship, working class, machinery, classic cinema, human spirit"
+  },
+
+  {
+    "rank": 51,
+    "movie": "Psycho",
+    "tags": "horror, psychological thriller, suspense, motel, murder, Norman Bates, Marion Crane, Bates Motel, shower scene, mother, split identity, madness, crime, mystery, voyeurism, guilt, theft, paranoia, isolation, black-and-white, Hitchcock, slasher roots, twist ending, taxidermy, creepy house, investigation, fear, secrets, identity disorder, mother complex, classic horror, iconic music, stabbing, unexpected death, tension, manipulation, hidden corpse, mental illness, noir atmosphere, shocking reveal, crime thriller, obsession, runaway, private detective, horror classic, suspense cinema, madness reveal, iconic villain, classic cinema"
+  },
+  {
+    "rank": 52,
+    "movie": "Casablanca",
+    "tags": "romance, war, sacrifice, love, World War II, nightclub, resistance, refugees, moral choice, heartbreak, patriotism, drama, loyalty, farewell, Rick Blaine, Ilsa Lund, Victor Laszlo, Morocco, Vichy France, lost love, political intrigue, letters of transit, anti-fascism, cynicism, redemption, idealism, exile, wartime romance, piano, As Time Goes By, moral awakening, love triangle, duty, resistance movement, bittersweet ending, classic Hollywood, iconic dialogue, black-and-white, espionage, freedom, corruption, hope, noble sacrifice, timeless romance, emotional restraint, wartime drama, nostalgia, destiny, classic cinema"
+  },
+  {
+    "rank": 53,
+    "movie": "Modern Times",
+    "tags": "silent film, comedy, satire, industrialization, capitalism, poverty, factory, worker, Chaplin, social critique, romance, survival, machines, slapstick, Tramp, assembly line, Great Depression, labor, automation, unemployment, class struggle, social inequality, mechanical age, human dignity, physical comedy, factory work, exploitation, hunger, resilience, police, prison, street life, orphan girl, hope, industrial society, dehumanization, work pressure, absurdity, visual comedy, social commentary, optimism, romance comedy, hardship, working class, machinery, classic cinema, human spirit, anti-capitalist satire, timeless comedy, industrial chaos"
+  },
+  {
+    "rank": 54,
+    "movie": "City Lights",
+    "tags": "silent film, comedy, romance, Chaplin, Tramp, blind girl, poverty, kindness, love, sacrifice, friendship, compassion, slapstick, emotional, class divide, generosity, mistaken identity, millionaire, boxing, flower seller, dignity, innocence, hardship, urban life, loneliness, hope, selflessness, heartfelt, visual comedy, physical comedy, classic cinema, bittersweet, humanism, charity, romance comedy, sentimental, resilience, social inequality, tenderness, redemption, final scene, iconic ending, empathy, classic Hollywood, silent comedy, emotional comedy, pure love, underdog, timeless, tearjerker"
+  },
+  {
+    "rank": 55,
+    "movie": "Capharnaüm",
+    "tags": "poverty, childhood, survival, Lebanon, child neglect, social realism, street life, injustice, family, migration, undocumented, refugee, courtroom, emotional, tragedy, realism, abandonment, hardship, child rights, urban poverty, Zain, desperation, abuse, hunger, identity, birth certificate, motherhood, resilience, social critique, suffering, compassion, exploitation, human rights, childhood trauma, broken family, harsh reality, survival instinct, immigrant struggle, moral outrage, legal drama, raw, heartbreaking, Middle Eastern cinema, innocence lost, responsibility, poverty cycle, empathy, documentary style, vulnerable children, social injustice"
+  },
+  {
+    "rank": 56,
+    "movie": "Ayla: The Daughter of War",
+    "tags": "war, Korean War, father-daughter, found family, Turkish soldier, orphan, Ayla, Süleyman, compassion, sacrifice, separation, reunion, love, humanity, emotional, true story, battlefield, adoption, cross-cultural bond, innocence, trauma, rescue, military, childhood, grief, hope, memory, loyalty, wartime friendship, protection, kindness, family beyond blood, longing, identity, healing, survival, Turkish cinema, Korean history, human connection, tears, sentimental, historical drama, war orphan, promise, devotion, nostalgia, emotional reunion, compassion in war, loss, fatherly love"
+  },
+  {
+    "rank": 57,
+    "movie": "Vikram Vedha",
+    "tags": "crime, thriller, morality, police, gangster, cat-and-mouse, Vikram, Vedha, justice, ethics, grey characters, revenge, encounter killings, Tamil cinema, neo-noir, action, suspense, storytelling, riddles, good vs evil, moral ambiguity, corruption, loyalty, betrayal, investigation, mind games, urban crime, police procedural, underworld, violence, truth, perspective, conscience, duality, philosophical, clever narrative, flashbacks, crime drama, intense, manipulation, law vs justice, antihero, chase, power, deception, revenge cycle, gritty, twist, South Indian cinema, cult"
+  },
+  {
+    "rank": 58,
+    "movie": "Kimi no na wa.",
+    "tags": "anime, romance, body swap, time, fate, memory, comet, destiny, love, separation, Mitsuha, Taki, Japan, supernatural, coming-of-age, dreams, longing, connection, time slip, disaster, village, Tokyo, rural life, urban life, emotional, beautiful animation, identity, adolescence, red thread, parallel lives, time travel, cosmic, nostalgia, music, Shinkai, romance fantasy, memory loss, reunion, longing across time, teenage love, spiritual, family, tradition, shrine, braided cord, hope, magical realism, bittersweet, visual poetry, anime masterpiece"
+  },
+  {
+    "rank": 59,
+    "movie": "Dangal",
+    "tags": "sports, wrestling, father-daughter, family, empowerment, India, biography, Mahavir Phogat, Geeta Phogat, Babita Phogat, women in sports, training, discipline, patriarchy, determination, ambition, sacrifice, rural India, Haryana, national pride, competition, underdog, gold medal, coaching, resilience, gender equality, dreams, struggle, motivation, emotional, physical transformation, fatherhood, daughters, social change, perseverance, Indian cinema, inspirational, sports drama, family drama, hard work, courage, female empowerment, championship, identity, tradition vs ambition, wrestling mat, national anthem, pride, victory, legacy"
+  },
+  {
+    "rank": 60,
+    "movie": "Spider-Man: Into the Spider-Verse",
+    "tags": "animation, superhero, Spider-Man, multiverse, Miles Morales, coming-of-age, identity, family, responsibility, friendship, comic book, action, adventure, Brooklyn, Peter Parker, Gwen Stacy, Spider-Gwen, alternate realities, heroism, leap of faith, father-son, uncle, grief, mentorship, creativity, visual style, graffiti, self-belief, destiny, courage, loss, teamwork, humor, emotional, superhero origin, Kingpin, collider, comic animation, diversity, representation, teenage hero, sacrifice, power, great responsibility, stylish, colorful, innovative animation, Marvel, found confidence, transformation, Oscar winner"
+  },
+  {
+    "rank": 61,
+    "movie": "Avengers: Endgame",
+    "tags": "superhero, Marvel, Avengers, time travel, sacrifice, grief, loss, reunion, Thanos, Iron Man, Captain America, Thor, Hulk, Black Widow, Hawkeye, Ant-Man, infinity stones, final battle, heroism, friendship, teamwork, redemption, legacy, snap, blip, cosmic, action, emotional, epic, family, closure, survival, destiny, multiverse setup, quantum realm, nostalgia, farewell, courage, self-sacrifice, resurrection, battle, hope, MCU, blockbuster, fan service, time heist, superhero ensemble, war, triumph, bittersweet ending"
+  },
+  {
+    "rank": 62,
+    "movie": "Avengers: Infinity War",
+    "tags": "superhero, Marvel, Avengers, Thanos, infinity stones, cosmic, war, sacrifice, destiny, action, ensemble, heroes, villain, snap, loss, tragedy, Wakanda, Titan, Guardians, Iron Man, Doctor Strange, Spider-Man, Thor, Vision, Scarlet Witch, Black Panther, universe, moral dilemma, population, balance, power, grief, failure, teamwork, space, magic, science, battle, desperation, heroism, apocalypse, cliffhanger, blockbuster, MCU, emotional, fate, death, invasion, Infinity Gauntlet, epic, dark ending"
+  },
+  {
+    "rank": 63,
+    "movie": "Coco",
+    "tags": "animation, family, music, Mexico, Día de los Muertos, memory, ancestors, Miguel, Héctor, Ernesto de la Cruz, grandmother, tradition, dreams, love, afterlife, identity, forgiveness, heritage, emotional, Pixar, guitar, mariachi, family secrets, remembrance, death, colorful, childhood, ambition, betrayal, reunion, song, Remember Me, cultural celebration, generational trauma, family bond, legacy, truth, adventure, fantasy, heartfelt, tearjerker, creativity, art, music passion, respect, spiritual, kindness, healing, ancestry, final song, animated masterpiece"
+  },
+  {
+    "rank": 64,
+    "movie": "Django Unchained",
+    "tags": "western, revenge, slavery, action, Django, bounty hunter, Dr. King Schultz, Calvin Candie, Broomhilda, Tarantino, violence, freedom, racism, plantation, rescue mission, spaghetti western, dark comedy, gunfight, justice, vengeance, exploitation, antebellum South, brutality, liberation, partnership, love, courage, revenge fantasy, stylized violence, satire, oppression, bloodshed, heroism, moral outrage, slavery horror, bounty hunting, deception, infiltration, Southern Gothic, antihero, empowerment, historical fiction, sharp dialogue, cinematic, rebellion, rescue, plantation violence, triumph, revenge tale, cult"
+  },
+  {
+    "rank": 65,
+    "movie": "The Dark Knight Rises",
+    "tags": "superhero, Batman, Gotham, Bane, Catwoman, Bruce Wayne, sacrifice, redemption, fear, revolution, class conflict, terrorism, action, thriller, legacy, heroism, justice, police, prison pit, rise, fall, darkness, hope, nuclear bomb, League of Shadows, Selina Kyle, Alfred, Commissioner Gordon, underground, occupation, chaos, resilience, comeback, broken hero, social unrest, masked villain, identity, sacrifice for city, Nolan, trilogy finale, comic book, epic action, moral courage, deception, betrayal, redemption arc, rebirth, final stand, symbolism, cinematic spectacle"
+  },
+  {
+    "rank": 66,
+    "movie": "3 Idiots",
+    "tags": "education, friendship, college, engineering, comedy, drama, India, Rancho, Farhan, Raju, Chatur, Virus, learning, creativity, pressure, mental health, dreams, career, parents, success, passion, exams, hostel life, innovation, social message, student life, suicide prevention, inspiration, humor, emotional, love, rebellion, rote learning, self-discovery, friendship journey, youth, motivation, all is well, competition, academic stress, system critique, family expectations, engineering culture, coming-of-age, Indian cinema, feel-good, life lessons, excellence, happiness, transformation"
+  },
+  {
+    "rank": 67,
+    "movie": "Taare Zameen Par",
+    "tags": "education, dyslexia, childhood, teacher-student, family, empathy, creativity, art, school, learning disability, Ishaan, Ram Shankar Nikumbh, emotional, parenting, misunderstanding, imagination, loneliness, childhood trauma, self-worth, pressure, boarding school, bullying, compassion, special needs, mental health, artistic talent, childhood innocence, healing, acceptance, child psychology, supportive teacher, father-son, mother-son, Indian cinema, tears, inspiration, academic pressure, education system, kindness, confidence, transformation, learning differences, emotional drama, neurodiversity, hope, sensitivity, motivation, child development, social message"
+  },
+  {
+    "rank": 68,
+    "movie": "WALL·E",
+    "tags": "animation, sci-fi, robot, Earth, loneliness, love, environmentalism, future, pollution, waste, consumerism, space, Pixar, WALL-E, EVE, humanity, survival, climate warning, romance, adventure, dystopia, hope, artificial intelligence, garbage planet, silent storytelling, innocence, curiosity, plant, spaceship, Axiom, obesity satire, technology dependence, ecological collapse, friendship, emotion, visual storytelling, cute robots, restoration, human awakening, sustainability, corporate control, love story, space travel, family film, minimal dialogue, environmental message, charming, futuristic, redemption of Earth, animated masterpiece"
+  },
+  {
+    "rank": 69,
+    "movie": "The Lives of Others",
+    "tags": "political drama, surveillance, East Germany, Stasi, privacy, morality, conscience, art, writer, actress, oppression, state control, Cold War, Berlin, loyalty, betrayal, transformation, humanism, censorship, spying, guilt, sacrifice, authoritarianism, emotional restraint, moral awakening, secret police, fear, compassion, political repression, file, typewriter, intellectuals, artists, ideology, empathy, silent redemption, government control, psychological drama, resistance, dignity, loneliness, suspicion, cultural repression, historical drama, ethical choice, quiet heroism, German cinema, tragedy, redemption, freedom"
+  },
+  {
+    "rank": 70,
+    "movie": "Oldeuboi",
+    "tags": "revenge, mystery, psychological thriller, South Korean cinema, imprisonment, obsession, violence, trauma, Oh Dae-su, Lee Woo-jin, twist ending, vengeance, manipulation, incest, memory, hypnosis, guilt, punishment, conspiracy, captivity, isolation, dark, brutal, neo-noir, hammer fight, identity, moral horror, tragedy, revenge cycle, secrets, psychological torment, betrayal, shocking reveal, rage, loss, taboo, emotional devastation, mind games, investigation, violence spiral, tragic truth, cult classic, stylish, disturbing, Park Chan-wook, Korean thriller, dark mystery, fate, cruelty, unforgettable"
+  },
+  {
+    "rank": 71,
+    "movie": "Memento",
+    "tags": "psychological thriller, memory loss, revenge, nonlinear, amnesia, Leonard Shelby, mystery, investigation, tattoos, Polaroids, unreliable narrator, identity, grief, guilt, manipulation, truth, deception, trauma, murder, noir, fragmented narrative, short-term memory loss, obsession, self-deception, puzzle film, vengeance, mental condition, chronology, reverse storytelling, Natalie, Teddy, ambiguous ending, neo-noir, psychological puzzle, memory and identity, crime, loneliness, paranoia, subjective reality, Nolan, twist, moral ambiguity, investigation notes, trauma coping, unreliable perception, dark, clever, cerebral, cult, mystery thriller"
+  },
+  {
+    "rank": 72,
+    "movie": "Mononoke-hime",
+    "tags": "animation, fantasy, nature, environmentalism, war, spirits, curse, Ashitaka, San, Lady Eboshi, forest, wolves, gods, industrialization, conflict, humanity vs nature, Studio Ghibli, Miyazaki, moral ambiguity, compassion, violence, ecology, mythology, Japanese folklore, survival, peace, hatred, balance, courage, fantasy epic, transformation, demon boar, forest spirit, iron town, coexistence, human greed, spiritual, adventure, strong female characters, anti-war, sacrifice, healing, visual poetry, ancient Japan, environmental conflict, animated masterpiece, complexity, nature spirit, tragic beauty, hope"
+  },
+  {
+    "rank": 73,
+    "movie": "Once Upon a Time in America",
+    "tags": "crime, gangster, friendship, betrayal, memory, nostalgia, regret, New York, Jewish gangsters, prohibition, childhood, adulthood, violence, love, guilt, time, epic, Sergio Leone, Noodles, Max, Deborah, organized crime, lost innocence, ambition, brotherhood, trauma, opium, dreamlike, nonlinear, tragedy, criminal life, loyalty, rape, moral decay, power, money, corruption, childhood friends, destiny, betrayal by friend, loneliness, aging, regretful past, melancholic, gangster epic, American dream, violence and memory, emotional, classic crime, long-form cinema"
+  },
+  {
+    "rank": 74,
+    "movie": "Raiders of the Lost Ark",
+    "tags": "adventure, action, archaeology, Indiana Jones, treasure hunt, Nazis, Ark of the Covenant, Egypt, desert, hero, professor, artifact, mystery, romance, Marion Ravenwood, snakes, chase, booby traps, expedition, pulp adventure, 1930s, mythology, relic, danger, humor, courage, globe-trotting, Spielberg, Lucas, whip, fedora, ancient history, supernatural, classic adventure, villains, rescue, stunts, map, temple, iconic hero, suspense, action set pieces, historical fantasy, escapism, treasure, legendary artifact, blockbuster, archaeology fantasy, cinematic fun, cult classic"
+  },
+  {
+    "rank": 75,
+    "movie": "The Shining",
+    "tags": "horror, psychological horror, isolation, madness, hotel, Overlook Hotel, Jack Torrance, Wendy Torrance, Danny Torrance, shining, ghosts, writer, cabin fever, family trauma, abuse, supernatural, winter, axe, paranoia, dread, hallucination, haunted hotel, Kubrick, suspense, redrum, twins, maze, alcoholism, violence, domestic horror, psychic powers, slow burn, obsession, fear, insanity, claustrophobic, atmospheric, iconic horror, ambiguity, evil place, family breakdown, menace, psychological collapse, typewriter, room 237, snow, terror, classic cinema, unsettling, nightmare"
+  },
+  {
+    "rank": 76,
+    "movie": "Apocalypse Now",
+    "tags": "war, Vietnam War, madness, journey, darkness, Colonel Kurtz, Captain Willard, jungle, psychological, anti-war, imperialism, chaos, morality, horror, surreal, river journey, soldiers, violence, trauma, military, insanity, existential, darkness of humanity, Coppola, adaptation, Heart of Darkness, napalm, helicopter attack, moral decay, obsession, fear, power, command, myth, assassination mission, war horror, philosophical, colonialism, disillusionment, nightmare, brutality, hallucination, psychological descent, American war, spiritual crisis, iconic, epic, disturbing, cinematic masterpiece, moral abyss"
+  },
+  {
+    "rank": 77,
+    "movie": "Alien",
+    "tags": "sci-fi, horror, space, survival, alien, spaceship, isolation, monster, suspense, body horror, crew, fear, corporate greed, creature feature, claustrophobic, Ripley, Nostromo, xenomorph, facehugger, chestburster, android, Ash, Weyland-Yutani, deep space, distress signal, unknown planet, survival horror, dark corridors, predator, paranoia, science fiction horror, female survivor, tension, creature design, H.R. Giger, cosmic horror, infection, contamination, crew conflict, betrayal, space truckers, fear of unknown, atmospheric, suspense cinema, monster movie, iconic alien, survival instinct, nightmare, classic"
+  },
+  {
+    "rank": 78,
+    "movie": "Anand",
+    "tags": "friendship, life, death, terminal illness, optimism, doctor-patient, Anand, Bhaskar, Indian cinema, emotional, tragedy, joy, mortality, humor, compassion, hope, human connection, illness, philosophy, living fully, grief, friendship bond, positivity, medical drama, bittersweet, empathy, warmth, classic Bollywood, Rajesh Khanna, Amitabh Bachchan, tears, life lessons, acceptance, mortality awareness, laughter, hospital, diary, memory, selflessness, emotional healing, human spirit, sadness, inspiration, legacy, poetic, melodrama, kindness, unforgettable character, heartwarming, tearjerker"
+  },
+  {
+    "rank": 79,
+    "movie": "Tengoku to jigoku",
+    "tags": "crime, thriller, kidnapping, moral dilemma, police procedural, class divide, ransom, Kurosawa, Japan, businessman, justice, investigation, suspense, ethics, social inequality, corporate world, high and low, detective, train sequence, poverty, wealth, revenge, tension, black-and-white, moral pressure, family, mistaken kidnapping, duty, sacrifice, crime drama, urban Japan, psychological tension, procedural realism, conscience, decision-making, class resentment, intense, surveillance, police work, negotiation, capitalism, moral test, social critique, classic cinema, hostage, underworld, guilt, responsibility, masterwork, noir"
+  },
+  {
+    "rank": 80,
+    "movie": "Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb",
+    "tags": "satire, black comedy, nuclear war, Cold War, politics, military, absurdism, Kubrick, Dr. Strangelove, apocalypse, paranoia, comedy, war room, bomber, generals, doomsday, nuclear bomb, political satire, anti-war, bureaucracy, masculinity, madness, arms race, USA, Soviet Union, fear, miscommunication, dark humor, absurd, power, military incompetence, global destruction, hysteria, President, conspiracy, mutually assured destruction, satire classic, iconic, bleak comedy, ideological madness, nuclear anxiety, war satire, apocalypse comedy, political absurdity, human folly, crisis, command failure, cult classic, classic cinema, terrifying comedy"
+  },
+  {
+    "rank": 81,
+    "movie": "Witness for the Prosecution",
+    "tags": "courtroom, legal drama, mystery, murder trial, witness, deception, twist ending, lawyer, justice, crime, suspense, Agatha Christie, trial, evidence, marriage, betrayal, alibi, barrister, London, courtroom drama, clever plot, manipulation, cross-examination, surprise reveal, classic cinema, black-and-white, legal thriller, accusation, innocence, guilt, testimony, lies, performance, defense attorney, wife, moral ambiguity, investigation, old Hollywood, witty dialogue, crime mystery, judge, jury, shocking twist, legal strategy, deception within deception, dramatic reveal, suspenseful, classic thriller, theatrical, intelligent"
+  },
+  {
+    "rank": 82,
+    "movie": "Paths of Glory",
+    "tags": "war, World War I, anti-war, military injustice, courage, soldiers, trench warfare, sacrifice, authority, court martial, Kubrick, Colonel Dax, French army, execution, cowardice accusation, hierarchy, corruption, honor, moral outrage, battlefield, injustice, leadership, bureaucracy, cruelty, class divide, military politics, black-and-white, tragedy, futility of war, power abuse, human dignity, fear, patriotism critique, command failure, ethical conflict, legal drama, survival, compassion, officer, sacrifice of soldiers, institutional cruelty, war crime, bleak, powerful, classic cinema, moral courage, injustice system, emotional, anti-authoritarian, masterpiece"
+  },
+  {
+    "rank": 83,
+    "movie": "Rear Window",
+    "tags": "mystery, thriller, suspense, voyeurism, Hitchcock, apartment, photographer, murder suspicion, neighbors, observation, paranoia, romance, investigation, confinement, wheelchair, Grace Kelly, James Stewart, urban life, courtyard, tension, crime, suspicion, domestic mystery, visual storytelling, limited location, peeping, ethics, danger, suspense cinema, classic thriller, amateur detective, relationship, isolation, summer heat, murder mystery, manipulation of gaze, clues, camera, curiosity, fear, hidden crime, classic Hollywood, iconic, psychological tension, neighborhood, stalking, reveal, suspenseful, elegant, timeless"
+  },
+  {
+    "rank": 84,
+    "movie": "Sunset Blvd.",
+    "tags": "Hollywood, noir, fame, obsession, aging, silent film, tragedy, Norma Desmond, screenwriter, celebrity, delusion, glamour, decay, betrayal, ambition, murder, narration, dark comedy, classic cinema, film industry, stardom, loneliness, old Hollywood, black-and-white, fallen star, madness, manipulation, writer, mansion, fame addiction, illusion, exploitation, comeback, cynicism, Hollywood satire, toxic relationship, desperation, memory, show business, final scene, iconic dialogue, obsession with youth, tragedy of fame, faded glory, psychological drama, noir classic, celebrity culture, self-delusion, gothic Hollywood, masterpiece"
+  },
+  {
+    "rank": 85,
+    "movie": "The Great Dictator",
+    "tags": "satire, comedy, anti-fascism, Chaplin, dictator, World War II, political satire, barber, tyranny, humanity, speech, democracy, freedom, fascism, Hitler parody, war, slapstick, social critique, Jewish barber, oppression, hope, courage, resistance, propaganda, absurdity, power, human rights, classic cinema, comedy-drama, final monologue, moral courage, peace, dictatorship, dignity, anti-war, black-and-white, satire classic, political courage, persecution, tolerance, compassion, equality, authoritarianism, timeless message, historical comedy, humanity over hate, emotional speech, brave cinema, freedom speech, iconic"
+  },
+  {
+    "rank": 86,
+    "movie": "1917",
+    "tags": "war, World War I, soldiers, mission, survival, one-shot style, trenches, courage, brotherhood, urgency, battlefield, message delivery, sacrifice, realism, tension, journey, Schofield, Blake, enemy lines, time pressure, cinematography, chaos, duty, friendship, death, fear, mud, no man's land, military, historical drama, immersive, technical achievement, danger, battlefield horror, loyalty, emotional, rescue mission, war trauma, determination, explosions, night sequence, devastation, humanity, leadership, grief, suspense, epic war, visual spectacle, anti-war, heroic endurance"
+  },
+  {
+    "rank": 87,
+    "movie": "Tumbbad",
+    "tags": "horror, fantasy, greed, mythology, India, treasure, curse, Hastar, village, rain, family, obsession, dark fairy tale, folklore, atmosphere, supernatural, wealth, colonial India, moral decay, generational curse, father-son, ambition, monster, womb, hidden treasure, gothic, Indian horror, visual horror, eerie, temptation, poverty, madness, inheritance, cautionary tale, mystery, dread, atmospheric cinema, mythic horror, greed destroys, folklore horror, haunting, dark visuals, period film, obsession with gold, moral lesson, cult Indian cinema, unsettling, fantasy horror, tragedy, masterpiece"
+  },
+  {
+    "rank": 88,
+    "movie": "Andhadhun",
+    "tags": "thriller, black comedy, crime, blind pianist, murder, deception, suspense, twist, India, piano, Akash, Simi, lies, manipulation, dark humor, mystery, moral ambiguity, noir, fake blindness, crime cover-up, police, organ trafficking, romance, betrayal, investigation, cat-and-mouse, clever plot, unpredictable, murder mystery, irony, deception spiral, tension, black comedy thriller, Bollywood, suspenseful, greed, secrets, identity, performance, blind act, shocking turns, dark comedy, morality, survival, crime thriller, clever ending, ambiguity, wicked humor, stylish, cult"
+  },
+  {
+    "rank": 89,
+    "movie": "Drishyam",
+    "tags": "thriller, crime, family, cover-up, father, protection, murder, police, investigation, suspense, Georgekutty, alibi, deception, justice, morality, Indian cinema, family survival, intelligence, planning, fear, guilt, daughter, mother, police pressure, evidence, mystery, crime drama, twist, ordinary man, parental love, sacrifice, memory, cinema knowledge, clever plan, interrogation, abuse of power, moral ambiguity, hidden truth, loyalty, courtroom-free thriller, psychological tension, domestic drama, family bond, survival strategy, cat-and-mouse, emotional, brilliant plot, truth manipulation, Malayalam cinema, gripping"
+  },
+  {
+    "rank": 90,
+    "movie": "Jagten",
+    "tags": "drama, false accusation, social ostracism, Denmark, teacher, child abuse allegation, innocence, community, morality, paranoia, reputation, friendship, suspicion, injustice, psychological drama, Mads Mikkelsen, Lucas, small town, mob mentality, trust, trauma, social judgment, family, loneliness, persecution, fear, lie, childhood misunderstanding, ruined life, emotional, human cruelty, guilt, doubt, broken community, moral panic, isolation, tension, dignity, realism, heartbreaking, accusation, consequences, social drama, injustice system, psychological pressure, friendship collapse, Danish cinema, powerful, uncomfortable, tragic"
+  },
+  {
+    "rank": 91,
+    "movie": "Jodaeiye Nader az Simin",
+    "tags": "family drama, divorce, Iran, morality, class conflict, truth, lies, justice, marriage, parenthood, caregiving, legal drama, Nader, Simin, Termeh, Razieh, elderly father, Alzheimer’s, social pressure, religion, responsibility, guilt, ambiguity, courtroom, ethical dilemma, realism, domestic conflict, class divide, Iranian cinema, emotional, human complexity, pride, custody, social realism, tension, accident, accusation, sacrifice, honesty, cultural conflict, family breakdown, moral grey, psychological drama, justice system, empathy, conflict, truth and perspective, powerful, intimate, masterpiece"
+  },
+  {
+    "rank": 92,
+    "movie": "Incendies",
+    "tags": "mystery, war, family secrets, twins, mother, identity, trauma, Middle East, civil war, investigation, tragedy, revenge, grief, truth, Denis Villeneuve, Nawal, Jeanne, Simon, shocking reveal, past and present, political violence, rape, prison, motherhood, lost child, generational trauma, letters, journey, emotional devastation, moral horror, family history, violence, memory, confession, fate, heartbreaking, war trauma, identity search, puzzle narrative, dark mystery, human suffering, forgiveness, secrets, devastating twist, powerful drama, haunting, brutal, reconciliation, tragedy, masterpiece"
+  },
+  {
+    "rank": 93,
+    "movie": "Miracle in Cell No.7",
+    "tags": "father-daughter, prison, injustice, disability, emotional, family, love, sacrifice, courtroom, wrongful conviction, Turkey, child, tears, innocence, friendship, prison inmates, compassion, tragedy, hope, memory, execution, mental disability, daughter love, protection, kindness, found family, social injustice, legal system, melodrama, heartbreaking, separation, reunion, parental love, prisoners, mercy, emotional drama, innocence punished, sacrifice for child, touching, sentimental, grief, loyalty, family bond, unjust trial, human kindness, resilience, tearjerker, forgiveness, emotional ending, love beyond walls"
+  },
+  {
+    "rank": 94,
+    "movie": "Babam ve Oglum",
+    "tags": "family, father-son, Turkey, emotional, reconciliation, grief, illness, homecoming, childhood, political trauma, love, regret, forgiveness, generational conflict, family drama, rural life, sacrifice, memories, parenting, grandfather, son, death, nostalgia, separation, healing, tears, compassion, 1980 coup, political prisoner, broken family, acceptance, warmth, melodrama, fatherhood, childhood innocence, emotional reunion, family bonds, bittersweet, human connection, Turkish cinema, illness drama, regretful past, home, legacy, vulnerability, reconciliation with father, heartbreak, tenderness, life lessons, tearjerker"
+  },
+  {
+    "rank": 95,
+    "movie": "Inglourious Basterds",
+    "tags": "war, World War II, revenge, Nazis, Tarantino, alternate history, violence, cinema, Shosanna, Hans Landa, Aldo Raine, Basterds, undercover, assassination plot, tension, dark comedy, dialogue, revenge fantasy, resistance, Jewish vengeance, occupation, France, film premiere, propaganda, betrayal, suspense, multilingual, brutality, stylized violence, historical revisionism, revenge cinema, spy thriller, villain, identity, deception, tavern scene, scalping, justice, fire, movie theater, cinema as weapon, tension-building, sharp dialogue, war thriller, anti-Nazi, cult, bold, cinematic, catharsis"
+  },
+  {
+    "rank": 96,
+    "movie": "Eternal Sunshine of the Spotless Mind",
+    "tags": "romance, memory, heartbreak, love, sci-fi, breakup, Joel, Clementine, memory erasure, regret, identity, relationship, emotional, surreal, nonlinear, grief, longing, second chance, intimacy, sadness, nostalgia, Michel Gondry, Charlie Kaufman, dreams, subconscious, relationship flaws, acceptance, vulnerability, forgetting, fate, emotional healing, melancholy, romance drama, psychological, memory fragments, love and pain, imperfect love, loneliness, connection, quirky, bittersweet, mind, loss, desire to forget, rediscovery, poetic, tender, cult romance, existential, beautiful sadness"
+  },
+  {
+    "rank": 97,
+    "movie": "Amélie",
+    "tags": "romance, whimsy, Paris, kindness, imagination, loneliness, Amélie Poulain, comedy, fantasy, love, quirky, visual style, happiness, small acts, connection, introvert, mystery, nostalgia, charm, French cinema, Montmartre, optimism, creativity, magical realism, fate, observation, shy romance, emotional healing, playfulness, color, self-discovery, kindness to strangers, innocence, joy, loneliness cure, romantic comedy, poetic, eccentric characters, treasure hunt, photobooth, compassion, dreamlike, feel-good, whimsical romance, human connection, tenderness, charm, artful, hopeful, delightful"
+  },
+  {
+    "rank": 98,
+    "movie": "Snatch",
+    "tags": "crime, comedy, gangster, heist, boxing, diamond, London, dark comedy, Guy Ritchie, fast-paced, ensemble, chaos, criminals, Brad Pitt, Turkish, Tommy, Mickey, Brick Top, underworld, illegal boxing, stolen diamond, gambling, violence, scams, witty dialogue, nonlinear, stylish, accents, absurdity, chase, betrayal, money, crime caper, black humor, street crime, deception, irony, British cinema, cult, frantic editing, eccentric characters, criminal schemes, revenge, double-cross, humor, action, clever, chaotic, memorable, stylish crime"
+  },
+  {
+    "rank": 99,
+    "movie": "Requiem for a Dream",
+    "tags": "addiction, drugs, psychological drama, tragedy, obsession, dreams, downfall, heroin, diet pills, loneliness, Sara Goldfarb, Harry, Marion, Tyrone, desperation, mental illness, hallucination, exploitation, body horror, emotional devastation, youth, ambition, television, fame obsession, dependency, withdrawal, crime, poverty, broken dreams, spiral, trauma, disturbing, visual intensity, Aronofsky, montage, despair, self-destruction, love, friendship, survival, prostitution, prison, hospital, bleak, cautionary tale, addiction horror, anxiety, tragic ending, unforgettable, nightmare"
+  },
+  {
+    "rank": 100,
+    "movie": "American Beauty",
+    "tags": "suburbia, midlife crisis, family, beauty, desire, repression, loneliness, satire, marriage, obsession, Lester Burnham, Carolyn, Jane, Angela, Ricky, conformity, consumerism, American dream, identity, freedom, rebellion, sexuality, depression, hypocrisy, voyeurism, emotional emptiness, dark comedy, tragedy, roses, plastic bag, self-discovery, alienation, suburban decay, materialism, control, youth, fantasy, dysfunction, social critique, beauty in ordinary, existential, masculinity, repression, secrets, murder, irony, psychological drama, domestic drama, controversial, 1990s cinema"
+  },
+  {
+    "rank": 101,
+    "movie": "Good Will Hunting",
+    "tags": "drama, genius, therapy, friendship, trauma, mathematics, working class, Boston, Will Hunting, Sean Maguire, mentorship, healing, love, self-worth, grief, abuse, emotional, intelligence, identity, fear of intimacy, loyalty, best friends, Skylar, Chuckie, university, janitor, potential, counseling, vulnerability, breakthrough, it’s not your fault, class divide, personal growth, forgiveness, trust, romance, emotional wounds, life choices, talent, self-sabotage, compassion, father figure, transformation, authenticity, moving on, inspirational, heartfelt, character study, redemption, hope"
+  },
+  {
+    "rank": 102,
+    "movie": "Bacheha-Ye aseman",
+    "tags": "childhood, poverty, siblings, Iran, family, innocence, shoes, brother-sister, Ali, Zahra, compassion, responsibility, school, sacrifice, love, hardship, realism, emotional, kindness, childhood anxiety, simple story, working class, dignity, running, race, hope, social realism, family bond, economic struggle, empathy, humility, everyday life, Iranian cinema, moral purity, resilience, sacrifice for sibling, childhood world, gentle drama, tears, innocence preserved, small dreams, poverty and dignity, parental love, sincerity, heartfelt, minimalism, humanism, emotional ending, tender, classic"
+  },
+  {
+    "rank": 103,
+    "movie": "Toy Story",
+    "tags": "animation, Pixar, toys, friendship, childhood, Woody, Buzz Lightyear, jealousy, adventure, identity, imagination, family, comedy, Andy, loyalty, rivalry, teamwork, growing up, playtime, belonging, fear of replacement, self-discovery, buddy comedy, action, heartwarming, first CGI feature, innovation, kid-friendly, emotional, toy world, rescue mission, Sid, transformation, acceptance, leadership, courage, nostalgia, fantasy, humor, friendship journey, classic animation, creativity, childhood memory, teamwork, insecurities, found family, fun, colorful, animated classic, timeless"
+  },
+  {
+    "rank": 104,
+    "movie": "Braveheart",
+    "tags": "war, freedom, Scotland, rebellion, William Wallace, revenge, love, sacrifice, patriotism, medieval, battle, leadership, heroism, oppression, England, independence, betrayal, courage, epic, tragedy, romance, sword fighting, resistance, tyranny, loyalty, national identity, martyrdom, political intrigue, clan, battlefield, emotional, Mel Gibson, historical drama, liberation, honor, defiance, freedom speech, brutal violence, injustice, warrior, noble sacrifice, homeland, legacy, uprising, epic battle, heroic myth, passion, conquest, resistance leader, iconic"
+  },
+  {
+    "rank": 105,
+    "movie": "Reservoir Dogs",
+    "tags": "crime, heist, betrayal, Tarantino, gangsters, violence, undercover cop, robbery, nonlinear, dialogue, suspicion, Mr White, Mr Orange, Mr Blonde, Mr Pink, warehouse, blood, torture, loyalty, paranoia, crime gone wrong, black comedy, indie film, stylish, criminals, mistrust, deception, Mexican standoff, cult classic, sharp dialogue, violence and humor, police, identity, code names, tension, betrayal within gang, minimal setting, crime thriller, moral ambiguity, brutal, gritty, suspense, 90s cinema, ensemble, botched heist, chaos, iconic soundtrack, low-budget classic, edgy"
+  },
+  {
+    "rank": 106,
+    "movie": "Full Metal Jacket",
+    "tags": "war, Vietnam War, military training, boot camp, dehumanization, soldiers, anti-war, Kubrick, Joker, Private Pyle, Hartman, violence, trauma, madness, masculinity, discipline, psychological breakdown, Marines, combat, sniper, war horror, military culture, brutality, identity, indoctrination, fear, death, black comedy, moral ambiguity, journalism, battlefield, boot camp abuse, mental collapse, duality, war machine, loss of innocence, aggression, propaganda, chaos, urban warfare, Tet Offensive, cynicism, psychological drama, institutional violence, survival, disturbing, classic war film, dark satire, human cost"
+  },
+  {
+    "rank": 107,
+    "movie": "Idi i smotri",
+    "tags": "war, anti-war, World War II, Soviet cinema, Belarus, Nazi occupation, childhood, trauma, horror, survival, genocide, innocence lost, Florya, brutality, civilians, massacre, psychological horror, devastation, grief, madness, violence, fear, realism, nightmare, village burning, human suffering, war crime, resistance, partisans, despair, emotional devastation, historical horror, anti-fascist, loss, terror, coming-of-age, moral horror, sound design, haunting, bleak, unforgettable, innocence destroyed, atrocity, chaos, trauma cinema, human cost of war, devastating, masterpiece, powerful, disturbing"
+  },
+  {
+    "rank": 108,
+    "movie": "Aliens",
+    "tags": "sci-fi, action, horror, space, aliens, Ripley, xenomorphs, survival, marines, colony, Newt, motherhood, rescue, James Cameron, sequel, creature feature, combat, corporate greed, Weyland-Yutani, queen alien, power loader, fear, teamwork, military sci-fi, tension, monster, space horror, female hero, protection, trauma, hive, action thriller, courage, survival instinct, found family, betrayal, android, Bishop, colonial marines, explosive action, suspense, alien infestation, motherhood theme, hostile planet, classic sci-fi, iconic, final battle, badass heroine, sci-fi horror, blockbuster"
+  },
+  {
+    "rank": 109,
+    "movie": "Amadeus",
+    "tags": "music, Mozart, Salieri, jealousy, genius, obsession, classical music, biography, drama, Vienna, composer, rivalry, envy, art, talent, mediocrity, ambition, guilt, confession, opera, creativity, divine gift, madness, death, patronage, court, costume drama, period film, tragedy, humor, artistic genius, resentment, faith, God, revenge, legacy, music history, psychological drama, historical fiction, downfall, recognition, artistic immortality, dramatic irony, emotional, symphony, requiem, rivalry with genius, envy destroys, masterpiece, lavish"
+  },
+  {
+    "rank": 110,
+    "movie": "Scarface",
+    "tags": "crime, gangster, drugs, ambition, power, Tony Montana, Miami, cocaine, rise and fall, violence, greed, corruption, immigrant story, empire, betrayal, excess, money, paranoia, organized crime, cartel, revenge, family, sister, moral decay, American dream, criminal empire, mansion, gunfight, loyalty, ego, downfall, 1980s, cult classic, brutal, flashy, power hunger, underworld, addiction to power, status, violence spiral, crime drama, antihero, iconic dialogue, excess culture, betrayal, ambition destroys, survival, Cuban immigrant, final shootout, legendary"
+  },
+  {
+    "rank": 111,
+    "movie": "Star Wars: Episode VI - Return of the Jedi",
+    "tags": "sci-fi, space, adventure, Star Wars, Jedi, Sith, redemption, Luke Skywalker, Darth Vader, Emperor, Leia, Han Solo, rebellion, empire, Death Star, Endor, Ewoks, lightsaber, force, father-son, good vs evil, final battle, space opera, destiny, family, sacrifice, rescue, Jabba, heroism, forgiveness, dark side, rebellion victory, emotional, mythology, fantasy, galactic war, friendship, courage, redemption arc, iconic, throne room, forest moon, epic conclusion, hope, legacy, space battle, final duel, classic trilogy, adventure cinema"
+  },
+  {
+    "rank": 112,
+    "movie": "Das Boot",
+    "tags": "war, submarine, World War II, German navy, claustrophobic, survival, tension, crew, U-boat, Atlantic, fear, anti-war, realism, pressure, depth charges, military, ocean, danger, command, exhaustion, brotherhood, psychological stress, isolation, machinery, war horror, duty, uncertainty, naval warfare, suspense, cramped space, leadership, terror, morality, young soldiers, boredom, panic, historical drama, German cinema, technical realism, underwater, fatalism, desperation, patriotism critique, human cost, intense, immersive, bleak, survival drama, classic war film, submarine thriller"
+  },
+  {
+    "rank": 113,
+    "movie": "Taxi Driver",
+    "tags": "psychological drama, loneliness, alienation, New York, Travis Bickle, taxi, vigilante, obsession, urban decay, violence, mental illness, isolation, insomnia, paranoia, masculinity, Scorsese, crime, antihero, moral decay, politics, prostitution, Iris, Betsy, rage, social disconnection, Vietnam veteran, trauma, madness, existential, gritty, neo-noir, character study, depression, delusion, gun culture, self-destruction, city at night, obsession with purity, alienated man, vigilante fantasy, violent climax, iconic, disturbing, 1970s cinema, loneliness in city, psychological collapse, classic, dark, unforgettable"
+  },
+  {
+    "rank": 114,
+    "movie": "The Sting",
+    "tags": "crime, con artist, heist, revenge, friendship, gambling, deception, Chicago, 1930s, confidence trick, Paul Newman, Robert Redford, ragtime, stylish, comedy, caper, underworld, scam, planning, teamwork, clever plot, revenge scheme, mob boss, horse racing, fake betting parlor, charm, twist, misdirection, old-fashioned, buddy film, elegance, criminals, suspense, playful, classic Hollywood, con game, grifters, double-cross, mentor, student, entertainment, lighthearted crime, clever ending, period film, deception art, revenge for friend, fun, iconic, Oscar winner, classic"
+  },
+  {
+    "rank": 115,
+    "movie": "A Clockwork Orange",
+    "tags": "dystopia, violence, free will, crime, psychology, Kubrick, Alex DeLarge, ultraviolence, satire, morality, state control, conditioning, youth violence, Beethoven, punishment, rehabilitation, disturbing, dark comedy, social critique, authoritarianism, antihero, gang, future society, moral philosophy, identity, manipulation, prison, Ludovico technique, ethics, madness, sexual violence, rebellion, control, human nature, controversial, stylized, psychological horror, political satire, individual freedom, dehumanization, cult classic, transgression, social decay, moral ambiguity, shocking, dystopian cinema, disturbing classic, provocation, iconic"
+  },
+  {
+    "rank": 116,
+    "movie": "2001: A Space Odyssey",
+    "tags": "sci-fi, space, evolution, artificial intelligence, HAL 9000, monolith, astronauts, Jupiter, mystery, philosophy, humanity, technology, Kubrick, visual spectacle, cosmic, silence, classical music, existential, space travel, human evolution, future, machine intelligence, isolation, star gate, transcendence, dawn of man, ape, spaceship, computer, consciousness, unknown, cosmic horror, science fiction classic, slow cinema, symbolism, technology anxiety, survival, deep space, visual poetry, ambiguity, space exploration, metaphysical, alien intelligence, cinematic masterpiece, evolution of consciousness, mysterious, epic, timeless, visionary"
+  },
+  {
+    "rank": 117,
+    "movie": "Per qualche dollaro in più",
+    "tags": "western, spaghetti western, bounty hunters, revenge, duel, gunslinger, Clint Eastwood, Lee Van Cleef, outlaw, treasure, violence, desert, honor, rivalry, partnership, crime, justice, music box, Indio, frontier, lawlessness, antihero, shootout, betrayal, bounty, classic western, Sergio Leone, Ennio Morricone, tension, style, revenge motive, lone gunman, greed, bandits, suspense, moral ambiguity, gunfight, iconic music, gritty, adventure, outlaw gang, strategy, western myth, vengeance, deadly duel, cinema classic, rugged, stylish, violent, cult"
+  },
+  {
+    "rank": 118,
+    "movie": "Lawrence of Arabia",
+    "tags": "epic, historical drama, desert, war, T.E. Lawrence, Arabia, World War I, identity, imperialism, leadership, adventure, politics, British Empire, Arab revolt, heroism, ambition, colonialism, self-discovery, betrayal, glory, isolation, masculinity, nationalism, tribes, military strategy, desert journey, spectacle, psychological drama, mythmaking, power, moral ambiguity, cultural conflict, sweeping cinematography, historical epic, courage, transformation, fame, disillusionment, destiny, leadership burden, vast landscapes, classic cinema, war epic, identity crisis, legend, diplomacy, rebellion, iconic, masterpiece, cinematic grandeur"
+  },
+  {
+    "rank": 119,
+    "movie": "The Apartment",
+    "tags": "romantic comedy, drama, office, loneliness, corporate culture, love, Billy Wilder, C.C. Baxter, Fran Kubelik, apartment, affair, workplace, ambition, heartbreak, comedy-drama, morality, kindness, depression, exploitation, Christmas, New York, elevator operator, boss, promotion, romance, dignity, emotional, cynicism, compassion, suicide attempt, self-respect, corporate ladder, social satire, bittersweet, adult romance, honesty, vulnerability, toxic workplace, sacrifice, human connection, classic Hollywood, witty dialogue, melancholy, love triangle, transformation, tenderness, hopeful ending, classic cinema, emotional comedy, masterpiece"
+  },
+  {
+    "rank": 120,
+    "movie": "North by Northwest",
+    "tags": "thriller, espionage, mistaken identity, Hitchcock, chase, suspense, Cary Grant, spy, action, romance, adventure, Mount Rushmore, crop duster, innocent man, conspiracy, Cold War, stylish, danger, deception, mistaken spy, train, glamour, mystery, classic Hollywood, suspense cinema, iconic scene, road movie, identity confusion, espionage thriller, villains, escape, wit, elegant, romance thriller, government secrets, false accusation, charm, action set pieces, cat-and-mouse, survival, kidnapping, classic thriller, cinematic fun, intrigue, tension, adventure cinema, mistaken man, stylish suspense, iconic, masterpiece"
+  },
+  {
+    "rank": 121,
+    "movie": "Vertigo",
+    "tags": "psychological thriller, obsession, romance, mystery, Hitchcock, San Francisco, fear of heights, identity, deception, grief, Scottie, Madeleine, Judy, trauma, manipulation, love, illusion, madness, voyeurism, acrophobia, death, transformation, haunting, noir, romantic obsession, color symbolism, dream sequence, suspense, investigation, mystery woman, psychological drama, doomed romance, control, fantasy, guilt, tragic love, classic cinema, iconic score, identity reconstruction, emotional disturbance, deception reveal, melancholy, obsession destroys, visual style, mystery thriller, psychological collapse, masterpiece, timeless, unsettling"
+  },
+  {
+    "rank": 122,
+    "movie": "Singin' in the Rain",
+    "tags": "musical, comedy, romance, Hollywood, silent film, sound cinema, dancing, singing, Gene Kelly, Debbie Reynolds, show business, fame, transition, optimism, joy, classic Hollywood, movie industry, choreography, romance comedy, tap dance, studio system, Lina Lamont, Don Lockwood, Kathy Selden, Cosmo Brown, performance, creativity, entertainment, colorful, feel-good, iconic song, rain dance, backstage comedy, celebrity, voice dubbing, cinema history, charm, laughter, music, friendship, showbiz satire, classic musical, joyful cinema, romance, dancing in rain, timeless, energetic, glamorous, delightful, masterpiece"
+  },
+  {
+    "rank": 123,
+    "movie": "Ikiru",
+    "tags": "drama, mortality, bureaucracy, life meaning, cancer, Japan, Watanabe, existential, humanism, legacy, sadness, public service, loneliness, death, purpose, office worker, park, compassion, awakening, regret, aging, social critique, Kurosawa, black-and-white, emotional, self-reflection, meaning of life, quiet drama, dignity, transformation, civic duty, wasted life, humanity, melancholy, bureaucracy critique, illness, final days, redemption, spiritual awakening, simple good deed, legacy through action, introspection, powerful, classic cinema, existential drama, bittersweet, emotional ending, timeless, masterpiece"
+  },
+  {
+    "rank": 124,
+    "movie": "Ladri di biciclette",
+    "tags": "neorealism, poverty, father-son, bicycle, unemployment, Italy, Rome, postwar, survival, dignity, desperation, family, social realism, working class, theft, search, hardship, injustice, compassion, humanism, everyday life, economic struggle, fatherhood, shame, moral dilemma, innocence, child perspective, Italian cinema, realism, emotional, hope, despair, social critique, job, posters, city streets, simple story, dignity under poverty, loss, parental love, classic cinema, heartbreaking, post-war society, vulnerability, ethical crisis, human suffering, neorealist masterpiece, ordinary people, timeless, tragedy"
+  },
+  {
+    "rank": 125,
+    "movie": "Double Indemnity",
+    "tags": "film noir, crime, murder, insurance fraud, femme fatale, betrayal, desire, greed, suspense, Barbara Stanwyck, Fred MacMurray, Billy Wilder, adultery, deception, investigation, noir classic, fatalism, voiceover, confession, darkness, moral decay, seduction, conspiracy, guilt, murder plot, train, insurance salesman, Phyllis Dietrichson, Walter Neff, Keyes, cynicism, shadowy, crime thriller, lust, manipulation, betrayal by lover, classic Hollywood, clever dialogue, tension, inevitable doom, black-and-white, crime plan, paranoia, downfall, corruption, noir atmosphere, murder mystery, iconic, masterpiece"
+  },
+  {
+    "rank": 126,
+    "movie": "Citizen Kane",
+    "tags": "drama, power, wealth, media, ambition, loneliness, Charles Foster Kane, Rosebud, newspaper, mystery, memory, American dream, corruption, politics, ego, childhood, loss, fame, legacy, investigation, journalism, flashbacks, mansion, isolation, emotional emptiness, Orson Welles, classic cinema, innovation, deep focus, narrative puzzle, biography, tragedy, influence, control, love lost, marriage, capitalism, empire, identity, regret, myth, public image, private pain, materialism, downfall, storytelling, cinematic masterpiece, character study, timeless, greatest film"
+  },
+  {
+    "rank": 127,
+    "movie": "M - Eine Stadt sucht einen Mörder",
+    "tags": "crime, thriller, serial killer, Germany, child murderer, manhunt, paranoia, society, justice, mob, police, underworld, Fritz Lang, Peter Lorre, fear, urban panic, morality, legal justice, vigilante justice, psychological, sound cinema, whistling, suspense, guilt, trial, social hysteria, criminal psychology, expressionism, black-and-white, classic cinema, police procedural, fear in city, child safety, moral ambiguity, crime classic, societal breakdown, hunt, confession, madness, justice debate, crowd, terror, haunting, early sound film, German cinema, thriller masterpiece, disturbing, timeless, iconic"
+  },
+  {
+    "rank": 128,
+    "movie": "Metropolis",
+    "tags": "sci-fi, silent film, dystopia, class struggle, workers, city, robot, future, industrialization, expressionism, capitalism, machine, social inequality, Maria, Freder, technology, revolution, oppression, visual spectacle, German cinema, Fritz Lang, android, labor, elite, underground, architecture, futurism, exploitation, human heart, political allegory, silent classic, science fiction pioneer, workers revolt, machine age, dehumanization, social critique, visionary, iconic robot, class divide, industrial society, expressionist style, moral message, cinematic innovation, classic cinema, dystopian future, spectacle, prophecy, timeless, masterpiece, silent sci-fi"
+  },
+  {
+    "rank": 129,
+    "movie": "The Kid",
+    "tags": "silent film, comedy, drama, Chaplin, Tramp, child, poverty, found family, father-son, adoption, kindness, survival, emotional, slapstick, orphan, love, hardship, social services, compassion, childhood, family bond, tears, humor, dignity, working class, classic cinema, innocence, responsibility, parenthood, street life, sentimental, generosity, humanism, loneliness, separation, reunion, sacrifice, warmth, hope, social inequality, touching, physical comedy, classic Hollywood, emotional comedy, resilience, heartfelt, underdog, timeless, family drama, silent classic"
+  },
+  {
+    "rank": 130,
+    "movie": "Chhichhore",
+    "tags": "college, friendship, life lessons, failure, success, mental health, suicide prevention, youth, nostalgia, hostel life, competition, India, comedy-drama, father-son, resilience, hope, college memories, underdogs, sports, emotional, pressure, academic stress, acceptance, self-worth, friendship group, campus life, motivation, engineering college, fun, heartbreak, family, second chance, teamwork, failure is okay, parenting, student pressure, Indian cinema, coming-of-age, humor, life journey, emotional healing, social message, youth culture, exam pressure, reunion, optimism, inspiration, personal growth, feel-good, relatable"
+  },
+  {
+    "rank": 131,
+    "movie": "Uri: The Surgical Strike",
+    "tags": "war, military, India, surgical strike, patriotism, army, action, revenge, terrorism, mission, special forces, courage, nationalism, battlefield, soldiers, strategy, sacrifice, duty, Vicky Kaushal, Major Vihaan, Kashmir, border, combat, operation, commandos, intelligence, grief, brotherhood, honor, leadership, tactical action, national security, emotional, how’s the josh, Indian army, counterterrorism, rescue, loss, family, high stakes, patriotic drama, military planning, infiltration, heroism, discipline, teamwork, action thriller, real events inspired, triumph, pride"
+  },
+  {
+    "rank": 132,
+    "movie": "K.G.F: Chapter 1",
+    "tags": "action, gangster, gold mines, Rocky, power, ambition, revenge, underworld, Kolar Gold Fields, violence, rise to power, mother-son, poverty, destiny, Indian cinema, Kannada cinema, mass action, heroism, oppression, slavery, rebellion, crime, empire, grit, survival, childhood trauma, promise, ambition from poverty, stylish action, larger-than-life, villain, brutality, gold, labor exploitation, mythology, fear, charisma, power struggle, emotional backstory, dark world, rebellion leader, revenge drama, cult, punch dialogues, intense, action spectacle, rise of hero, dominance, gritty drama, mass entertainer"
+  },
+  {
+    "rank": 133,
+    "movie": "Green Book",
+    "tags": "friendship, racism, road trip, music, pianist, America, 1960s, Don Shirley, Tony Lip, segregation, civil rights, comedy-drama, unlikely bond, class divide, prejudice, dignity, travel, South, emotional, human connection, identity, cultural differences, transformation, compassion, tolerance, driver, concert tour, discrimination, food, letters, family, humor, healing, social message, interracial friendship, character growth, empathy, race relations, loneliness, acceptance, historical drama, feel-good, Oscar winner, music tour, respect, personal change, warmth, buddy film, reconciliation, uplifting"
+  },
+  {
+    "rank": 134,
+    "movie": "Three Billboards Outside Ebbing, Missouri",
+    "tags": "crime, drama, grief, anger, justice, mother, murder, small town, revenge, guilt, police, Mildred Hayes, Dixon, dark comedy, trauma, forgiveness, rage, moral ambiguity, investigation, loss, social tension, redemption, violence, frustration, community, billboard, unresolved crime, grief processing, flawed characters, pain, accountability, racism, police brutality, human complexity, bitterness, compassion, tragicomedy, emotional, revenge impulse, guilt and grief, rural America, justice system, sharp dialogue, redemption arc, unpredictable, powerful acting, moral grey, sadness, anger, healing"
+  },
+  {
+    "rank": 135,
+    "movie": "Talvar",
+    "tags": "crime, investigation, murder mystery, true crime, India, justice, police, parents, daughter, media trial, corruption, forensic, Rashomon effect, ambiguity, courtroom, CBI, evidence, suspicion, family tragedy, bureaucracy, truth, procedural, journalism, wrongful accusation, class divide, domestic workers, sensationalism, investigation flaws, moral ambiguity, legal drama, realistic, social critique, grief, justice system, doubt, conflicting narratives, crime drama, unsolved case, emotional, institutional failure, public opinion, deception, tragedy, hard-hitting, Indian cinema, police incompetence, truth search, suspense, powerful, disturbing"
+  },
+  {
+    "rank": 136,
+    "movie": "Baahubali 2: The Conclusion",
+    "tags": "epic, fantasy, action, kingdom, revenge, family, betrayal, Amarendra Baahubali, Mahendra Baahubali, Devasena, Bhallaladeva, Kattappa, Sivagami, Mahishmati, war, heroism, sacrifice, destiny, royal drama, mythology, loyalty, love, throne, power struggle, grandeur, Indian cinema, Telugu cinema, visual spectacle, mother-son, justice, rebellion, sword fighting, palace intrigue, honor, legacy, betrayal reveal, mass action, emotional, vengeance, coronation, dharma, epic battles, romance, larger-than-life, conclusion, triumph, liberation, iconic, blockbuster, cinematic spectacle"
+  },
+  {
+    "rank": 137,
+    "movie": "Klaus",
+    "tags": "animation, Christmas, Santa Claus, kindness, friendship, redemption, letters, holiday, family, generosity, Jesper, Klaus, Smeerensburg, postman, comedy, heartwarming, transformation, community, loneliness, grief, toy maker, children, tradition, compassion, joy, holiday spirit, enemies to friends, magical realism, forgiveness, kindness spreads, emotional, family film, beautiful animation, origin story, selflessness, warmth, snowy town, festive, uplifting, anti-cynicism, love, cheerful, emotional healing, animated comedy, feel-good, Christmas magic, generosity, hope, charming, modern classic"
+  },
+  {
+    "rank": 138,
+    "movie": "Drishyam",
+    "tags": "thriller, crime, family, cover-up, father, protection, murder, police, investigation, suspense, Georgekutty, alibi, deception, justice, morality, Indian cinema, family survival, intelligence, planning, fear, guilt, daughter, mother, police pressure, evidence, mystery, crime drama, twist, ordinary man, parental love, sacrifice, memory, cinema knowledge, clever plan, interrogation, abuse of power, moral ambiguity, hidden truth, loyalty, courtroom-free thriller, psychological tension, domestic drama, family bond, survival strategy, cat-and-mouse, emotional, brilliant plot, truth manipulation, Malayalam cinema, gripping"
+  },
+  {
+    "rank": 139,
+    "movie": "Queen",
+    "tags": "self-discovery, travel, independence, breakup, woman empowerment, India, Rani, Paris, Amsterdam, comedy-drama, healing, confidence, solo trip, freedom, heartbreak, friendship, identity, family, arranged marriage, growth, courage, innocence, cultural contrast, female protagonist, liberation, humor, emotional, coming-of-age, personal transformation, self-worth, love yourself, adventure, urban travel, Indian cinema, feel-good, resilience, new friends, vulnerability, joy, letting go, independence journey, empowerment, modern woman, bittersweet, optimism, life after heartbreak, charming, relatable, confidence building, uplifting"
+  },
+  {
+    "rank": 140,
+    "movie": "Mandariinid",
+    "tags": "war, anti-war, Georgia, Abkhazia, tangerines, humanity, enemies, compassion, friendship, survival, conflict, pacifism, moral courage, old man, shelter, wounded soldiers, ethnic conflict, dignity, empathy, forgiveness, small village, loss, family, restraint, humanism, tragedy, war absurdity, kindness, reconciliation, enemy soldiers, protection, grief, quiet drama, moral choice, minimalist, emotional, Estonian cinema, Georgian war, violence, peace, understanding, brotherhood, civilians, isolation, war trauma, anti-hate, powerful, bittersweet, hope, human connection"
+  },
+  {
+    "rank": 141,
+    "movie": "Bhaag Milkha Bhaag",
+    "tags": "sports, biography, athletics, Milkha Singh, running, India, partition, trauma, perseverance, discipline, family, loss, national pride, Olympics, training, sacrifice, motivation, underdog, resilience, army, childhood trauma, refugee, race, success, failure, redemption, emotional, determination, hard work, patriotism, inspiration, coach, physical transformation, Indian cinema, sports drama, identity, competition, world stage, speed, courage, ambition, heartbreak, healing through sport, personal growth, victory, legacy, motivational, historical, athlete, triumph"
+  },
+  {
+    "rank": 142,
+    "movie": "Gangs of Wasseypur",
+    "tags": "crime, gangster, revenge, family feud, Wasseypur, coal mafia, politics, violence, betrayal, power, underworld, India, Anurag Kashyap, Sardar Khan, Faizal Khan, generational revenge, dark humor, rural crime, corruption, ambition, loyalty, blood feud, guns, masculinity, lust, family legacy, local politics, crime saga, gritty, realistic, cult, revenge cycle, organized crime, coal, caste, survival, power struggle, brutal, stylish, dialogue, Indian gangster film, epic crime, betrayal within family, rise and fall, vengeance, chaos, social realism, raw, violent, masterpiece"
+  },
+  {
+    "rank": 143,
+    "movie": "Udaan",
+    "tags": "coming-of-age, father-son, abuse, freedom, dreams, poetry, adolescence, India, Rohan, strict father, oppression, creativity, rebellion, emotional, family trauma, teenage life, writing, engineering pressure, self-discovery, toxic parenting, independence, escape, brotherhood, resilience, hope, small town, industrial city, loneliness, ambition, childhood, discipline, fear, courage, domestic abuse, artistic dream, youth, Indian indie, realistic drama, personal freedom, healing, identity, emotional restraint, vulnerability, father conflict, brother bond, life choices, inspiration, powerful, raw, liberation"
+  },
+  {
+    "rank": 144,
+    "movie": "Paan Singh Tomar",
+    "tags": "biography, sports, soldier, athlete, rebel, dacoit, injustice, India, Chambal, running, steeplechase, army, family, land dispute, corruption, revenge, transformation, rural India, tragedy, system failure, Irrfan Khan, survival, honor, betrayal, poverty, athlete to outlaw, crime, social injustice, emotional, grit, caste, politics, violence, identity, national champion, forgotten hero, rebellion, anger, realism, Indian cinema, biographical drama, exploitation, powerlessness, rural conflict, human tragedy, resilience, moral grey, powerful, heartbreaking, legacy"
+  },
+  {
+    "rank": 145,
+    "movie": "El secreto de sus ojos",
+    "tags": "mystery, crime, romance, investigation, Argentina, murder, justice, memory, obsession, love, guilt, revenge, cold case, legal drama, political tension, Benjamin Esposito, Irene, Morales, grief, unresolved past, trauma, truth, longing, suspense, emotional, corruption, dictatorship era, punishment, obsession with justice, novel writing, flashback, moral ambiguity, prison, passion, haunting, melancholy, crime thriller, romantic regret, identity, investigation puzzle, unforgettable twist, Argentinian cinema, hidden truth, loss, justice delayed, revenge morality, powerful, poetic, suspenseful, masterpiece"
+  },
+  {
+    "rank": 146,
+    "movie": "Warrior",
+    "tags": "sports, MMA, brothers, family, father-son, redemption, trauma, forgiveness, fighting, competition, underdog, addiction, war veteran, grief, anger, Tom Hardy, Joel Edgerton, Nick Nolte, championship, physical struggle, emotional wounds, broken family, alcoholism, loyalty, money problems, teacher, Marine, guilt, reconciliation, sacrifice, intense, brother vs brother, pain, healing, courage, resilience, masculinity, mixed martial arts, emotional climax, family drama, forgiveness journey, personal demons, redemption fight, training, survival, powerful, tearjerker, sports drama, catharsis, brotherhood"
+  },
+  {
+    "rank": 147,
+    "movie": "Shutter Island",
+    "tags": "psychological thriller, mystery, asylum, trauma, investigation, delusion, guilt, Leonardo DiCaprio, Teddy Daniels, mental illness, twist ending, island, paranoia, conspiracy, grief, wife, children, war trauma, hallucination, identity, memory, therapy, Scorsese, noir, suspense, madness, lighthouse, institution, psychological horror, unreliable narrator, denial, investigation puzzle, reality vs delusion, depression, guilt fantasy, role-play, atmospheric, dark, storm, doctors, moral ambiguity, shocking reveal, mental hospital, trauma coping, disturbing, eerie, psychological drama, tragic, haunting, masterpiece"
+  },
+  {
+    "rank": 148,
+    "movie": "Up",
+    "tags": "animation, adventure, grief, love, old age, friendship, Carl, Ellie, Russell, balloons, house, Pixar, loss, dreams, travel, South America, Paradise Falls, dog, Dug, Kevin, adventure book, marriage montage, healing, family, loneliness, second chance, found family, childhood, wilderness, emotional, comedy, heartwarming, memory, letting go, courage, kindness, generational friendship, explorer, hope, nostalgia, tearjerker, love story, adventure comedy, elderly hero, emotional opening, personal growth, colorful, uplifting, animated masterpiece, bittersweet"
+  },
+  {
+    "rank": 149,
+    "movie": "The Wolf of Wall Street",
+    "tags": "finance, greed, Wall Street, corruption, excess, drugs, money, Jordan Belfort, stockbroker, fraud, capitalism, ambition, crime, comedy, decadence, Scorsese, Leonardo DiCaprio, wealth, manipulation, sales, addiction, luxury, moral decay, corporate crime, scams, party culture, greed satire, power, ego, excess lifestyle, downfall, law enforcement, FBI, Naomi, Quaaludes, business, hustle, unethical success, black comedy, American dream, capitalism critique, status, persuasion, charisma, corruption culture, chaos, wild, biographical, rise and fall, obscene wealth"
+  },
+  {
+    "rank": 150,
+    "movie": "Chak De! India",
+    "tags": "sports, hockey, India, teamwork, women empowerment, coach, redemption, patriotism, Kabir Khan, national team, discipline, unity, underdogs, competition, training, leadership, sacrifice, motivation, gender equality, regional diversity, pride, comeback, resilience, team spirit, championship, prejudice, identity, emotional, Indian cinema, sports drama, female athletes, national pride, overcoming bias, hard work, strategy, trust, betrayal accusation, personal redemption, locker room, unity in diversity, inspirational, victory, determination, courage, social message, ambition, coaching, tournament, triumph, iconic"
+  },
+  {
+    "rank": 151,
+    "movie": "There Will Be Blood",
+    "tags": "drama, oil, capitalism, greed, ambition, power, Daniel Plainview, religion, Eli Sunday, family, father-son, corruption, America, business, isolation, obsession, wealth, moral decay, rivalry, oil drilling, land, exploitation, capitalism critique, madness, ego, violence, loneliness, false prophet, faith, greed destroys, entrepreneur, ruthless, historical drama, psychological, character study, milkshake, American dream, industrialization, hatred, manipulation, spiritual emptiness, power struggle, betrayal, ambition without soul, dark, intense, Paul Thomas Anderson, Daniel Day-Lewis, masterpiece, tragedy"
+  },
+  {"rank": 152,
+  "movie": "Gravity",
+  "tags": "sci-fi, space, survival, isolation, astronaut, disaster, orbit, Earth, space debris, Sandra Bullock, Ryan Stone, Matt Kowalski, NASA, space station, International Space Station, Hubble Telescope, Soyuz, Tiangong, oxygen, zero gravity, weightlessness, fear, panic, grief, loss, trauma, rebirth, resilience, courage, hope, life and death, human survival, emotional, thriller, suspense, visual spectacle, 3D, realistic space, spacewalk, rescue, communication loss, debris storm, claustrophobia, loneliness, determination, rebirth symbolism, mother grief, survival instinct, danger, cosmic silence, atmospheric reentry, escape pod, Alfonso Cuarón, cinematic experience"
+}
+
+]
