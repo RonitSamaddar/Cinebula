@@ -366,6 +366,150 @@ func storeVectorsInOpenSearch(labels []string, vectors [][]float64) {
 	fmt.Printf("OpenSearch: stored %d vectors, skipped %d (already present)\n", stored, skipped)
 }
 
+// getMovieVector retrieves the vector for a given movie name from OpenSearch.
+func getMovieVector(movie string) ([]float64, error) {
+	query := map[string]interface{}{
+		"query": map[string]interface{}{
+			"term": map[string]interface{}{
+				"movie_keyword": movie,
+			},
+		},
+		"_source": []string{"vector"},
+	}
+	body, _ := json.Marshal(query)
+	resp, err := http.Post(opensearchURL+"/"+indexName+"/_search", "application/json", bytes.NewReader(body))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		Hits struct {
+			Hits []struct {
+				Source struct {
+					Vector []float64 `json:"vector"`
+				} `json:"_source"`
+			} `json:"hits"`
+		} `json:"hits"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, err
+	}
+	if len(result.Hits.Hits) == 0 {
+		return nil, fmt.Errorf("movie %q not found", movie)
+	}
+	return result.Hits.Hits[0].Source.Vector, nil
+}
+
+// findSimilarMovies uses OpenSearch KNN to find the k nearest movies.
+func findSimilarMovies(movie string, k int) ([]map[string]interface{}, error) {
+	vec, err := getMovieVector(movie)
+	if err != nil {
+		return nil, err
+	}
+
+	query := map[string]interface{}{
+		"size": k + 1, // +1 to account for the query movie itself
+		"query": map[string]interface{}{
+			"knn": map[string]interface{}{
+				"vector": map[string]interface{}{
+					"vector": vec,
+					"k":      k + 1,
+				},
+			},
+		},
+	}
+	body, _ := json.Marshal(query)
+	resp, err := http.Post(opensearchURL+"/"+indexName+"/_search", "application/json", bytes.NewReader(body))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		Hits struct {
+			Hits []struct {
+				Source struct {
+					Movie string `json:"movie"`
+				} `json:"_source"`
+				Score float64 `json:"_score"`
+			} `json:"hits"`
+		} `json:"hits"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, err
+	}
+
+	var similar []map[string]interface{}
+	for _, hit := range result.Hits.Hits {
+		if strings.EqualFold(hit.Source.Movie, movie) {
+			continue // skip the query movie itself
+		}
+		similar = append(similar, map[string]interface{}{
+			"movie": hit.Source.Movie,
+			"score": hit.Score,
+		})
+	}
+	if len(similar) > k {
+		similar = similar[:k]
+	}
+	return similar, nil
+}
+
+// ---------------------------------------------------------------------------
+// HTTP API Server
+// ---------------------------------------------------------------------------
+
+// corsMiddleware adds CORS headers to all responses.
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+// jsonError writes a JSON error response.
+func jsonError(w http.ResponseWriter, msg string, code int) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	json.NewEncoder(w).Encode(map[string]string{"error": msg})
+}
+
+// handleSimilar handles GET /api/similar?movie=<name>&k=50
+func handleSimilar(w http.ResponseWriter, r *http.Request) {
+	movie := r.URL.Query().Get("movie")
+	if movie == "" {
+		jsonError(w, "missing required query parameter: movie", http.StatusBadRequest)
+		return
+	}
+
+	k := 50
+	if ks := r.URL.Query().Get("k"); ks != "" {
+		if parsed, err := strconv.Atoi(ks); err == nil && parsed > 0 {
+			k = parsed
+		}
+	}
+
+	similar, err := findSimilarMovies(movie, k)
+	if err != nil {
+		jsonError(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"movie":   movie,
+		"k":       k,
+		"results": similar,
+	})
+}
+
 // ---------------------------------------------------------------------------
 // main
 // ---------------------------------------------------------------------------
@@ -374,8 +518,11 @@ func main() {
 	method := flag.String("method", "tsne", "Reduction method: tsne, umap, or pca")
 	csvPath := flag.String("csv", "sample.csv", "Path to CSV file with vectors (each row = one vector)")
 	output := flag.String("output", "", "Path to save the 2D output as CSV")
+	serve := flag.Bool("serve", false, "Start HTTP API server instead of running reduction")
+	port := flag.String("port", "8080", "Port for the API server")
 	flag.Parse()
 
+	// Always load and ingest vectors into OpenSearch
 	var labels []string
 	var vectors [][]float64
 
@@ -383,7 +530,6 @@ func main() {
 		labels, vectors = loadVectorsFromCSV(*csvPath)
 		fmt.Printf("Loaded %d vectors of %d dimensions from %s\n",
 			len(vectors), len(vectors[0]), *csvPath)
-		// Store vectors in OpenSearch (skips if already present)
 		storeVectorsInOpenSearch(labels, vectors)
 	} else {
 		rng := rand.New(rand.NewSource(0))
@@ -400,6 +546,22 @@ func main() {
 		fmt.Printf("Using demo data: %d vectors of %d dimensions\n", k, n)
 	}
 
+	// --- API server mode ---
+	if *serve {
+		mux := http.NewServeMux()
+		mux.HandleFunc("/api/similar", handleSimilar)
+
+		addr := ":" + *port
+		fmt.Printf("\n🚀 API server listening on http://localhost%s\n", addr)
+		fmt.Println("  GET /api/similar?movie=<name>&k=50")
+		if err := http.ListenAndServe(addr, corsMiddleware(mux)); err != nil {
+			fmt.Fprintf(os.Stderr, "Server error: %v\n", err)
+			os.Exit(1)
+		}
+		return
+	}
+
+	// --- CLI reduction mode ---
 	methodNames := map[string]string{
 		"tsne": "t-SNE (neighborhood-based)",
 		"umap": "UMAP (neighborhood-based)",
