@@ -386,7 +386,7 @@ func getMovieVector(movie string) ([]float64, error) {
 	query := map[string]interface{}{
 		"query": map[string]interface{}{
 			"term": map[string]interface{}{
-				"movie_keyword": movie,
+				"movie_keyword": strings.ToLower(movie),
 			},
 		},
 		"_source": []string{"vector"},
