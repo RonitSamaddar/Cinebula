@@ -56,15 +56,84 @@ export default function Home() {
   const z1ShowsRef = useRef<Show[]>([]);
   const z2ShowsRef = useRef<Show[]>([]);
   const allShowsRef = useRef<Show[]>([]);
+  const dustRef = useRef<import("@/services/backend").DustParticle[]>([]);
 
   // Connection flow states
-  const [connected, setConnected] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [connected, setConnected] = useState(true); // skip QR — go straight to galaxy
+  const [loading, setLoading] = useState(true);     // start loading immediately
   const [scannerOpen, setScannerOpen] = useState(false);
 
   // Init audio context on first render
   useEffect(() => {
     initAudio();
+  }, []);
+
+  // Auto-load galaxy data on mount (bypasses QR flow)
+  useEffect(() => {
+    (async () => {
+      const deviceId = "direct-access"; // skip QR
+      const session = await loginAndFetchGenres(deviceId);
+      if (!session || session.topGenres.length === 0) {
+        setLoading(false);
+        return;
+      }
+
+      const { topGenres, token } = session;
+      const categories = buildCategories(topGenres.map(g => g.genre));
+      categoriesRef.current = categories;
+
+      const moviesByGenre: Record<string, import("@/services/backend").MoviesResponse> = {};
+
+      const rebuildShows = () => {
+        const data = backendMoviesToShows(topGenres, moviesByGenre, categories);
+        z0ShowsRef.current = data.z0;
+        z1ShowsRef.current = data.z1;
+        z2ShowsRef.current = data.z2;
+        allShowsRef.current = data.z0;
+        dustRef.current = data.dust;
+        cardsRef.current?.setShows(data.z0, data.dust);
+      };
+
+      const loadingStart = Date.now();
+      const LOADING_DURATION = 15000;
+
+      // Phase 1: center
+      const centerIdx = Math.min(LOAD_ORDER_CENTER, topGenres.length - 1);
+      const centerGenre = topGenres[centerIdx];
+      if (centerGenre) {
+        const result = await fetchGenreMovies(centerGenre.genre, token);
+        if (result?.movies?.length) moviesByGenre[centerGenre.genre] = result;
+      }
+      rebuildShows();
+
+      // Phase 2: sides
+      for (const idx of LOAD_ORDER_SIDES) {
+        if (idx >= topGenres.length) continue;
+        const g = topGenres[idx];
+        const result = await fetchGenreMovies(g.genre, token);
+        if (result?.movies?.length) {
+          moviesByGenre[g.genre] = result;
+          rebuildShows();
+        }
+      }
+
+      // Phase 3: remaining
+      for (const idx of LOAD_ORDER_REMAINING) {
+        if (idx >= topGenres.length) continue;
+        const g = topGenres[idx];
+        const result = await fetchGenreMovies(g.genre, token);
+        if (result?.movies?.length) {
+          moviesByGenre[g.genre] = result;
+          rebuildShows();
+        }
+      }
+
+      const elapsed = Date.now() - loadingStart;
+      if (elapsed < LOADING_DURATION) {
+        await new Promise((r) => setTimeout(r, LOADING_DURATION - elapsed));
+      }
+      setLoading(false);
+    })();
   }, []);
 
   // Full camera push — updates all layers
@@ -256,7 +325,8 @@ export default function Home() {
       dragRafRef.current = requestAnimationFrame(() => {
         const p = pendingDragRef.current;
         if (!p) return;
-        pushCamera(cameraRef.current.x - p.dx, cameraRef.current.y - p.dy);
+        const z = zoomRef.current || 1;
+        pushCamera(cameraRef.current.x - p.dx / z, cameraRef.current.y - p.dy / z);
 
         if (!hasDraggedRef.current && (Math.abs(p.clientX - d.startX) > 10 || Math.abs(p.clientY - d.startY) > 10)) {
           hasDraggedRef.current = true;
@@ -274,7 +344,8 @@ export default function Home() {
     cancelAnimationFrame(dragRafRef.current);
     // Flush any pending drag
     if (pendingDragRef.current) {
-      pushCamera(cameraRef.current.x - pendingDragRef.current.dx, cameraRef.current.y - pendingDragRef.current.dy);
+      const z = zoomRef.current || 1;
+      pushCamera(cameraRef.current.x - pendingDragRef.current.dx / z, cameraRef.current.y - pendingDragRef.current.dy / z);
       pendingDragRef.current = null;
     }
     // Mark idle after momentum settles
@@ -285,7 +356,8 @@ export default function Home() {
       velRef.current.x *= decay;
       velRef.current.y *= decay;
       if (Math.abs(velRef.current.x) < 0.1 && Math.abs(velRef.current.y) < 0.1) return;
-      pushCamera(cameraRef.current.x + velRef.current.x, cameraRef.current.y + velRef.current.y);
+      const z = zoomRef.current || 1;
+      pushCamera(cameraRef.current.x + velRef.current.x / z, cameraRef.current.y + velRef.current.y / z);
       momentumRef.current = requestAnimationFrame(tick);
     };
     momentumRef.current = requestAnimationFrame(tick);
@@ -338,10 +410,8 @@ export default function Home() {
       >
         <GalaxyBackground ref={galaxyRef} />
         <ShowCards ref={cardsRef} onShowTap={(show, sx, sy) => setSelectedShow({ show, sx, sy })} />
-        <CategoryLabels ref={labelsRef} />
-        <UserRing />
-        {zoomLevel === 0 && <CategoryPill ref={pillRef} visible={isDragging} />}
-        {zoomLevel === 0 && <CompassLabels ref={compassRef} onNavigate={flyTo} visible={!isDragging} />}
+        {/* CategoryLabels and CategoryPill removed — compass center label replaces them */}
+        {zoomLevel === 0 && <CompassLabels ref={compassRef} onNavigate={flyTo} visible={true} />}
 
         {/* Alien companion */}
         <AlienCompanion
@@ -376,7 +446,7 @@ export default function Home() {
           className="pointer-events-auto absolute flex flex-col gap-2"
           style={{
             bottom: "max(calc(env(safe-area-inset-bottom, 12px) + 16px), 28px)",
-            right: 16,
+            left: 16,
             zIndex: 20,
           }}
         >
@@ -485,20 +555,19 @@ export default function Home() {
         />
       )}
 
-      {/* Initial connect dialog — shown before QR scan */}
+      {/* Initial connect dialog — COMMENTED OUT (QR bypassed)
       {!connected && !loading && !scannerOpen && (
         <ConnectDialog onConnect={() => setScannerOpen(true)} />
       )}
+      */}
 
-      {/* QR Scanner (initial flow) */}
+      {/* QR Scanner — COMMENTED OUT (direct load)
       {!connected && scannerOpen && (
         <QRScanner
           onScan={(deviceId) => {
             setScannerOpen(false);
             setLoading(true);
-            setConnected(true); // Show galaxy underneath loading screen
-
-            // Progressive loading runs underneath the opaque loading screen
+            setConnected(true);
             (async () => {
               try {
                 const session = await loginAndFetchGenres(deviceId);
@@ -567,11 +636,50 @@ export default function Home() {
               } finally {
                 setLoading(false);
               }
+              const { topGenres, token } = session;
+              const categories = buildCategories(topGenres.map(g => g.genre));
+              categoriesRef.current = categories;
+              const moviesByGenre: Record<string, import("@/services/backend").MoviesResponse> = {};
+              const rebuildShows = () => {
+                const data = backendMoviesToShows(topGenres, moviesByGenre, categories);
+                z0ShowsRef.current = data.z0;
+                z1ShowsRef.current = data.z1;
+                z2ShowsRef.current = data.z2;
+                allShowsRef.current = data.z0;
+                cardsRef.current?.setShows(data.z0);
+              };
+              const loadingStart = Date.now();
+              const LOADING_DURATION = 15000;
+              const centerIdx = Math.min(LOAD_ORDER_CENTER, topGenres.length - 1);
+              const centerGenre = topGenres[centerIdx];
+              if (centerGenre) {
+                const result = await fetchGenreMovies(centerGenre.genre, token);
+                if (result?.movies?.length) moviesByGenre[centerGenre.genre] = result;
+              }
+              rebuildShows();
+              for (const idx of LOAD_ORDER_SIDES) {
+                if (idx >= topGenres.length) continue;
+                const g = topGenres[idx];
+                const result = await fetchGenreMovies(g.genre, token);
+                if (result?.movies?.length) { moviesByGenre[g.genre] = result; rebuildShows(); }
+              }
+              for (const idx of LOAD_ORDER_REMAINING) {
+                if (idx >= topGenres.length) continue;
+                const g = topGenres[idx];
+                const result = await fetchGenreMovies(g.genre, token);
+                if (result?.movies?.length) { moviesByGenre[g.genre] = result; rebuildShows(); }
+              }
+              const elapsed = Date.now() - loadingStart;
+              if (elapsed < LOADING_DURATION) {
+                await new Promise((r) => setTimeout(r, LOADING_DURATION - elapsed));
+              }
+              setLoading(false);
             })();
           }}
           onClose={() => setScannerOpen(false)}
         />
       )}
+      */}
 
       {/* Loading screen — while fetching genres/shows */}
       {loading && <LoadingScreen />}

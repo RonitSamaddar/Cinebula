@@ -70,11 +70,11 @@ export default function AlienCompanion({ suppressBubbles = false, onRecTap }: Al
       bubbleHideTimer.current = setTimeout(() => setBubble(null), 8000);
     };
 
-    // First bubble after 5s, then every 10s
+    // First bubble after 12s, then every 25s
     const initialTimer = setTimeout(() => {
       showBubble();
-      bubbleTimer.current = setInterval(showBubble, 10000);
-    }, 5000);
+      bubbleTimer.current = setInterval(showBubble, 25000);
+    }, 12000);
 
     return () => {
       clearTimeout(initialTimer);
@@ -184,7 +184,7 @@ export default function AlienCompanion({ suppressBubbles = false, onRecTap }: Al
       <div
         className={`cursor-pointer select-none ${gestureClass}`}
         onPointerDown={handleTap}
-        style={{ touchAction: "none" }}
+        style={{ touchAction: "none", opacity: 0.7 }}
       >
         {/* Spaceship body — bigger */}
         <svg width="96" height="44" viewBox="0 0 96 44" fill="none" style={{ filter: "drop-shadow(0 0 12px rgba(127, 255, 127, 0.25))" }}>

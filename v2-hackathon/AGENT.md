@@ -1,210 +1,117 @@
-# AGENT.md
+# Cinebula v2-hackathon — Agent Context
 
-## Project
+## Architecture Overview
 
-Cinebula - Intelligent Entertainment Discovery Platform
+```
+┌─────────────────┐         ┌──────────────────┐         ┌─────────────────────┐
+│  LG TV Mock     │         │  Frontend (Next)  │         │  Backend (Go :8080) │
+│  :8020 (static) │◄─QR────▶│  :8010            │         │                     │
+│  Shows QR code  │  scan   │  /api/proxy ──────┼────────▶│  /auth/login        │
+│                 │         │  /api/log         │  HTTP   │  /top-genres        │
+└─────────────────┘         │                   │────────▶│  /api/movies        │
+                            └──────────────────┘         │  /api/similar       │
+                                                         │  /api/filters       │
+                                                         │  /search            │
+                                                         │  /user/profile      │
+                                                         │         │           │
+                                                         │         ▼           │
+                                                         │  Meilisearch :7700  │
+                                                         │         │           │
+                                                         │         ▼           │
+                                                         │  TKACR upstream     │
+                                                         │  (external API)     │
+                                                         └─────────────────────┘
+```
 
-## Goal
+## Services
 
-Reduce decision fatigue and help users quickly decide what to watch through semantic, behavior-aware, and emotion-based content discovery.
-
-Current focus:
-
-* Phone-first application
-* Future Smart TV integration
-* Powered by content metadata and ACR-driven personalization
-
----
-
-## Core Principles
-
-1. Optimize for decision confidence, not endless exploration.
-2. Users should reach a watch decision faster.
-3. Recommendation spaces are dynamic and evolve based on user actions.
-4. User actions create pivots, not filters.
-5. Navigation should feel exploratory but remain low cognitive load.
-
----
-
-## Recommendation Model
-
-Content is represented as weighted semantic features.
-
-Example:
-
-* Sci-Fi
-* Emotional Depth
-* Spectacle
-* Darkness
-* Humor
-* Action
-* Cerebral Complexity
-* Hopefulness
-
-The system maintains a recommendation space and adjusts weights based on user interactions.
-
-Example:
-
-* "More Sci-Fi"
-* "Less Dark"
-* "More Emotional"
-* "Scarlett Johansson"
-
-These actions reshape the recommendation space instead of applying strict filters.
+| Service | Port | Tech Stack | Directory |
+|---------|------|------------|-----------|
+| Backend | 8080 | Go + Meilisearch | `backend/` |
+| Frontend | 8010 | Next.js 16 + React 19 + Tailwind | `frontend/app/` |
+| LG Homescreen Mock | 8020 | Static HTML (python http.server) | `lg-homescreen-mock/` |
 
 ---
 
-## User Flow
+## Backend (Go :8080)
 
-Search
-→ Initial Recommendation Space
-→ Explore Nearby Semantic Spaces
-→ Pivot Based On Content / Actor / Genre / Language
-→ Refined Recommendation Space
-→ Watch Decision
+### Dependencies
+- Go 1.26.2
+- Meilisearch (local, port 7700) — typo-tolerant search
+- TKACR upstream API (`tkacr-dev5.alphonso.tv:8080`) — movie catalog, 2D coords, similarity
 
----
+### API Endpoints
 
-## Backend Services
+| Method | Path | Auth | Purpose |
+|--------|------|------|---------|
+| `POST` | `/auth/login` | None | Register/login user. Body: `{name?, age?, gender?, top_genres?, device_id?}`. Returns JWT + user_id |
+| `GET` | `/top-genres` | JWT | User's ranked top genres with priority weights |
+| `GET` | `/api/movies` | Optional JWT | Movies filtered by `?genre=`, `?keyword=`, `?language=`, `?movie_name=`. Adds priority + `is_watched` |
+| `GET` | `/api/similar` | Optional JWT | Similar movies: `?movie=<title>&k=<max>` |
+| `GET` | `/api/filters` | None | Available filter dimensions (genre, language, cast) |
+| `GET` | `/search` | JWT | Typo-tolerant title search. `?q=<query>`, returns up to 50 matches |
+| `GET` | `/user/profile` | JWT | Authenticated user's profile |
 
-### API Gateway
+### Internal Packages
+- `internal/auth` — JWT issuance, validation, middleware
+- `internal/search` — Meilisearch client + handler
+- `internal/data-service` — Proxies to TKACR upstream
+- `internal/filter` — Filter values from JSON
+- `internal/top-genres` — Computes top genres from ACR watch data
+- `internal/acr-data-processor` — ACR viewing data → genre weights + watched titles
+- `internal/space-stitcher` — Stitches 9 genre 2D spaces into 900×900 grid (3×3 of 300×300)
+- `internal/priority` — IMDb-style weighted rating scores (0–100)
+- `internal/user` — User CRUD
 
-Routes all client requests.
-
-### User Profile Service
-
-Stores:
-
-* preferences
-* likes/dislikes
-* ACR-derived interests
-* watch history
-
-### Content Metadata Service
-
-Stores:
-
-* titles
-* genres
-* actors
-* languages
-* runtime
-* semantic tags
-* OTT availability
-
-### Search Service
-
-Handles:
-
-* autocomplete
-* fuzzy search
-* actor search
-* movie search
-* semantic search
-
-### Recommendation Service
-
-Responsible for:
-
-* candidate generation
-* scoring
-* ranking
-* recommendation space generation
-* semantic pivots
+### Startup Sequence
+1. Kill existing procs on :8080 and :7700
+2. Start Meilisearch on 127.0.0.1:7700
+3. Run `cmd/indexer` — indexes titles into Meilisearch (skips if already done)
+4. Run `cmd/server` — HTTP server on :8080
 
 ---
 
-## Recommendation Space
+## Frontend (Next.js :8010)
 
-A recommendation space contains:
+### Tech Stack
+- Next.js 16.2.7 (App Router), React 19.2.4, Zustand, Tailwind CSS 4, TypeScript 5
+- `jsqr` for QR code scanning
 
-* current recommendations
-* nearby semantic directions
-* 1-level and 2-level prefetched exploration paths
+### Key Structure
+- `src/app/` — Pages + API routes (`/api/proxy`, `/api/log`)
+- `src/canvas/` — Galaxy/canvas visualization
+- `src/components/` — React components
+- `src/services/backend.ts` — Backend API client (proxies via `/api/proxy` → `localhost:8080`)
+- `src/stores/` — Zustand stores
+- `src/types/` — TypeScript types
 
-Movement within prefetched space should not require API calls.
-
-New pivots require backend requests.
-
-Examples:
-
-* actor selection
-* language selection
-* movie selection
-* semantic refinement
+### User Flow
+QR scan → gets `device_id` → login → fetch top genres → fetch movies per genre → render galaxy UI
 
 ---
 
-## Search Strategy
+## LG Homescreen Mock (:8020)
 
-For current scale (~1500-3000 titles):
+Static HTML simulating an LG webOS TV home screen:
+- Left sidebar navigation, hero banner, category buttons, app launcher row
+- Content card rows with "Cinebula" app card (NEW badge)
+- QR code generation (`qrcode-generator` CDN lib)
 
-* Fuzzy Search
-* Prefix Matching
-* Metadata Search
-
-No Elasticsearch required for MVP.
-
----
-
-## Data Sources
-
-Potential inputs:
-
-* TMDB metadata
-* IMDb metadata
-* ACR viewing behavior
-* User preferences
+No build step — served as static file via `python3 -m http.server`.
 
 ---
 
-## Authentication
+## Service Interactions
 
-Phone-based authentication.
-
-Recommended:
-
-* JWT session tokens
-* QR pairing for future TV integration
-
-Only paired devices may control a TV session.
+1. **TV → Phone:** QR code on TV encodes `device_id`; phone scans to pair
+2. **Frontend → Backend:** All requests via Next.js `/api/proxy` route → `localhost:8080`
+3. **Backend → Meilisearch:** Local search index for titles
+4. **Backend → TKACR:** External upstream for movie catalog, coordinates, similarity
 
 ---
 
-## Future TV Integration
+## Running
 
-Architecture:
-
-Phone
-→ API Gateway
-→ Recommendation Engine
-→ TV Renderer
-
-Phone acts as:
-
-* search interface
-* refinement interface
-* personalization layer
-
-TV acts as:
-
-* immersive discovery surface
-* recommendation display
-* playback launcher
-
----
-
-## Success Metric
-
-Primary KPI:
-
-Time-to-Decision
-
-Measure how quickly a user reaches a title they are willing to watch.
-
-Secondary KPIs:
-
-* Recommendation acceptance rate
-* Search-to-watch conversion
-* Exploration depth
-* Session completion rate
+```bash
+./run.sh   # Starts all 3 services (backend:8080, frontend:8010, lg-mock:8020)
+```

@@ -146,11 +146,33 @@ body {
 }
 
 @keyframes fade-in {
-  from {
-    opacity: 0;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
-  to {
-    opacity: 1;
-  }
+@keyframes tile-drift-sm {
+  0%, 100% { translate: 0px 0px; }
+  16% { translate: 1.5px -1px; }
+  33% { translate: -1px 2px; }
+  50% { translate: 2px 1px; }
+  66% { translate: -1.5px -1.5px; }
+  83% { translate: 1px -2px; }
+}
+
+@keyframes tile-drift-md {
+  0%, 100% { translate: 0px 0px; }
+  16% { translate: 3px -2.5px; }
+  33% { translate: -2.5px 4px; }
+  50% { translate: 4px 1.5px; }
+  66% { translate: -3px -3px; }
+  83% { translate: 2.5px -4px; }
+}
+
+@keyframes tile-drift-lg {
+  0%, 100% { translate: 0px 0px; }
+  16% { translate: 5px -4px; }
+  33% { translate: -4px 6px; }
+  50% { translate: 6px 3px; }
+  66% { translate: -5px -5px; }
+  83% { translate: 4px -6px; }
 }

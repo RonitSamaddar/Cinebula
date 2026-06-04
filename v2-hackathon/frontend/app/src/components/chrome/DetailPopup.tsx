@@ -23,7 +23,7 @@ export default function DetailPopup({ show, screenX, screenY, onClose }: DetailP
 
   const cat = CATEGORIES.find((c) => c.key === show.category);
   const accent = cat?.accent || "#fff";
-  const cardH = (SHOW_SIZE_PX[show.size] || 50) * 1.4;
+  const cardH = (SHOW_SIZE_PX[show.size] ?? 50) * 1.4;
 
   // Smart edge avoidance: position popup so it stays on screen
   const vw = typeof window !== "undefined" ? window.innerWidth : 400;

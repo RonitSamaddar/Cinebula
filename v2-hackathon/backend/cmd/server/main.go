@@ -7,12 +7,15 @@ import (
 	"cinebula/backend/internal/auth"
 	dataservice "cinebula/backend/internal/data-service"
 	"cinebula/backend/internal/filter"
+	"cinebula/backend/internal/logger"
 	"cinebula/backend/internal/search"
 	topgenres "cinebula/backend/internal/top-genres"
 	"cinebula/backend/internal/user"
 )
 
 func main() {
+	logger.Init()
+
 	mux := http.NewServeMux()
 
 	// Auth
@@ -36,8 +39,8 @@ func main() {
 	// User profile (JWT protected)
 	mux.Handle("GET /user/profile", auth.Middleware(http.HandlerFunc(user.ProfileHandler)))
 
-	log.Println("Cinebula backend listening on :8080")
-	if err := http.ListenAndServe(":8080", mux); err != nil {
+	logger.Log("Cinebula backend listening on :8080")
+	if err := http.ListenAndServe(":8080", logger.Middleware(mux)); err != nil {
 		log.Fatal(err)
 	}
 }

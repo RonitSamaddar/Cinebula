@@ -10,9 +10,14 @@ function proxyUrl(path: string) {
 }
 
 async function log(message: string, data?: unknown) {
-  const timestamp = new Date().toISOString();
-  const entry = `[${timestamp}] ${message}${data ? "\n" + JSON.stringify(data, null, 2) : ""}`;
-  console.log("[backend]", entry);
+  const timestamp = new Date().toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  });
+  const entry = `${message}${data ? " " + JSON.stringify(data) : ""}`;
+  console.log(`[${timestamp}]`, entry);
   try {
     await fetch("/api/log", {
       method: "POST",
@@ -254,17 +259,24 @@ export async function fetchGenreMovies(
  * At render time, only 10 non-overlapping shows are displayed on screen (handled by ShowCards).
  */
 
-// 3 fixed sizes (px dimensions for collision detection)
-const ICON_SIZES: Record<import("@/types").ShowSize, { w: number; h: number }> = {
-  l: { w: 90, h: 126 },
-  m: { w: 70, h: 98 },
-  s: { w: 50, h: 70 },
+// 10 size levels (px dimensions for collision detection, aspect 1:1.4)
+const ICON_SIZES: Record<number, { w: number; h: number }> = {
+  1: { w: 13, h: 17 },
+  2: { w: 18, h: 25 },
+  3: { w: 23, h: 33 },
+  4: { w: 30, h: 42 },
+  5: { w: 36, h: 49 },
+  6: { w: 42, h: 57 },
+  7: { w: 48, h: 68 },
+  8: { w: 55, h: 77 },
+  9: { w: 60, h: 83 },
+  10: { w: 65, h: 92 },
 };
 
 function getShowSize(priority: number): import("@/types").ShowSize {
-  if (priority > 66) return "l";
-  if (priority > 33) return "m";
-  return "s";
+  // Map priority 0-100 to size 1-10
+  const level = Math.ceil((Math.min(Math.max(priority, 1), 100)) / 10) as import("@/types").ShowSize;
+  return level;
 }
 
 interface PlacedShow {
@@ -275,21 +287,65 @@ interface PlacedShow {
 }
 
 /**
- * Check if show B overlaps >50% of its own area with placed show A.
- * Returns true if the intersection area exceeds 50% of B's area.
+ * Compute overlap ratio of tile B with placed tile A.
+ * Returns 0 (no overlap) to 1 (fully covered).
  */
-function overlaps(a: PlacedShow, bx: number, by: number, bw: number, bh: number): boolean {
+function overlapRatio(a: PlacedShow, bx: number, by: number, bw: number, bh: number): number {
   const overlapX = Math.max(0, Math.min(a.worldX + a.w / 2, bx + bw / 2) - Math.max(a.worldX - a.w / 2, bx - bw / 2));
   const overlapY = Math.max(0, Math.min(a.worldY + a.h / 2, by + bh / 2) - Math.max(a.worldY - a.h / 2, by - bh / 2));
   const intersectionArea = overlapX * overlapY;
   const bArea = bw * bh;
-  return intersectionArea > bArea * 0.5;
+  return bArea > 0 ? intersectionArea / bArea : 0;
+}
+
+/**
+ * Resolve collisions smartly:
+ * - If overlap > 70%: reject (too much)
+ * - If overlap 20-70%: downsize by 1-2 levels and reduce opacity
+ * - If overlap < 20%: accept as-is
+ */
+function resolveCollision(
+  placed: PlacedShow[],
+  worldX: number,
+  worldY: number,
+  size: import("@/types").ShowSize,
+): { size: import("@/types").ShowSize; opacityPenalty: number } | null {
+  let maxOverlap = 0;
+  for (const p of placed) {
+    const dims = ICON_SIZES[size];
+    const ratio = overlapRatio(p, worldX, worldY, dims.w, dims.h);
+    if (ratio > maxOverlap) maxOverlap = ratio;
+  }
+
+  if (maxOverlap > 0.7) return null; // reject — too much overlap
+  if (maxOverlap > 0.4) {
+    // Heavy overlap: shrink by 2 levels, opacity penalty
+    const newSize = Math.max(1, size - 2) as import("@/types").ShowSize;
+    return { size: newSize, opacityPenalty: 0.3 };
+  }
+  if (maxOverlap > 0.2) {
+    // Light overlap: shrink by 1 level, slight opacity penalty
+    const newSize = Math.max(1, size - 1) as import("@/types").ShowSize;
+    return { size: newSize, opacityPenalty: 0.15 };
+  }
+  // No significant overlap
+  return { size, opacityPenalty: 0 };
+}
+
+export interface DustParticle {
+  id: string;
+  worldX: number;
+  worldY: number;
+  size: number; // 3-10px
+  color: string;
+  opacity: number;
 }
 
 export interface ZoomLevelShows {
   z0: import("@/types").Show[];
   z1: import("@/types").Show[];
   z2: import("@/types").Show[];
+  dust: DustParticle[];
 }
 
 export function backendMoviesToShows(
@@ -299,18 +355,25 @@ export function backendMoviesToShows(
 ): ZoomLevelShows {
   const WORLD_W = 1600;
   const WORLD_H = 2200;
-  // Radius per genre — tighter packing, shows stay close to center
-  const SUBREGION_RADIUS = 200;
-  const SHOWS_Z0 = 30;
-  const SHOWS_Z1 = 60;
-  const SHOWS_Z2 = 90;
+  // Radius per genre — large so genres overlap at boundaries and fill the canvas
+  const SUBREGION_RADIUS = 450;
+  const SHOWS_Z0 = 12;
+  const SHOWS_Z1 = 25;
+  const SHOWS_Z2 = 45;
   // Zoom scales used for collision detection (simulates how far apart shows appear)
   const ZOOM_SCALE_1 = 2.5;
   const ZOOM_SCALE_2 = 5;
 
+  const DUST_COLORS = [
+    "#b56cff", "#6fa8e8", "#3fb89e", "#ff9f43", "#ff7a6c",
+    "#e6b04a", "#7c8a99", "#e056a0", "#c44040", "#8b5cf6",
+    "#34d399", "#f472b6", "#60a5fa", "#fbbf24",
+  ];
+
   const z0Shows: import("@/types").Show[] = [];
   const z1Shows: import("@/types").Show[] = [];
   const z2Shows: import("@/types").Show[] = [];
+  const dustParticles: DustParticle[] = [];
 
   for (let gi = 0; gi < topGenres.length; gi++) {
     const g = topGenres[gi];
@@ -347,46 +410,61 @@ export function backendMoviesToShows(
       return { movie, relX, relY, worldX, worldY, size, idx: i };
     });
 
-    // --- Z0 (zoom level 0): greedy non-overlapping at 1× scale, max 30 ---
+    // --- Z0 (zoom level 0): resolve collisions smartly, max per genre ---
     const placedZ0: PlacedShow[] = [];
-    const selectedZ0: typeof positioned = [];
+    const selectedZ0: { movie: typeof positioned[0]["movie"]; relX: number; relY: number; worldX: number; worldY: number; size: import("@/types").ShowSize; idx: number; opacityPenalty: number }[] = [];
     for (const p of positioned) {
       if (selectedZ0.length >= SHOWS_Z0) break;
-      const dims = ICON_SIZES[p.size];
-      const hasOverlap = placedZ0.some((placed) => overlaps(placed, p.worldX, p.worldY, dims.w, dims.h));
-      if (!hasOverlap) {
+      const result = resolveCollision(placedZ0, p.worldX, p.worldY, p.size);
+      if (result) {
+        const dims = ICON_SIZES[result.size];
         placedZ0.push({ worldX: p.worldX, worldY: p.worldY, w: dims.w, h: dims.h });
-        selectedZ0.push(p);
+        selectedZ0.push({ ...p, size: result.size, opacityPenalty: result.opacityPenalty });
       }
     }
 
-    // --- Z1 (zoom level 1): at 2.5× scale, collision sizes shrink by 2.5 ---
+    // --- Z1 (zoom level 1): at 2.5× scale ---
     const placedZ1: PlacedShow[] = [];
-    const selectedZ1: typeof positioned = [];
+    const selectedZ1: typeof selectedZ0 = [];
     for (const p of positioned) {
       if (selectedZ1.length >= SHOWS_Z1) break;
       const dims = ICON_SIZES[p.size];
       const scaledW = dims.w / ZOOM_SCALE_1;
       const scaledH = dims.h / ZOOM_SCALE_1;
-      const hasOverlap = placedZ1.some((placed) => overlaps(placed, p.worldX, p.worldY, scaledW, scaledH));
-      if (!hasOverlap) {
+      // Use scaled dims for overlap check at this zoom
+      let maxOverlap = 0;
+      for (const placed of placedZ1) {
+        const ratio = overlapRatio(placed, p.worldX, p.worldY, scaledW, scaledH);
+        if (ratio > maxOverlap) maxOverlap = ratio;
+      }
+      if (maxOverlap <= 0.7) {
+        const penalty = maxOverlap > 0.4 ? 0.3 : maxOverlap > 0.2 ? 0.15 : 0;
+        const sizeReduction = maxOverlap > 0.4 ? 2 : maxOverlap > 0.2 ? 1 : 0;
+        const newSize = Math.max(1, p.size - sizeReduction) as import("@/types").ShowSize;
         placedZ1.push({ worldX: p.worldX, worldY: p.worldY, w: scaledW, h: scaledH });
-        selectedZ1.push(p);
+        selectedZ1.push({ ...p, size: newSize, opacityPenalty: penalty });
       }
     }
 
-    // --- Z2 (zoom level 2): at 5× scale, collision sizes shrink by 5 ---
+    // --- Z2 (zoom level 2): at 5× scale ---
     const placedZ2: PlacedShow[] = [];
-    const selectedZ2: typeof positioned = [];
+    const selectedZ2: typeof selectedZ0 = [];
     for (const p of positioned) {
       if (selectedZ2.length >= SHOWS_Z2) break;
       const dims = ICON_SIZES[p.size];
       const scaledW = dims.w / ZOOM_SCALE_2;
       const scaledH = dims.h / ZOOM_SCALE_2;
-      const hasOverlap = placedZ2.some((placed) => overlaps(placed, p.worldX, p.worldY, scaledW, scaledH));
-      if (!hasOverlap) {
+      let maxOverlap = 0;
+      for (const placed of placedZ2) {
+        const ratio = overlapRatio(placed, p.worldX, p.worldY, scaledW, scaledH);
+        if (ratio > maxOverlap) maxOverlap = ratio;
+      }
+      if (maxOverlap <= 0.7) {
+        const penalty = maxOverlap > 0.4 ? 0.3 : maxOverlap > 0.2 ? 0.15 : 0;
+        const sizeReduction = maxOverlap > 0.4 ? 2 : maxOverlap > 0.2 ? 1 : 0;
+        const newSize = Math.max(1, p.size - sizeReduction) as import("@/types").ShowSize;
         placedZ2.push({ worldX: p.worldX, worldY: p.worldY, w: scaledW, h: scaledH });
-        selectedZ2.push(p);
+        selectedZ2.push({ ...p, size: newSize, opacityPenalty: penalty });
       }
     }
 
@@ -394,18 +472,39 @@ export function backendMoviesToShows(
     for (const p of selectedZ0) z0Shows.push(makeShow(p, catKey, g.genre));
     for (const p of selectedZ1) z1Shows.push(makeShow(p, catKey, g.genre));
     for (const p of selectedZ2) z2Shows.push(makeShow(p, catKey, g.genre));
+
+    // Generate dust particles — keep ~10% of movie positions
+    for (let i = 0; i < positioned.length; i++) {
+      const hash = ((i * 2654435761 + gi * 40503) >>> 0) % 10;
+      if (hash >= 1) continue; // skip 90%, keep 10%
+      const p = positioned[i];
+      const seed = (i * 7 + gi * 31);
+      const offsetX = ((seed * 17) % 61) - 30;
+      const offsetY = ((seed * 23) % 61) - 30;
+      const dustSize = 3 + (seed % 8); // 3-10px width
+      const colorIdx = (seed * 11) % DUST_COLORS.length;
+      const dustOpacity = 0.15 + ((seed % 20) / 100); // 0.15-0.35
+      dustParticles.push({
+        id: `dust-${gi}-${i}`,
+        worldX: p.worldX + offsetX,
+        worldY: p.worldY + offsetY,
+        size: dustSize,
+        color: DUST_COLORS[colorIdx],
+        opacity: dustOpacity,
+      });
+    }
   }
 
-  log(`Z0: ${z0Shows.length}, Z1: ${z1Shows.length}, Z2: ${z2Shows.length} shows across ${topGenres.length} genres`);
-  return { z0: z0Shows, z1: z1Shows, z2: z2Shows };
+  log(`Z0: ${z0Shows.length}, Z1: ${z1Shows.length}, Z2: ${z2Shows.length} shows, ${dustParticles.length} dust particles`);
+  return { z0: z0Shows, z1: z1Shows, z2: z2Shows, dust: dustParticles };
 }
 
 function makeShow(
-  p: { movie: Movie; relX: number; relY: number; worldX: number; worldY: number; size: import("@/types").ShowSize; idx: number },
+  p: { movie: Movie; relX: number; relY: number; worldX: number; worldY: number; size: import("@/types").ShowSize; idx: number; opacityPenalty?: number },
   catKey: string,
   genre: string,
 ): import("@/types").Show {
-  const { movie, relX, relY, worldX, worldY, size, idx } = p;
+  const { movie, relX, relY, worldX, worldY, size, idx, opacityPenalty } = p;
   return {
     id: `${catKey}-${idx}`,
     title: movie.movie_name,
@@ -420,6 +519,7 @@ function makeShow(
     worldX,
     worldY,
     size,
+    opacityPenalty: opacityPenalty || 0,
     poster: movie.image_link ? `${movie.image_link}` : "",
     gradient: `linear-gradient(135deg, hsl(${(idx * 37) % 360}, 60%, 30%), hsl(${(idx * 37 + 60) % 360}, 50%, 20%))`,
     language: movie.language || "en",

@@ -1,4 +1,4 @@
-export type ShowSize = "l" | "m" | "s";
+export type ShowSize = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 
 export type CategoryKey = string;
 
@@ -20,6 +20,7 @@ export interface Show {
   /** Computed absolute world position — set by frontend */
   worldY: number;
   size: ShowSize;
+  opacityPenalty?: number;
   poster: string;
   gradient: string;
   language: string;
