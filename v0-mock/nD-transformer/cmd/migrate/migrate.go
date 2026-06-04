@@ -8,6 +8,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/gocql/gocql"
@@ -39,6 +40,7 @@ type MovieData struct {
 
 func main() {
 	// 1. Load movie.json
+	fmt.Println("[1/5] Loading movie.json...")
 	jsonFile, err := os.ReadFile("../json-to-embedding-vector/movie.json")
 	if err != nil {
 		log.Fatalf("Failed to read movie.json: %v", err)
@@ -47,6 +49,7 @@ func main() {
 	if err := json.Unmarshal(jsonFile, &moviesJSON); err != nil {
 		log.Fatalf("Failed to parse movie.json: %v", err)
 	}
+	fmt.Printf("  Loaded %d movies from movie.json\n", len(moviesJSON))
 
 	// Build a set of movie names and their tags from JSON
 	movieTags := make(map[string][]string)
@@ -57,12 +60,15 @@ func main() {
 	}
 
 	// 2. Load CSV and index by title
+	fmt.Println("[2/5] Loading CSV...")
 	csvData, err := loadCSV("../json-to-embedding-vector/TMDB_movie_dataset_v11.csv")
 	if err != nil {
 		log.Fatalf("Failed to load CSV: %v", err)
 	}
+	fmt.Printf("  Loaded %d movies from CSV\n", len(csvData))
 
 	// 3. Build MovieData for each movie in movie.json
+	fmt.Println("[3/5] Building movie data...")
 	var movies []MovieData
 	for name, tags := range movieTags {
 		md := MovieData{
@@ -84,15 +90,10 @@ func main() {
 			md.Genres = parseCSVList(row["genres"])
 		}
 
-		// Build top-level flag map
+		// Build top-level flag map (genres only, not keywords)
 		md.Flags = make(map[string]bool)
 		for _, g := range md.Genres {
 			if col := sanitizeColumnName(g); col != "" {
-				md.Flags[col] = true
-			}
-		}
-		for _, k := range md.Keywords {
-			if col := sanitizeColumnName(k); col != "" {
 				md.Flags[col] = true
 			}
 		}
@@ -108,7 +109,10 @@ func main() {
 		}
 	}
 
+	fmt.Printf("  Built %d movies, %d unique flag columns\n", len(movies), len(allFlagColumns))
+
 	// 4. Connect to Cassandra
+	fmt.Println("[4/5] Connecting to Cassandra...")
 	cluster := gocql.NewCluster("127.0.0.1")
 	cluster.Port = 9042
 	cluster.Consistency = gocql.Quorum
@@ -128,15 +132,19 @@ func main() {
 		log.Fatalf("Failed to create keyspace: %v", err)
 	}
 	sessSystem.Close()
+	fmt.Println("  Keyspace ready")
 
 	// Connect to cinebula keyspace
+	fmt.Println("  Connecting to cinebula keyspace...")
 	session, err := createSessionWithKeyspace(cluster, "cinebula")
 	if err != nil {
 		log.Fatalf("Failed to connect to cinebula keyspace: %v", err)
 	}
 	defer session.Close()
+	fmt.Println("  Connected to cinebula keyspace")
 
 	// Create base table
+	fmt.Println("  Creating table...")
 	err = session.Query(`
 		CREATE TABLE IF NOT EXISTS movies (
 			movie_name text PRIMARY KEY,
@@ -159,13 +167,23 @@ func main() {
 	}
 
 	// Add top-level boolean columns for each genre/keyword flag
+	fmt.Printf("  Adding %d flag columns (concurrent)...\n", len(allFlagColumns))
+	var wg sync.WaitGroup
+	sem := make(chan struct{}, 10) // limit concurrency to 10
 	for col := range allFlagColumns {
-		q := fmt.Sprintf("ALTER TABLE movies ADD %s boolean", col)
-		// Ignore error if column already exists
-		_ = session.Query(q).Exec()
+		wg.Add(1)
+		go func(col string) {
+			defer wg.Done()
+			sem <- struct{}{}
+			defer func() { <-sem }()
+			q := fmt.Sprintf("ALTER TABLE movies ADD %s boolean", col)
+			_ = session.Query(q).Exec()
+		}(col)
 	}
+	wg.Wait()
+	fmt.Println("  Flag columns ready")
 
-	fmt.Printf("Inserting %d movies into Cassandra...\n", len(movies))
+	fmt.Printf("[5/5] Inserting %d movies into Cassandra...\n", len(movies))
 
 	// 5. Insert/overwrite data
 	baseCols := []string{
@@ -174,7 +192,8 @@ func main() {
 		"language", "imdb_rating", "synopsis", "keywords",
 	}
 
-	for _, m := range movies {
+	for i, m := range movies {
+		fmt.Printf("  [%d/%d] Inserting %s...\n", i+1, len(movies), m.MovieName)
 		cols := make([]string, len(baseCols))
 		copy(cols, baseCols)
 		vals := []interface{}{

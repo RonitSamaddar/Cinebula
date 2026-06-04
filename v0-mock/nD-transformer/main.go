@@ -568,14 +568,21 @@ func handleMovies(w http.ResponseWriter, r *http.Request) {
 	var conditions []string
 	var values []interface{}
 
-	// Genre and keyword filters use boolean flag columns
+	// Genre filters use boolean flag columns
 	for _, g := range splitAndSanitize(genreParam) {
 		conditions = append(conditions, fmt.Sprintf("%s = ?", g))
 		values = append(values, true)
 	}
-	for _, k := range splitAndSanitize(keywordParam) {
-		conditions = append(conditions, fmt.Sprintf("%s = ?", k))
-		values = append(values, true)
+
+	// Keyword filter: keywords is list<text>, use CONTAINS
+	if keywordParam != "" {
+		for _, k := range strings.Split(keywordParam, ",") {
+			k = strings.TrimSpace(k)
+			if k != "" {
+				conditions = append(conditions, "keywords CONTAINS ?")
+				values = append(values, k)
+			}
+		}
 	}
 
 	// Language filter uses the language column with CONTAINS-like matching
