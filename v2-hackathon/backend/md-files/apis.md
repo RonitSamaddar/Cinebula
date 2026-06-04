@@ -174,19 +174,20 @@ for genre in top_genres:
 
 ### `GET /top-genres`
 
-Returns the user's top-9 genres with priority weights.
+Returns the authenticated user's top-9 genres with priority weights.  
 Call this first to know which genres to fetch and in what order.
 
-**Query params (all optional):**
+**Header:** `Authorization: Bearer <JWT>`
+
+**Optional query param:**
 
 | Param      | Type   | Description                                              |
 |------------|--------|----------------------------------------------------------|
-| `userId`   | int    | User ID from login — looks up device_id from users.csv   |
-| `deviceId` | string | ACR device UUID — takes priority over userId             |
+| `deviceId` | string | ACR device UUID — overrides the device_id on the account |
 
 **Resolution order:**
-1. `deviceId` provided → ACR watch-history lookup → weighted genres
-2. `userId` provided → resolve `device_id` from user record → ACR lookup
+1. `deviceId` query param provided → ACR watch-history lookup → weighted genres
+2. No `deviceId` param → resolve `device_id` from the JWT user's record → ACR lookup
 3. No `device_id` resolvable (or no ACR data found) → **fallback**: top-9 from `genreRankMatrix`, weights `1.0 → 0.2`
 
 **Response `200` — ACR-derived (cases 1 & 2):**
@@ -222,34 +223,75 @@ Call this first to know which genres to fetch and in what order.
 
 > Fallback genres are ranked by TMDB content volume (rarest genres are boosted via `genreWeightMatrix`).
 
+**Errors:** `401` missing / invalid token · `500` if `data-consts.json` cannot be read.
+
+---
+
+## 5. Filters
+
+### `GET /api/filters`
+
+Returns all available filter dimensions and their values. Use these to populate filter UI dropdowns.
+No authentication required — values are static and sourced from `data-consts.json`.
+
+**Response `200`:**
+```json
+{
+  "filters": [
+    {
+      "id": "genre",
+      "label": "Genre",
+      "values": ["Action", "Adventure", "Animation", "Comedy", "Crime", "Documentary", "Drama", "..."]
+    },
+    {
+      "id": "language",
+      "label": "Language",
+      "values": ["Arabic", "Bengali", "Chinese", "English", "French", "Hindi", "Japanese", "..."]
+    },
+    {
+      "id": "cast",
+      "label": "Cast",
+      "values": ["Bruce Willis", "Matt Damon", "Tom Cruise", "Tom Hanks", "Brad Pitt", "..."]
+    }
+  ]
+}
+```
+
+| Field    | Type     | Description                                      |
+|----------|----------|--------------------------------------------------|
+| `id`     | string   | Machine identifier for the filter (`genre`, `language`, `cast`) |
+| `label`  | string   | Human-readable label for the filter              |
+| `values` | []string | All available selectable values for this filter  |
+
 **Errors:** `500` if `data-consts.json` cannot be read.
 
 ---
 
-## 5. Movie Search (Meilisearch)
+## 6. Movie Search (Meilisearch)
 
 ### `GET /search`
 
 Typo-tolerant, ranked full-text search over all 1,907 movie titles.
 Returns matching movies with their stitched **(x, y)** coordinates inside the user's genre space.
 
+**Header:** `Authorization: Bearer <JWT>`
+
 **Query params:**
 
-| Param    | Type   | Required | Description                                |
-|----------|--------|----------|-----------------------------------------|
-| `q`      | string | **Yes**  | Search query (partial or full title)    |
-| `userId` | int    | **Yes**  | User ID — used to resolve genre space   |
+| Param | Type   | Required | Description                          |
+|-------|--------|----------|--------------------------------------|
+| `q`   | string | **Yes**  | Search query (partial or full title) |
 
 **Example requests:**
 ```bash
 # Basic search
-curl 'http://localhost:8080/search?q=inception&userId=2'
+curl 'http://localhost:8080/search?q=inception' -H 'Authorization: Bearer $TOKEN'
 
 # Typo-tolerant — still finds "Inception"
-curl 'http://localhost:8080/search?q=inceptoin&userId=2'
+curl 'http://localhost:8080/search?q=inceptoin' -H 'Authorization: Bearer $TOKEN'
 
 # Prefix match
-curl 'http://localhost:8080/search?q=dark+knight&userId=2'
+curl 'http://localhost:8080/search?q=dark+knight' -H 'Authorization: Bearer $TOKEN'
 ```
 
 **Response `200`:**
@@ -282,7 +324,7 @@ curl 'http://localhost:8080/search?q=dark+knight&userId=2'
 
 **Powered by:** Meilisearch v1.45.2 — index is populated at server startup from `data-dirs/titles/titles.json` (1,907 documents, ~1–2 MB on disk).
 
-**Errors:** `400` missing `q` or invalid `userId` · `404` user not found · `500` Meilisearch unavailable.
+**Errors:** `400` missing `q` · `401` missing / invalid token · `500` Meilisearch unavailable.
 
 ---
 

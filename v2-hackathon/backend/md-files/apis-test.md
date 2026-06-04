@@ -89,35 +89,42 @@ Verify: `user_id` matches `$USER_ID`, all fields present.
 
 ## Step 3 — GET /top-genres
 
-### Case 1 — By userId (resolves device_id → ACR data)
+### Case 1 — By JWT token (resolves device_id → ACR data)
 
 ```bash
-curl -s "http://localhost:8080/top-genres?userId=2" | python3 -m json.tool
+curl -s "http://localhost:8080/top-genres" \
+  -H "Authorization: Bearer $TOKEN" | python3 -m json.tool
 ```
 
 Expected `200`: ACR-derived weights, `genres` non-empty, `weight` values in (0, 1] descending.
 
 ```bash
-# Check all 4 ACR users
+# Check all 4 ACR users (login each to capture token, then call /top-genres)
 for id in 1 2 3 4; do
+  TOKEN_I=$(curl -s -X POST http://localhost:8080/auth/login \
+    -H "Content-Type: application/json" \
+    -d "{\"user_id\": $id}" | python3 -c "import sys,json; print(json.load(sys.stdin)['token'])" 2>/dev/null)
   echo -n "userId=$id → "
-  curl -s "http://localhost:8080/top-genres?userId=$id" | \
+  curl -s "http://localhost:8080/top-genres" \
+    -H "Authorization: Bearer $TOKEN_I" | \
     python3 -c "import sys,json; d=json.load(sys.stdin); print(f'{len(d[\"genres\"])} genres, top: {d[\"genres\"][0][\"genre\"]} ({d[\"genres\"][0][\"weight\"]})')"
 done
 ```
 
-### Case 2 — By deviceId directly
+### Case 2 — By deviceId directly (optional override)
 
 ```bash
-curl -s "http://localhost:8080/top-genres?deviceId=46426f9c-ssss-4593-9399-21798b0d1148" | python3 -m json.tool
+curl -s "http://localhost:8080/top-genres?deviceId=46426f9c-ssss-4593-9399-21798b0d1148" \
+  -H "Authorization: Bearer $TOKEN" | python3 -m json.tool
 ```
 
 Expected `200`: same ACR-derived result as `userId=1`.
 
-### Case 3 — No params (fallback to genreRankMatrix)
+### Case 3 — No ACR data (fallback to genreRankMatrix)
 
 ```bash
-curl -s "http://localhost:8080/top-genres" | python3 -m json.tool
+curl -s "http://localhost:8080/top-genres" \
+  -H "Authorization: Bearer $TOKEN" | python3 -m json.tool
 ```
 
 Expected `200`: fixed fallback weights `1.0 → 0.2`, top genre is `Drama`.
@@ -133,13 +140,15 @@ Expected `200`: fixed fallback weights `1.0 → 0.2`, top genre is `Drama`.
 }
 ```
 
-### Case 3b — userId with no ACR data (fallback)
+### Case 3b — User with no ACR data (fallback)
 
+Login as a user with no device_id (e.g. anonymous guest), then call:
 ```bash
-curl -s "http://localhost:8080/top-genres?userId=100" | python3 -m json.tool
+curl -s "http://localhost:8080/top-genres" \
+  -H "Authorization: Bearer $TOKEN" | python3 -m json.tool
 ```
 
-Expected `200`: same fixed fallback (user 100 has no device_id).
+Expected `200`: same fixed fallback (user has no device_id).
 
 ---
 
@@ -148,7 +157,8 @@ Expected `200`: same fixed fallback (user 100 has no device_id).
 ### Case 1 — Exact title match
 
 ```bash
-curl -s "http://localhost:8080/search?q=inception&userId=2" | python3 -m json.tool
+curl -s "http://localhost:8080/search?q=inception" \
+  -H "Authorization: Bearer $TOKEN" | python3 -m json.tool
 ```
 
 Expected `200`: `count` ≥ 1, "Inception" in results with valid `x`/`y` coordinates.
@@ -156,7 +166,8 @@ Expected `200`: `count` ≥ 1, "Inception" in results with valid `x`/`y` coordin
 ### Case 2 — Typo-tolerant search
 
 ```bash
-curl -s "http://localhost:8080/search?q=inceptoin&userId=2" | python3 -m json.tool
+curl -s "http://localhost:8080/search?q=inceptoin" \
+  -H "Authorization: Bearer $TOKEN" | python3 -m json.tool
 ```
 
 Expected `200`: Meilisearch corrects the typo and still returns "Inception".
@@ -164,7 +175,8 @@ Expected `200`: Meilisearch corrects the typo and still returns "Inception".
 ### Case 3 — Prefix / partial match
 
 ```bash
-curl -s "http://localhost:8080/search?q=dark+knight&userId=2" | python3 -m json.tool
+curl -s "http://localhost:8080/search?q=dark+knight" \
+  -H "Authorization: Bearer $TOKEN" | python3 -m json.tool
 ```
 
 Expected `200`: "The Dark Knight" and variants in results.
@@ -172,7 +184,8 @@ Expected `200`: "The Dark Knight" and variants in results.
 ### Case 4 — Fuzzy multi-word
 
 ```bash
-curl -s "http://localhost:8080/search?q=star+wars&userId=2" | python3 -c "
+curl -s "http://localhost:8080/search?q=star+wars" \
+  -H "Authorization: Bearer $TOKEN" | python3 -c "
 import sys, json
 d = json.load(sys.stdin)
 print(f'count: {d[\"count\"]}')
@@ -186,26 +199,28 @@ Expected `200`: Star Wars films returned with coordinates inside user 2's genre 
 ### Case 5 — Missing `q` param (400)
 
 ```bash
-curl -s "http://localhost:8080/search?userId=2"
+curl -s "http://localhost:8080/search" \
+  -H "Authorization: Bearer $TOKEN"
 ```
 
 Expected `400`: `q is required`
 
-### Case 6 — Invalid userId (400)
+### Case 6 — Missing token (401)
 
 ```bash
-curl -s "http://localhost:8080/search?q=inception&userId=abc"
+curl -s "http://localhost:8080/search?q=inception"
 ```
 
-Expected `400`: `invalid userId`
+Expected `401`: `missing or invalid Authorization header`
 
-### Case 7 — Non-existent user (404)
+### Case 7 — Invalid token (401)
 
 ```bash
-curl -s "http://localhost:8080/search?q=inception&userId=99999"
+curl -s "http://localhost:8080/search?q=inception" \
+  -H "Authorization: Bearer invalid.token.here"
 ```
 
-Expected `404`: `user not found`
+Expected `401`: `invalid token`
 
 ---
 
@@ -279,7 +294,8 @@ Simulates what the phone does on first launch for user 2 (Pratikesh).
 
 ```bash
 # Get top genres
-GENRES=$(curl -s "http://localhost:8080/top-genres?userId=2" | \
+GENRES=$(curl -s "http://localhost:8080/top-genres" \
+  -H "Authorization: Bearer $TOKEN" | \
   python3 -c "import sys,json; d=json.load(sys.stdin); print(' '.join(g['genre'] for g in d['genres']))")
 echo "Top genres: $GENRES"
 

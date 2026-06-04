@@ -196,6 +196,42 @@
     "Sports",
     "Family",
     "War"
+  ],
+  "languages":[
+    "Arabic", "Bengali", "Bosnian", "Chinese", "Danish", "German", "Greek", "English", "Spanish", "Persian", "French", "Hebrew", "Hindi", "Hungarian", "Indonesian", "Italian", "Japanese", "Kannada", "Korean", "Malayalam", "Marathi", "Dutch", "Punjabi", "Polish", "Portuguese", "Russian", "Serbo-Croatian", "Serbian", "Swedish", "Tamil", "Telugu", "Thai", "Tagalog", "Tswana", "Turkish"
+  ],
+
+  "cast": [
+    "Bruce Willis",
+    "Matt Damon",
+    "Tom Cruise",
+    "Tom Hanks",
+    "Brad Pitt",
+    "Robin Williams",
+    "Robert De Niro",
+    "Harrison Ford",
+    "Keanu Reeves",
+    "Johnny Depp",
+    "Scarlett Johansson",
+    "Leonardo DiCaprio",
+    "Mel Gibson",
+    "Christian Bale",
+    "Charlie Chaplin",
+    "Morgan Freeman",
+    "Jake Gyllenhaal",
+    "Sean Connery",
+    "Ryan Gosling",
+    "Jack Nicholson",
+    "Al Pacino",
+    "Jason Statham",
+    "Ralph Fiennes",
+    "Clint Eastwood",
+    "Keira Knightley",
+    "Nicolas Cage",
+    "Michael Caine",
+    "Anthony Hopkins",
+    "Kate Winslet",
+    "Bill Murray"
   ]
 
 }

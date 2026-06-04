@@ -6,6 +6,7 @@ import (
 
 	"cinebula/backend/internal/auth"
 	dataservice "cinebula/backend/internal/data-service"
+	"cinebula/backend/internal/filter"
 	"cinebula/backend/internal/search"
 	topgenres "cinebula/backend/internal/top-genres"
 	"cinebula/backend/internal/user"
@@ -17,14 +18,17 @@ func main() {
 	// Auth
 	mux.HandleFunc("POST /auth/login", auth.LoginHandler)
 
-	// Top genres — user's ranked genres with priority weights
-	mux.HandleFunc("GET /top-genres", topgenres.Handler)
+	// Top genres — user's ranked genres with priority weights (JWT required)
+	mux.Handle("GET /top-genres", auth.Middleware(http.HandlerFunc(topgenres.Handler)))
 
 	// Movies — proxy to TKACR data service (genre / keyword / language / movie_name)
 	mux.HandleFunc("GET /api/movies", dataservice.Handler)
 
-	// Search — typo-tolerant title search via Meilisearch, returns stitched (x,y) coords
-	mux.HandleFunc("GET /search", search.Handler)
+	// Filters — available filter dimensions (genre, language, cast)
+	mux.HandleFunc("GET /api/filters", filter.Handler)
+
+	// Search — typo-tolerant title search via Meilisearch, returns stitched (x,y) coords (JWT required)
+	mux.Handle("GET /search", auth.Middleware(http.HandlerFunc(search.Handler)))
 
 	// User profile (JWT protected)
 	mux.Handle("GET /user/profile", auth.Middleware(http.HandlerFunc(user.ProfileHandler)))

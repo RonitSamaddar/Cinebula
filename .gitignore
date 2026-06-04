@@ -105,5 +105,8 @@ app.*.map.json
 *.jks
 *.keystore
 
+# Meilisearch runtime database (LMDB — written on every run, not source files)
+**/data-dirs/meili-db/
+**/meilisearch/
 
 .chrome-profile/

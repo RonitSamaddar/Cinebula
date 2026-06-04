@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"os"
 	"sort"
-	"strconv"
 
 	acrprocessor "cinebula/backend/internal/acr-data-processor"
+	"cinebula/backend/internal/auth"
 	"cinebula/backend/internal/user"
 )
 
@@ -16,21 +16,20 @@ const dataConstsPath = "./data-dirs/data-consts.json"
 
 // Handler handles GET /top-genres
 //
-// Optional query params:
-//   deviceId=<uuid>  — match against ACR data by device ID
-//   userId=<int>     — look up user record; if the user has a device_id, use ACR data
+// Requires a valid Bearer JWT (set by auth.Middleware).
+// Optional query param:
+//   deviceId=<uuid>  — override; match against ACR data by device ID directly
 //
 // Resolution order:
-//  1. If deviceId provided (or userId resolves to a user with a device_id) →
-//     ACR lookup by device_id; fallback to case 2 on miss.
-//  2. No device_id resolvable → top-9 from genreRankMatrix,
+//  1. If deviceId query param provided → ACR lookup by that device_id.
+//  2. Else resolve device_id from the authenticated user's record.
+//  3. No device_id resolvable → top-9 from genreRankMatrix,
 //     weights 1.0 (rank 1) … 0.2 (rank 9) in 0.1 steps.
 func Handler(w http.ResponseWriter, r *http.Request) {
 	deviceID := r.URL.Query().Get("deviceId")
-	userID := 0
-	if s := r.URL.Query().Get("userId"); s != "" {
-		userID, _ = strconv.Atoi(s)
-	}
+
+	// userID comes from the JWT injected by auth.Middleware.
+	userID, _ := r.Context().Value(auth.ContextKeyUserID).(int)
 
 	// Resolve device_id from the user record if not supplied directly.
 	if deviceID == "" && userID > 0 {
