@@ -20,6 +20,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/gocql/gocql"
@@ -475,6 +476,45 @@ func findSimilarMovies(movie string, k int) ([]map[string]interface{}, error) {
 // HTTP API Server
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Response Cache
+// ---------------------------------------------------------------------------
+
+var (
+	responseCache   = make(map[string][]byte)
+	responseCacheMu sync.RWMutex
+)
+
+// serveFromCache checks the local map for a cached response and writes it if found.
+func serveFromCache(w http.ResponseWriter, cacheKey string) bool {
+	responseCacheMu.RLock()
+	data, ok := responseCache[cacheKey]
+	responseCacheMu.RUnlock()
+	if ok {
+		fmt.Printf("  ✓ cache hit: %s\n", cacheKey)
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(data)
+		return true
+	}
+	return false
+}
+
+// cacheAndRespond marshals the payload to JSON, stores it in the local map, and writes it.
+func cacheAndRespond(w http.ResponseWriter, cacheKey string, payload interface{}) {
+	data, err := json.Marshal(payload)
+	if err != nil {
+		jsonError(w, "failed to encode response", http.StatusInternalServerError)
+		return
+	}
+	responseCacheMu.Lock()
+	responseCache[cacheKey] = data
+	responseCacheMu.Unlock()
+	fmt.Printf("  ✓ cached: %s (%d bytes)\n", cacheKey, len(data))
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
+}
+
 // corsMiddleware adds CORS headers to all responses.
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -548,6 +588,11 @@ type MovieResponse struct {
 // All filters are optional and combined with AND logic. Multiple values for the same
 // filter can be comma-separated (e.g. genre=action,comedy) and are OR'd within the group.
 func handleMovies(w http.ResponseWriter, r *http.Request) {
+	cacheKey := "movies?" + r.URL.RawQuery
+	if serveFromCache(w, cacheKey) {
+		return
+	}
+
 	if cassandraSession == nil {
 		jsonError(w, "Cassandra not connected", http.StatusServiceUnavailable)
 		return
@@ -666,8 +711,7 @@ func handleMovies(w http.ResponseWriter, r *http.Request) {
 	// fmt.Printf("Query: %d movies from Cassandra, %d have vectors\n", len(movies), len(vectors))
 
 	if len(vectors) < 2 {
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]interface{}{
+		cacheAndRespond(w, cacheKey, map[string]interface{}{
 			"count":  len(movies),
 			"movies": movies,
 		})
@@ -693,8 +737,7 @@ func handleMovies(w http.ResponseWriter, r *http.Request) {
 		responseMovies = append(responseMovies, movies[idx])
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]interface{}{
+	cacheAndRespond(w, cacheKey, map[string]interface{}{
 		"count":  len(responseMovies),
 		"movies": responseMovies,
 	})
@@ -732,6 +775,11 @@ func sanitizeGenreColumn(s string) string {
 	return result
 }
 func handleSimilar(w http.ResponseWriter, r *http.Request) {
+	cacheKey := "similar?" + r.URL.RawQuery
+	if serveFromCache(w, cacheKey) {
+		return
+	}
+
 	movie := r.URL.Query().Get("movie")
 	movie = strings.ToLower(movie)
 	if movie == "" {
@@ -848,8 +896,7 @@ func handleSimilar(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]interface{}{
+	cacheAndRespond(w, cacheKey, map[string]interface{}{
 		"movie":  movie,
 		"k":      k,
 		"count":  len(movies),
