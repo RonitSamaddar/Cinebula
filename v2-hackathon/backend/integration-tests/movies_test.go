@@ -19,6 +19,7 @@ func skipOn502(t *testing.T, resp *http.Response) {
 // movieItem is the common shape returned by /api/movies and /api/similar.
 type movieItem struct {
 	MovieName   string   `json:"movie_name"`
+	ImageLink   string   `json:"image_link"`
 	X           float64  `json:"x"`
 	Y           float64  `json:"y"`
 	Priority    float64  `json:"priority"`

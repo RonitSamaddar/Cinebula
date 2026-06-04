@@ -6,3 +6,5 @@ user_id,name,age,gender,top_genres,created_at,device_id
 100,Test,25,male,"[""Action"",""Drama"",""Comedy""]",2026-06-04T10:04:00Z,
 101,guest-101,0,,[],2026-06-04T10:16:17Z,
 102,guest-102,0,,[],2026-06-04T16:40:17Z,LG_OLED65C3_001
+103,guest-103,0,,[],2026-06-04T18:02:03Z,
+104,IntegrationTestUser-Idempotent,0,,[],2026-06-04T18:02:03Z,

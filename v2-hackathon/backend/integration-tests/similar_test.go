@@ -1,6 +1,7 @@
 package integrationtest
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -110,4 +111,88 @@ func TestSimilar_MissingMovieParam(t *testing.T) {
 	resp := get(t, "/api/similar", nil)
 	defer resp.Body.Close()
 	assertStatus(t, resp, 400)
+}
+
+// TestSimilar_UppercaseMovieName checks that an uppercase movie name still returns results
+// (the backend lowercases it before calling the upstream API).
+func TestSimilar_UppercaseMovieName(t *testing.T) {
+	resp := get(t, "/api/similar?movie=INCEPTION&k=5", nil)
+	skipOn502(t, resp)
+	assertStatus(t, resp, 200)
+
+	var result moviesResponse
+	decodeJSON(t, resp, &result)
+
+	if result.Count == 0 {
+		t.Skip("no similar movies returned for INCEPTION (uppercase)")
+	}
+	if len(result.Movies) == 0 {
+		t.Error("count > 0 but movies array is empty")
+	}
+}
+
+// TestSimilar_MixedCaseMovieName checks mixed case input works.
+func TestSimilar_MixedCaseMovieName(t *testing.T) {
+	resp := get(t, "/api/similar?movie=InCePtIoN&k=5", nil)
+	skipOn502(t, resp)
+	assertStatus(t, resp, 200)
+
+	var result moviesResponse
+	decodeJSON(t, resp, &result)
+
+	if result.Count == 0 {
+		t.Skip("no similar movies returned for InCePtIoN (mixed case)")
+	}
+	if len(result.Movies) == 0 {
+		t.Error("count > 0 but movies array is empty")
+	}
+}
+
+// TestSimilar_ImageLinkHasTMDBPrefix checks that every movie's image_link
+// is prefixed with the TMDB image base URL.
+func TestSimilar_ImageLinkHasTMDBPrefix(t *testing.T) {
+	const tmdbPrefix = "https://image.tmdb.org/t/p/original/"
+
+	resp := get(t, "/api/similar?movie=Inception&k=10", nil)
+	skipOn502(t, resp)
+	assertStatus(t, resp, 200)
+
+	var result moviesResponse
+	decodeJSON(t, resp, &result)
+
+	if len(result.Movies) == 0 {
+		t.Skip("no similar movies returned")
+	}
+	for _, m := range result.Movies {
+		if m.ImageLink == "" {
+			continue // some movies might legitimately have no image
+		}
+		if !strings.HasPrefix(m.ImageLink, tmdbPrefix) {
+			t.Errorf("movie %q image_link missing TMDB prefix: got %q", m.MovieName, m.ImageLink)
+		}
+	}
+}
+
+// TestMovies_ImageLinkHasTMDBPrefix checks TMDB prefix on /api/movies endpoint too.
+func TestMovies_ImageLinkHasTMDBPrefix(t *testing.T) {
+	const tmdbPrefix = "https://image.tmdb.org/t/p/original/"
+
+	resp := get(t, "/api/movies?genre=action", nil)
+	skipOn502(t, resp)
+	assertStatus(t, resp, 200)
+
+	var result moviesResponse
+	decodeJSON(t, resp, &result)
+
+	if len(result.Movies) == 0 {
+		t.Skip("no movies returned for genre=action")
+	}
+	for _, m := range result.Movies {
+		if m.ImageLink == "" {
+			continue
+		}
+		if !strings.HasPrefix(m.ImageLink, tmdbPrefix) {
+			t.Errorf("movie %q image_link missing TMDB prefix: got %q", m.MovieName, m.ImageLink)
+		}
+	}
 }

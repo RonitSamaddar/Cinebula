@@ -232,6 +232,7 @@
     "Anthony Hopkins",
     "Kate Winslet",
     "Bill Murray"
-  ]
+  ],
 
+  "tmdbImagePrefix": "https://image.tmdb.org/t/p/original/"
 }

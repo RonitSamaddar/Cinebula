@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 )
 
@@ -57,6 +58,7 @@ func Fetch(genre, keyword, language, movieName string) (*MoviesResponse, error) 
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, fmt.Errorf("decode upstream response: %w", err)
 	}
+	prefixImageURLs(&result)
 	return &result, nil
 }
 
@@ -72,7 +74,7 @@ func FetchSimilar(movie string, k int) (*MoviesResponse, error) {
 	}
 
 	q := u.Query()
-	q.Set("movie", movie)
+	q.Set("movie", strings.ToLower(movie))
 	if k > 0 {
 		q.Set("k", fmt.Sprintf("%d", k))
 	}
@@ -92,5 +94,17 @@ func FetchSimilar(movie string, k int) (*MoviesResponse, error) {
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, fmt.Errorf("decode upstream response: %w", err)
 	}
+	prefixImageURLs(&result)
 	return &result, nil
+}
+
+// prefixImageURLs prepends TMDBImagePrefix to each movie's ImageLink
+// unless it already starts with http.
+func prefixImageURLs(r *MoviesResponse) {
+	for i := range r.Movies {
+		link := r.Movies[i].ImageLink
+		if link != "" && !strings.HasPrefix(link, "http") {
+			r.Movies[i].ImageLink = TMDBImagePrefix + link
+		}
+	}
 }
