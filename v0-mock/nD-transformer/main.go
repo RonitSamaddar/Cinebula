@@ -21,6 +21,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/gocql/gocql"
 )
 
 // ---------------------------------------------------------------------------
@@ -481,7 +483,228 @@ func jsonError(w http.ResponseWriter, msg string, code int) {
 	json.NewEncoder(w).Encode(map[string]string{"error": msg})
 }
 
-// handleSimilar handles GET /api/similar?movie=<name>&k=50
+// ---------------------------------------------------------------------------
+// Cassandra + Genre API
+// ---------------------------------------------------------------------------
+
+var cassandraSession *gocql.Session
+
+func initCassandra() {
+	cluster := gocql.NewCluster("127.0.0.1")
+	cluster.Port = 9042
+	cluster.Keyspace = "cinebula"
+	cluster.Consistency = gocql.Quorum
+	cluster.Timeout = 30 * time.Second
+	cluster.ConnectTimeout = 30 * time.Second
+
+	sess, err := cluster.CreateSession()
+	if err != nil {
+		fmt.Printf("⚠ Could not connect to Cassandra: %v\n", err)
+		return
+	}
+	cassandraSession = sess
+	fmt.Println("Connected to Cassandra (cinebula keyspace)")
+}
+
+// MovieResponse is the JSON response for each movie in the genre endpoint.
+type MovieResponse struct {
+	MovieName   string   `json:"movie_name"`
+	ImageLink   string   `json:"image_link"`
+	VoteAverage float64  `json:"vote_average"`
+	VoteCount   int64    `json:"vote_count"`
+	Revenue     int64    `json:"revenue"`
+	Budget      int64    `json:"budget"`
+	Popularity  float64  `json:"popularity"`
+	Genres      []string `json:"genres"`
+	Language    string   `json:"language"`
+	IMDBRating  float64  `json:"imdb_rating"`
+	Synopsis    string   `json:"synopsis"`
+	Keywords    []string `json:"keywords"`
+	Casts       []string `json:"casts"`
+	X           float64  `json:"x"`
+	Y           float64  `json:"y"`
+}
+
+// handleMovies handles GET /api/movies?genre=action&language=en&keyword=heist&cast=Tom+Hanks
+// All filters are optional and combined with AND logic. Multiple values for the same
+// filter can be comma-separated (e.g. genre=action,comedy) and are OR'd within the group.
+func handleMovies(w http.ResponseWriter, r *http.Request) {
+	if cassandraSession == nil {
+		jsonError(w, "Cassandra not connected", http.StatusServiceUnavailable)
+		return
+	}
+
+	// Parse filter params
+	genreParam := r.URL.Query().Get("genre")
+	keywordParam := r.URL.Query().Get("keyword")
+	languageParam := r.URL.Query().Get("language")
+	castParam := r.URL.Query().Get("cast")
+
+	if genreParam == "" && keywordParam == "" && languageParam == "" && castParam == "" {
+		jsonError(w, "at least one filter required: genre, keyword, language, cast", http.StatusBadRequest)
+		return
+	}
+
+	// Build CQL WHERE clauses
+	var conditions []string
+	var values []interface{}
+
+	// Genre and keyword filters use boolean flag columns
+	for _, g := range splitAndSanitize(genreParam) {
+		conditions = append(conditions, fmt.Sprintf("%s = ?", g))
+		values = append(values, true)
+	}
+	for _, k := range splitAndSanitize(keywordParam) {
+		conditions = append(conditions, fmt.Sprintf("%s = ?", k))
+		values = append(values, true)
+	}
+
+	// Language filter uses the language column with CONTAINS-like matching
+	if languageParam != "" {
+		conditions = append(conditions, "language = ?")
+		values = append(values, strings.TrimSpace(languageParam))
+	}
+
+	// Cast filter: casts is list<text>, use CONTAINS
+	if castParam != "" {
+		for _, c := range strings.Split(castParam, ",") {
+			c = strings.TrimSpace(c)
+			if c != "" {
+				conditions = append(conditions, "casts CONTAINS ?")
+				values = append(values, c)
+			}
+		}
+	}
+
+	query := `SELECT movie_name, image_link, vote_average, vote_count, 
+		revenue, budget, popularity, genres, language, imdb_rating, synopsis, keywords, casts 
+		FROM movies`
+	if len(conditions) > 0 {
+		query += " WHERE " + strings.Join(conditions, " AND ") + " ALLOW FILTERING"
+	}
+
+	// fmt.Printf("CQL: %s | values: %v\n", query, values)
+
+	iter := cassandraSession.Query(query, values...).Iter()
+
+	var movies []MovieResponse
+	var movieNames []string
+
+	var movieName, imageLink, language, synopsis string
+	var voteAverage, popularity, imdbRating float64
+	var voteCount, revenue, budget int64
+	var genres, casts, keywords []string
+
+	for iter.Scan(&movieName, &imageLink, &voteAverage, &voteCount,
+		&revenue, &budget, &popularity, &genres, &language, &imdbRating, &synopsis, &keywords, &casts) {
+		movies = append(movies, MovieResponse{
+			MovieName:   movieName,
+			ImageLink:   imageLink,
+			VoteAverage: voteAverage,
+			VoteCount:   voteCount,
+			Revenue:     revenue,
+			Budget:      budget,
+			Popularity:  popularity,
+			Genres:      genres,
+			Language:    language,
+			IMDBRating:  imdbRating,
+			Synopsis:    synopsis,
+			Casts:       casts,
+			Keywords:    keywords,
+		})
+		movieNames = append(movieNames, movieName)
+	}
+	if err := iter.Close(); err != nil {
+		jsonError(w, fmt.Sprintf("Cassandra query error: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	if len(movies) == 0 {
+		jsonError(w, "no movies found for the given filters", http.StatusNotFound)
+		return
+	}
+
+	// Fetch vectors from OpenSearch for each movie
+	var vectors [][]float64
+	var validIndices []int
+	for i, name := range movieNames {
+		vec, err := getMovieVector(strings.ToLower(name))
+		if err != nil {
+			fmt.Printf("  ⚠ No vector for %q: %v\n", name, err)
+			continue
+		}
+		vectors = append(vectors, vec)
+		validIndices = append(validIndices, i)
+	}
+
+	// fmt.Printf("Query: %d movies from Cassandra, %d have vectors\n", len(movies), len(vectors))
+
+	if len(vectors) < 2 {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"count":  len(movies),
+			"movies": movies,
+		})
+		return
+	}
+
+	// Run t-SNE to reduce to 2D
+	perplexity := 30
+	if len(vectors) <= 30 {
+		perplexity = len(vectors) - 1
+	}
+	result := runReduce(vectors, "tsne", perplexity, 42, 1000.0)
+
+	for idx, validIdx := range validIndices {
+		if idx < len(result) {
+			movies[validIdx].X = result[idx][0]
+			movies[validIdx].Y = result[idx][1]
+		}
+	}
+
+	var responseMovies []MovieResponse
+	for _, idx := range validIndices {
+		responseMovies = append(responseMovies, movies[idx])
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"count":  len(responseMovies),
+		"movies": responseMovies,
+	})
+}
+
+// splitAndSanitize splits a comma-separated param and sanitizes each value as a column name.
+func splitAndSanitize(param string) []string {
+	if param == "" {
+		return nil
+	}
+	var result []string
+	for _, p := range strings.Split(param, ",") {
+		col := sanitizeGenreColumn(strings.TrimSpace(p))
+		if col != "" {
+			result = append(result, col)
+		}
+	}
+	return result
+}
+
+func sanitizeGenreColumn(s string) string {
+	s = strings.ToLower(strings.TrimSpace(s))
+	var b strings.Builder
+	for _, c := range s {
+		if (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_' {
+			b.WriteRune(c)
+		} else {
+			b.WriteRune('_')
+		}
+	}
+	result := b.String()
+	if len(result) > 0 && result[0] >= '0' && result[0] <= '9' {
+		result = "_" + result
+	}
+	return result
+}
 func handleSimilar(w http.ResponseWriter, r *http.Request) {
 	movie := r.URL.Query().Get("movie")
 	if movie == "" {
@@ -518,7 +741,7 @@ func main() {
 	method := flag.String("method", "tsne", "Reduction method: tsne, umap, or pca")
 	csvPath := flag.String("csv", "sample.csv", "Path to CSV file with vectors (each row = one vector)")
 	output := flag.String("output", "", "Path to save the 2D output as CSV")
-	serve := flag.Bool("serve", false, "Start HTTP API server instead of running reduction")
+	serve := flag.Bool("serve", true, "Start HTTP API server instead of running reduction")
 	port := flag.String("port", "8080", "Port for the API server")
 	flag.Parse()
 
@@ -548,12 +771,19 @@ func main() {
 
 	// --- API server mode ---
 	if *serve {
+		initCassandra()
+		if cassandraSession != nil {
+			defer cassandraSession.Close()
+		}
+
 		mux := http.NewServeMux()
 		mux.HandleFunc("/api/similar", handleSimilar)
+		mux.HandleFunc("/api/movies", handleMovies)
 
 		addr := ":" + *port
 		fmt.Printf("\n🚀 API server listening on http://localhost%s\n", addr)
 		fmt.Println("  GET /api/similar?movie=<name>&k=50")
+		fmt.Println("  GET /api/movies?genre=action&keyword=heist&language=en&cast=Tom+Hanks")
 		if err := http.ListenAndServe(addr, corsMiddleware(mux)); err != nil {
 			fmt.Fprintf(os.Stderr, "Server error: %v\n", err)
 			os.Exit(1)
