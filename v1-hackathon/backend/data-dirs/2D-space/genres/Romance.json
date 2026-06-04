@@ -1,0 +1,20 @@
+[
+  {
+    "id": "ALP-MOVIE-000",
+    "title": "Default",
+    "x": 10.0,
+    "y": 15.0
+  },
+  {
+    "id": "ALP-MOVIE-110",
+    "title": "Forrest Gump",
+    "x": 50.27,
+    "y": 146.37
+  },
+  {
+    "id": "ALP-MOVIE-117",
+    "title": "Titanic",
+    "x": 28.64,
+    "y": 135.01
+  }
+]

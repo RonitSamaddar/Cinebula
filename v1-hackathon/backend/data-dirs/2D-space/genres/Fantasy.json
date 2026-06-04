@@ -1,0 +1,182 @@
+[
+  {
+    "id": "ALP-MOVIE-000",
+    "title": "Default",
+    "x": 10.0,
+    "y": 15.0
+  },
+  {
+    "id": "ALP-MOVIE-103",
+    "title": "Avatar",
+    "x": 31.86,
+    "y": 3.43
+  },
+  {
+    "id": "ALP-MOVIE-111",
+    "title": "Harry Potter and the Philosopher's Stone",
+    "x": -34.44,
+    "y": 22.98
+  },
+  {
+    "id": "ALP-MOVIE-119",
+    "title": "The Lord of the Rings: The Fellowship of the Ring",
+    "x": -73.58,
+    "y": 62.64
+  },
+  {
+    "id": "ALP-MOVIE-120",
+    "title": "The Lord of the Rings: The Return of the King",
+    "x": -149.49,
+    "y": 127.67
+  },
+  {
+    "id": "ALP-MOVIE-128",
+    "title": "Doctor Strange",
+    "x": 11.54,
+    "y": 65.83
+  },
+  {
+    "id": "ALP-MOVIE-131",
+    "title": "The Hunger Games",
+    "x": 72.59,
+    "y": 51.19
+  },
+  {
+    "id": "ALP-MOVIE-133",
+    "title": "Harry Potter and the Chamber of Secrets",
+    "x": -40.73,
+    "y": -129.01
+  },
+  {
+    "id": "ALP-MOVIE-135",
+    "title": "The Lord of the Rings: The Two Towers",
+    "x": 49.27,
+    "y": -50.94
+  },
+  {
+    "id": "ALP-MOVIE-137",
+    "title": "Suicide Squad",
+    "x": -55.83,
+    "y": 104.4
+  },
+  {
+    "id": "ALP-MOVIE-138",
+    "title": "Harry Potter and the Prisoner of Azkaban",
+    "x": 65.93,
+    "y": -59.9
+  },
+  {
+    "id": "ALP-MOVIE-139",
+    "title": "Thor",
+    "x": -57.21,
+    "y": -27.48
+  },
+  {
+    "id": "ALP-MOVIE-146",
+    "title": "Harry Potter and the Goblet of Fire",
+    "x": -29.28,
+    "y": -61.3
+  },
+  {
+    "id": "ALP-MOVIE-147",
+    "title": "Pirates of the Caribbean: The Curse of the Black Pearl",
+    "x": -111.81,
+    "y": -23.87
+  },
+  {
+    "id": "ALP-MOVIE-148",
+    "title": "Harry Potter and the Deathly Hallows: Part 2",
+    "x": 132.11,
+    "y": 53.2
+  },
+  {
+    "id": "ALP-MOVIE-150",
+    "title": "Wonder Woman",
+    "x": 120.84,
+    "y": 34.65
+  },
+  {
+    "id": "ALP-MOVIE-158",
+    "title": "Harry Potter and the Order of the Phoenix",
+    "x": -59.72,
+    "y": 14.38
+  },
+  {
+    "id": "ALP-MOVIE-159",
+    "title": "Harry Potter and the Half-Blood Prince",
+    "x": -149.88,
+    "y": -63.93
+  },
+  {
+    "id": "ALP-MOVIE-162",
+    "title": "It",
+    "x": -21.03,
+    "y": 24.0
+  },
+  {
+    "id": "ALP-MOVIE-164",
+    "title": "Fantastic Beasts and Where to Find Them",
+    "x": 46.41,
+    "y": -10.5
+  },
+  {
+    "id": "ALP-MOVIE-165",
+    "title": "Harry Potter and the Deathly Hallows: Part 1",
+    "x": -17.35,
+    "y": -85.89
+  },
+  {
+    "id": "ALP-MOVIE-166",
+    "title": "Coco",
+    "x": -8.04,
+    "y": 120.35
+  },
+  {
+    "id": "ALP-MOVIE-168",
+    "title": "Spider-Man",
+    "x": 88.81,
+    "y": -99.09
+  },
+  {
+    "id": "ALP-MOVIE-171",
+    "title": "The Hobbit: An Unexpected Journey",
+    "x": -124.56,
+    "y": 4.64
+  },
+  {
+    "id": "ALP-MOVIE-175",
+    "title": "Batman v Superman: Dawn of Justice",
+    "x": 39.88,
+    "y": -49.44
+  },
+  {
+    "id": "ALP-MOVIE-182",
+    "title": "Thor: The Dark World",
+    "x": 95.53,
+    "y": 75.34
+  },
+  {
+    "id": "ALP-MOVIE-183",
+    "title": "The Amazing Spider-Man",
+    "x": 51.84,
+    "y": -82.61
+  },
+  {
+    "id": "ALP-MOVIE-193",
+    "title": "The Green Mile",
+    "x": -90.26,
+    "y": -142.67
+  },
+  {
+    "id": "ALP-MOVIE-197",
+    "title": "Shrek",
+    "x": -76.55,
+    "y": -7.46
+  },
+  {
+    "id": "ALP-MOVIE-198",
+    "title": "Ratatouille",
+    "x": 104.92,
+    "y": -128.15
+  }
+]

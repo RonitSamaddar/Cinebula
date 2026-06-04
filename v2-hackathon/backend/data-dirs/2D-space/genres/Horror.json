@@ -1,0 +1,32 @@
+[
+  {
+    "id": "ALP-MOVIE-000",
+    "title": "Default",
+    "x": 10.0,
+    "y": 15.0
+  },
+  {
+    "id": "ALP-MOVIE-162",
+    "title": "It",
+    "x": -25.67,
+    "y": 38.93
+  },
+  {
+    "id": "ALP-MOVIE-184",
+    "title": "Split",
+    "x": -91.67,
+    "y": 58.91
+  },
+  {
+    "id": "ALP-MOVIE-186",
+    "title": "The Shining",
+    "x": -1.69,
+    "y": -76.8
+  },
+  {
+    "id": "ALP-MOVIE-190",
+    "title": "Get Out",
+    "x": 46.82,
+    "y": -148.34
+  }
+]

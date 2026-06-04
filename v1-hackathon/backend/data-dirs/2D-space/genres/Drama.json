@@ -1,0 +1,182 @@
+[
+  {
+    "id": "ALP-MOVIE-000",
+    "title": "Default",
+    "x": 10.0,
+    "y": 15.0
+  },
+  {
+    "id": "ALP-MOVIE-101",
+    "title": "Interstellar",
+    "x": -105.57,
+    "y": -111.77
+  },
+  {
+    "id": "ALP-MOVIE-102",
+    "title": "The Dark Knight",
+    "x": -57.52,
+    "y": 119.69
+  },
+  {
+    "id": "ALP-MOVIE-107",
+    "title": "Fight Club",
+    "x": 88.84,
+    "y": 108.21
+  },
+  {
+    "id": "ALP-MOVIE-110",
+    "title": "Forrest Gump",
+    "x": 119.68,
+    "y": -86.98
+  },
+  {
+    "id": "ALP-MOVIE-113",
+    "title": "Django Unchained",
+    "x": -75.14,
+    "y": -119.16
+  },
+  {
+    "id": "ALP-MOVIE-114",
+    "title": "The Shawshank Redemption",
+    "x": 84.03,
+    "y": 115.24
+  },
+  {
+    "id": "ALP-MOVIE-117",
+    "title": "Titanic",
+    "x": -28.09,
+    "y": 36.2
+  },
+  {
+    "id": "ALP-MOVIE-118",
+    "title": "Joker",
+    "x": -103.63,
+    "y": 128.96
+  },
+  {
+    "id": "ALP-MOVIE-121",
+    "title": "Shutter Island",
+    "x": 109.38,
+    "y": 142.86
+  },
+  {
+    "id": "ALP-MOVIE-122",
+    "title": "The Wolf of Wall Street",
+    "x": 93.23,
+    "y": 114.42
+  },
+  {
+    "id": "ALP-MOVIE-125",
+    "title": "The Dark Knight Rises",
+    "x": -142.56,
+    "y": 70.97
+  },
+  {
+    "id": "ALP-MOVIE-130",
+    "title": "Inglourious Basterds",
+    "x": -50.34,
+    "y": 129.24
+  },
+  {
+    "id": "ALP-MOVIE-132",
+    "title": "Spider-Man: Homecoming",
+    "x": 90.67,
+    "y": 109.22
+  },
+  {
+    "id": "ALP-MOVIE-141",
+    "title": "Batman Begins",
+    "x": 93.22,
+    "y": -69.96
+  },
+  {
+    "id": "ALP-MOVIE-143",
+    "title": "Inside Out",
+    "x": 86.21,
+    "y": -117.57
+  },
+  {
+    "id": "ALP-MOVIE-153",
+    "title": "The Godfather",
+    "x": 111.65,
+    "y": 107.58
+  },
+  {
+    "id": "ALP-MOVIE-154",
+    "title": "The Martian",
+    "x": -83.27,
+    "y": 94.98
+  },
+  {
+    "id": "ALP-MOVIE-160",
+    "title": "Logan",
+    "x": -11.91,
+    "y": -58.44
+  },
+  {
+    "id": "ALP-MOVIE-170",
+    "title": "Gone Girl",
+    "x": 88.6,
+    "y": -81.72
+  },
+  {
+    "id": "ALP-MOVIE-174",
+    "title": "The Revenant",
+    "x": -142.9,
+    "y": -92.06
+  },
+  {
+    "id": "ALP-MOVIE-176",
+    "title": "The Lion King",
+    "x": -51.52,
+    "y": 109.31
+  },
+  {
+    "id": "ALP-MOVIE-177",
+    "title": "Gladiator",
+    "x": 140.07,
+    "y": -66.26
+  },
+  {
+    "id": "ALP-MOVIE-178",
+    "title": "The Truman Show",
+    "x": 42.44,
+    "y": -30.1
+  },
+  {
+    "id": "ALP-MOVIE-180",
+    "title": "Arrival",
+    "x": 144.34,
+    "y": 10.86
+  },
+  {
+    "id": "ALP-MOVIE-181",
+    "title": "Parasite",
+    "x": 131.77,
+    "y": -115.4
+  },
+  {
+    "id": "ALP-MOVIE-189",
+    "title": "The Intouchables",
+    "x": 141.12,
+    "y": -96.43
+  },
+  {
+    "id": "ALP-MOVIE-191",
+    "title": "The Imitation Game",
+    "x": 138.76,
+    "y": -70.36
+  },
+  {
+    "id": "ALP-MOVIE-192",
+    "title": "Bohemian Rhapsody",
+    "x": -117.48,
+    "y": -19.63
+  },
+  {
+    "id": "ALP-MOVIE-193",
+    "title": "The Green Mile",
+    "x": 68.56,
+    "y": -55.9
+  }
+]

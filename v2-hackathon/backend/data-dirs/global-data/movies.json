@@ -1,0 +1,2296 @@
+[
+  {
+    "movieId": 1,
+    "movieName": "Inception",
+    "genre": [
+      "Action",
+      "Sci-Fi",
+      "Adventure"
+    ],
+    "cast": [
+      "Javier Bardem",
+      "Lupita Nyong'o",
+      "Scarlett Johansson",
+      "Joaquin Phoenix",
+      "Matt Damon",
+      "Cate Blanchett"
+    ],
+    "productionHouses": [
+      "Legendary Pictures",
+      "Syncopy",
+      "Warner Bros. Pictures"
+    ],
+    "director": "Tim Burton",
+    "synopsis": "Cobb, a skilled thief who commits corporate espionage by infiltrating the subconscious of his targets is offered a chance to regain his old life as payment for a task considered to be impossible: \"inception\", the implantation of another person's idea into a target's subconscious."
+  },
+  {
+    "movieId": 2,
+    "movieName": "Interstellar",
+    "genre": [
+      "Adventure",
+      "Drama",
+      "Sci-Fi"
+    ],
+    "cast": [
+      "Margot Robbie",
+      "Zendaya",
+      "Tony Leung",
+      "Ryan Gosling",
+      "Florence Pugh",
+      "Anthony Hopkins"
+    ],
+    "productionHouses": [
+      "Legendary Pictures",
+      "Syncopy",
+      "Lynda Obst Productions"
+    ],
+    "director": "Greta Gerwig",
+    "synopsis": "The adventures of a group of explorers who make use of a newly discovered wormhole to surpass the limitations on human space travel and conquer the vast distances involved in an interstellar voyage."
+  },
+  {
+    "movieId": 3,
+    "movieName": "The Dark Knight",
+    "genre": [
+      "Drama",
+      "Action",
+      "Crime",
+      "Thriller"
+    ],
+    "cast": [
+      "Ryan Gosling",
+      "Adam Driver",
+      "Benedict Cumberbatch",
+      "Mark Ruffalo",
+      "Kate Winslet",
+      "Jake Gyllenhaal"
+    ],
+    "productionHouses": [
+      "DC Comics",
+      "Legendary Pictures",
+      "Syncopy",
+      "Isobel Griffiths",
+      "Warner Bros. Pictures"
+    ],
+    "director": "David Fincher",
+    "synopsis": "Batman raises the stakes in his war on crime. With the help of Lt. Jim Gordon and District Attorney Harvey Dent, Batman sets out to dismantle the remaining criminal organizations that plague the streets. The partnership proves to be effective, but they soon find themselves prey to a reign of chaos unleashed by a rising criminal mastermind known to the terrified citizens of Gotham as the Joker."
+  },
+  {
+    "movieId": 4,
+    "movieName": "Avatar",
+    "genre": [
+      "Action",
+      "Adventure",
+      "Fantasy",
+      "Sci-Fi"
+    ],
+    "cast": [
+      "Joaquin Phoenix",
+      "Adam Driver",
+      "Anthony Hopkins",
+      "Anya Taylor-Joy",
+      "Isabelle Huppert"
+    ],
+    "productionHouses": [
+      "Dune Entertainment",
+      "Lightstorm Entertainment",
+      "20th Century Fox",
+      "Ingenious Media"
+    ],
+    "director": "Park Chan-wook",
+    "synopsis": "In the 22nd century, a paraplegic Marine is dispatched to the moon Pandora on a unique mission, but becomes torn between following orders and protecting an alien civilization."
+  },
+  {
+    "movieId": 5,
+    "movieName": "The Avengers",
+    "genre": [
+      "Sci-Fi",
+      "Action",
+      "Adventure"
+    ],
+    "cast": [
+      "Ryan Gosling",
+      "Benedict Cumberbatch",
+      "Johnny Depp",
+      "Javier Bardem"
+    ],
+    "productionHouses": [
+      "Marvel Studios"
+    ],
+    "director": "David Lynch",
+    "synopsis": "When an unexpected enemy emerges and threatens global safety and security, Nick Fury, director of the international peacekeeping agency known as S.H.I.E.L.D., finds himself in need of a team to pull the world back from the brink of disaster. Spanning the globe, a daring recruitment effort begins!"
+  },
+  {
+    "movieId": 6,
+    "movieName": "Deadpool",
+    "genre": [
+      "Action",
+      "Adventure",
+      "Comedy"
+    ],
+    "cast": [
+      "Viola Davis",
+      "Johnny Depp",
+      "Tony Leung",
+      "Florence Pugh",
+      "Timothée Chalamet"
+    ],
+    "productionHouses": [
+      "20th Century Fox",
+      "The Donners' Company",
+      "Genre Films"
+    ],
+    "director": "Christopher Nolan",
+    "synopsis": "The origin story of former Special Forces operative turned mercenary Wade Wilson, who, after being subjected to a rogue experiment that leaves him with accelerated healing powers, adopts the alter ego Deadpool. Armed with his new abilities and a dark, twisted sense of humor, Deadpool hunts down the man who nearly destroyed his life."
+  },
+  {
+    "movieId": 7,
+    "movieName": "Avengers: Infinity War",
+    "genre": [
+      "Adventure",
+      "Action",
+      "Sci-Fi"
+    ],
+    "cast": [
+      "Gary Oldman",
+      "Johnny Depp",
+      "Chris Hemsworth",
+      "Saoirse Ronan",
+      "Margot Robbie"
+    ],
+    "productionHouses": [
+      "Marvel Studios"
+    ],
+    "director": "Christopher Nolan",
+    "synopsis": "As the Avengers and their allies have continued to protect the world from threats too large for any one hero to handle, a new danger has emerged from the cosmic shadows: Thanos. A despot of intergalactic infamy, his goal is to collect all six Infinity Stones, artifacts of unimaginable power, and use them to inflict his twisted will on all of reality. Everything the Avengers have fought for has led up to this moment - the fate of Earth and existence itself has never been more uncertain."
+  },
+  {
+    "movieId": 8,
+    "movieName": "Fight Club",
+    "genre": [
+      "Drama"
+    ],
+    "cast": [
+      "Ryan Gosling",
+      "Jake Gyllenhaal",
+      "Emma Stone",
+      "Christian Bale",
+      "Isabelle Huppert",
+      "Johnny Depp"
+    ],
+    "productionHouses": [
+      "Regency Enterprises",
+      "Fox 2000 Pictures",
+      "Taurus Film",
+      "Atman Entertainment",
+      "Knickerbocker Films",
+      "The Linson Company",
+      "20th Century Fox"
+    ],
+    "director": "James Cameron",
+    "synopsis": "A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy. Their concept catches on, with underground \"fight clubs\" forming in every town, until an eccentric gets in the way and ignites an out-of-control spiral toward oblivion."
+  },
+  {
+    "movieId": 9,
+    "movieName": "Guardians of the Galaxy",
+    "genre": [
+      "Action",
+      "Sci-Fi",
+      "Adventure"
+    ],
+    "cast": [
+      "Christian Bale",
+      "Matt Damon",
+      "Mark Ruffalo",
+      "Scarlett Johansson",
+      "Penélope Cruz"
+    ],
+    "productionHouses": [
+      "Marvel Studios"
+    ],
+    "director": "Yorgos Lanthimos",
+    "synopsis": "Light years from Earth, 26 years after being abducted, Peter Quill finds himself the prime target of a manhunt after discovering an orb wanted by Ronan the Accuser."
+  },
+  {
+    "movieId": 10,
+    "movieName": "Pulp Fiction",
+    "genre": [
+      "Thriller",
+      "Crime"
+    ],
+    "cast": [
+      "Johnny Depp",
+      "Tilda Swinton",
+      "Kate Winslet",
+      "Michelle Yeoh"
+    ],
+    "productionHouses": [
+      "Miramax",
+      "A Band Apart",
+      "Jersey Films"
+    ],
+    "director": "Park Chan-wook",
+    "synopsis": "A burger-loving hit man, his philosophical partner, a drug-addled gangster's moll and a washed-up boxer converge in this sprawling, comedic crime caper. Their adventures unfurl in three stories that ingeniously trip back and forth in time."
+  },
+  {
+    "movieId": 11,
+    "movieName": "Forrest Gump",
+    "genre": [
+      "Comedy",
+      "Drama",
+      "Romance"
+    ],
+    "cast": [
+      "Isabelle Huppert",
+      "Benedict Cumberbatch",
+      "Leonardo DiCaprio",
+      "Charlotte Rampling",
+      "Chris Evans"
+    ],
+    "productionHouses": [
+      "Paramount",
+      "The Steve Tisch Company",
+      "Wendy Finerman Productions"
+    ],
+    "director": "Wes Anderson",
+    "synopsis": "A man with a low IQ has accomplished great things in his life and been present during significant historic events—in each case, far exceeding what anyone imagined he could do. But despite all he has achieved, his one true love eludes him."
+  },
+  {
+    "movieId": 12,
+    "movieName": "Harry Potter and the Philosopher's Stone",
+    "genre": [
+      "Adventure",
+      "Fantasy"
+    ],
+    "cast": [
+      "Helena Bonham Carter",
+      "Zendaya",
+      "Isabelle Huppert",
+      "Tilda Swinton"
+    ],
+    "productionHouses": [
+      "Warner Bros. Pictures",
+      "Heyday Films",
+      "1492 Pictures"
+    ],
+    "director": "Wes Anderson",
+    "synopsis": "Harry Potter has lived under the stairs at his aunt and uncle's house his whole life. But on his 11th birthday, he learns he's a powerful wizard—with a place waiting for him at the Hogwarts School of Witchcraft and Wizardry. As he learns to harness his newfound powers with the help of the school's kindly headmaster, Harry uncovers the truth about his parents' deaths—and about the villain who's to blame."
+  },
+  {
+    "movieId": 13,
+    "movieName": "Iron Man",
+    "genre": [
+      "Action",
+      "Sci-Fi",
+      "Adventure"
+    ],
+    "cast": [
+      "Gary Oldman",
+      "Javier Bardem",
+      "Kate Winslet",
+      "Tom Holland"
+    ],
+    "productionHouses": [
+      "Marvel Studios"
+    ],
+    "director": "Guillermo del Toro",
+    "synopsis": "After being held captive in an Afghan cave, billionaire engineer Tony Stark creates a unique weaponized suit of armor to fight evil."
+  },
+  {
+    "movieId": 14,
+    "movieName": "Django Unchained",
+    "genre": [
+      "Drama",
+      "Western"
+    ],
+    "cast": [
+      "Margot Robbie",
+      "Meryl Streep",
+      "Ian McKellen",
+      "Javier Bardem",
+      "Mark Ruffalo",
+      "Timothée Chalamet"
+    ],
+    "productionHouses": [
+      "The Weinstein Company",
+      "Columbia Pictures"
+    ],
+    "director": "Yorgos Lanthimos",
+    "synopsis": "With the help of a German bounty hunter, a freed slave sets out to rescue his wife from a brutal Mississippi plantation owner."
+  },
+  {
+    "movieId": 15,
+    "movieName": "The Shawshank Redemption",
+    "genre": [
+      "Drama",
+      "Crime"
+    ],
+    "cast": [
+      "Ian McKellen",
+      "Helena Bonham Carter",
+      "Mark Ruffalo",
+      "Isabelle Huppert"
+    ],
+    "productionHouses": [
+      "Castle Rock Entertainment"
+    ],
+    "director": "Francis Ford Coppola",
+    "synopsis": "Framed in the 1940s for the double murder of his wife and her lover, upstanding banker Andy Dufresne begins a new life at the Shawshank prison, where he puts his accounting skills to work for an amoral warden. During his long stretch in prison, Dufresne comes to be admired by the other inmates -- including an older prisoner named Red -- for his integrity and unquenchable sense of hope."
+  },
+  {
+    "movieId": 16,
+    "movieName": "Avengers: Endgame",
+    "genre": [
+      "Adventure",
+      "Sci-Fi",
+      "Action"
+    ],
+    "cast": [
+      "Ana de Armas",
+      "Chris Hemsworth",
+      "Mark Ruffalo",
+      "Ian McKellen",
+      "Florence Pugh",
+      "Zendaya"
+    ],
+    "productionHouses": [
+      "Marvel Studios"
+    ],
+    "director": "Denis Villeneuve",
+    "synopsis": "After the devastating events of Avengers: Infinity War, the universe is in ruins due to the efforts of the Mad Titan, Thanos. With the help of remaining allies, the Avengers must assemble once more in order to undo Thanos' actions and restore order to the universe once and for all, no matter what consequences may be in store."
+  },
+  {
+    "movieId": 17,
+    "movieName": "The Matrix",
+    "genre": [
+      "Action",
+      "Sci-Fi"
+    ],
+    "cast": [
+      "Rami Malek",
+      "Anthony Hopkins",
+      "Kate Winslet",
+      "Michelle Yeoh",
+      "Chris Evans"
+    ],
+    "productionHouses": [
+      "Village Roadshow Pictures",
+      "Groucho II Film Partnership",
+      "Silver Pictures",
+      "Warner Bros. Pictures"
+    ],
+    "director": "Martin Scorsese",
+    "synopsis": "Set in the 22nd century, The Matrix tells the story of a computer hacker who joins a group of underground insurgents fighting the vast and powerful computers who now rule the earth."
+  },
+  {
+    "movieId": 18,
+    "movieName": "Titanic",
+    "genre": [
+      "Drama",
+      "Romance"
+    ],
+    "cast": [
+      "Tom Hardy",
+      "Tom Hanks",
+      "Tilda Swinton",
+      "Gary Oldman"
+    ],
+    "productionHouses": [
+      "Paramount",
+      "20th Century Fox",
+      "Lightstorm Entertainment"
+    ],
+    "director": "Paul Thomas Anderson",
+    "synopsis": "101-year-old Rose DeWitt Bukater tells the story of her life aboard the Titanic, 84 years later. A young Rose boards the ship with her mother and fiancé. Meanwhile, Jack Dawson and Fabrizio De Rossi win third-class tickets aboard the ship. Rose tells the whole story from Titanic's departure through to its death—on its first and last voyage—on April 15, 1912."
+  },
+  {
+    "movieId": 19,
+    "movieName": "Joker",
+    "genre": [
+      "Crime",
+      "Thriller",
+      "Drama"
+    ],
+    "cast": [
+      "Tony Leung",
+      "Adam Driver",
+      "Oscar Isaac",
+      "Rami Malek",
+      "Zendaya",
+      "Florence Pugh"
+    ],
+    "productionHouses": [
+      "Warner Bros. Pictures",
+      "Joint Effort",
+      "Village Roadshow Pictures",
+      "Bron Studios",
+      "DC Films"
+    ],
+    "director": "Alfonso Cuarón",
+    "synopsis": "During the 1980s, a failed stand-up comedian is driven insane and turns to a life of crime and chaos in Gotham City while becoming an infamous psychopathic crime figure."
+  },
+  {
+    "movieId": 20,
+    "movieName": "The Lord of the Rings: The Fellowship of the Ring",
+    "genre": [
+      "Adventure",
+      "Fantasy",
+      "Action"
+    ],
+    "cast": [
+      "Tilda Swinton",
+      "Florence Pugh",
+      "Christian Bale",
+      "Lupita Nyong'o",
+      "Charlotte Rampling",
+      "Tony Leung"
+    ],
+    "productionHouses": [
+      "New Line Cinema",
+      "WingNut Films",
+      "The Saul Zaentz Company"
+    ],
+    "director": "Francis Ford Coppola",
+    "synopsis": "Young hobbit Frodo Baggins, after inheriting a mysterious ring from his uncle Bilbo, must leave his home in order to keep it from falling into the hands of its evil creator. Along the way, a fellowship is formed to protect the ringbearer and make sure that the ring arrives at its final destination: Mt. Doom, the only place where it can be destroyed."
+  },
+  {
+    "movieId": 21,
+    "movieName": "The Lord of the Rings: The Return of the King",
+    "genre": [
+      "Adventure",
+      "Fantasy",
+      "Action"
+    ],
+    "cast": [
+      "Daniel Kaluuya",
+      "Cate Blanchett",
+      "Rami Malek",
+      "Tom Holland",
+      "Angelina Jolie"
+    ],
+    "productionHouses": [
+      "New Line Cinema",
+      "WingNut Films",
+      "The Saul Zaentz Company"
+    ],
+    "director": "Ridley Scott",
+    "synopsis": "Aragorn is revealed as the heir to the ancient kings as he, Gandalf and the other members of the broken fellowship struggle to save Gondor from Sauron's forces. Meanwhile, Frodo and Sam take the ring closer to the heart of Mordor, the dark lord's realm."
+  },
+  {
+    "movieId": 22,
+    "movieName": "Shutter Island",
+    "genre": [
+      "Drama",
+      "Thriller",
+      "Mystery"
+    ],
+    "cast": [
+      "Oscar Isaac",
+      "Ryan Gosling",
+      "Timothée Chalamet",
+      "Tom Hanks",
+      "Charlotte Rampling"
+    ],
+    "productionHouses": [
+      "Phoenix Pictures",
+      "Paramount",
+      "Appian Way",
+      "Sikelia Productions",
+      "Mandate International"
+    ],
+    "director": "Greta Gerwig",
+    "synopsis": "World War II soldier-turned-U.S. Marshal Teddy Daniels investigates the disappearance of a patient from a hospital for the criminally insane, but his efforts are compromised by troubling visions and a mysterious doctor."
+  },
+  {
+    "movieId": 23,
+    "movieName": "The Wolf of Wall Street",
+    "genre": [
+      "Crime",
+      "Drama",
+      "Comedy"
+    ],
+    "cast": [
+      "Helena Bonham Carter",
+      "Javier Bardem",
+      "Tom Holland",
+      "Timothée Chalamet"
+    ],
+    "productionHouses": [
+      "EMJAG Productions",
+      "Red Granite Pictures",
+      "Appian Way",
+      "Sikelia Productions"
+    ],
+    "director": "Steven Spielberg",
+    "synopsis": "A New York stockbroker refuses to cooperate in a large securities fraud case involving corruption on Wall Street, corporate banking world and mob infiltration. Based on Jordan Belfort's autobiography."
+  },
+  {
+    "movieId": 24,
+    "movieName": "Avengers: Age of Ultron",
+    "genre": [
+      "Action",
+      "Adventure",
+      "Sci-Fi"
+    ],
+    "cast": [
+      "Penélope Cruz",
+      "Mahershala Ali",
+      "Angelina Jolie",
+      "Tony Leung",
+      "Benedict Cumberbatch"
+    ],
+    "productionHouses": [
+      "Marvel Studios"
+    ],
+    "director": "Sofia Coppola",
+    "synopsis": "When Tony Stark tries to jumpstart a dormant peacekeeping program, things go awry and Earth’s Mightiest Heroes are put to the ultimate test as the fate of the planet hangs in the balance. As the villainous Ultron emerges, it is up to The Avengers to stop him from enacting his terrible plans, and soon uneasy alliances and unexpected action pave the way for an epic and unique global adventure."
+  },
+  {
+    "movieId": 25,
+    "movieName": "Captain America: Civil War",
+    "genre": [
+      "Adventure",
+      "Action",
+      "Sci-Fi"
+    ],
+    "cast": [
+      "Anya Taylor-Joy",
+      "Meryl Streep",
+      "Leonardo DiCaprio",
+      "Charlotte Rampling"
+    ],
+    "productionHouses": [
+      "Marvel Studios"
+    ],
+    "director": "Denis Villeneuve",
+    "synopsis": "Following the events of Age of Ultron, the collective governments of the world pass an act designed to regulate all superhuman activity. This polarizes opinion amongst the Avengers, causing two factions to side with Iron Man or Captain America, which causes an epic battle between former allies."
+  },
+  {
+    "movieId": 26,
+    "movieName": "The Dark Knight Rises",
+    "genre": [
+      "Action",
+      "Crime",
+      "Drama",
+      "Thriller"
+    ],
+    "cast": [
+      "Scarlett Johansson",
+      "Tony Leung",
+      "Margot Robbie",
+      "Charlotte Rampling",
+      "Anthony Hopkins",
+      "Christian Bale"
+    ],
+    "productionHouses": [
+      "Syncopy",
+      "Legendary Pictures",
+      "DC Entertainment",
+      "Warner Bros. Pictures"
+    ],
+    "director": "Martin Scorsese",
+    "synopsis": "Following the death of District Attorney Harvey Dent, Batman assumes responsibility for Dent's crimes to protect the late attorney's reputation and is subsequently hunted by the Gotham City Police Department. Eight years later, Batman encounters the mysterious Selina Kyle and the villainous Bane, a new terrorist leader who overwhelms Gotham's finest. The Dark Knight resurfaces to protect a city that has branded him an enemy."
+  },
+  {
+    "movieId": 27,
+    "movieName": "Iron Man 3",
+    "genre": [
+      "Action",
+      "Adventure",
+      "Sci-Fi"
+    ],
+    "cast": [
+      "Lupita Nyong'o",
+      "Tom Holland",
+      "Meryl Streep",
+      "Viola Davis",
+      "Scarlett Johansson",
+      "Tony Leung"
+    ],
+    "productionHouses": [
+      "Marvel Studios"
+    ],
+    "director": "Jordan Peele",
+    "synopsis": "When Tony Stark's world is torn apart by a formidable terrorist called the Mandarin, he starts an odyssey of rebuilding and retribution."
+  },
+  {
+    "movieId": 28,
+    "movieName": "Black Panther",
+    "genre": [
+      "Action",
+      "Adventure",
+      "Sci-Fi"
+    ],
+    "cast": [
+      "Angelina Jolie",
+      "Florence Pugh",
+      "Natalie Portman",
+      "Benedict Cumberbatch"
+    ],
+    "productionHouses": [
+      "Marvel Studios"
+    ],
+    "director": "Joel Coen",
+    "synopsis": "King T'Challa returns home to the reclusive, technologically advanced African nation of Wakanda to serve as his country's new leader. However, T'Challa soon finds that he is challenged for the throne by factions within his own country as well as without. Using powers reserved to Wakandan kings, T'Challa assumes the Black Panther mantle to join with ex-girlfriend Nakia, the queen-mother, his princess-kid sister, members of the Dora Milaje (the Wakandan 'special forces') and an American secret agent, to prevent Wakanda from being dragged into a world war."
+  },
+  {
+    "movieId": 29,
+    "movieName": "Doctor Strange",
+    "genre": [
+      "Action",
+      "Adventure",
+      "Fantasy"
+    ],
+    "cast": [
+      "Johnny Depp",
+      "Joaquin Phoenix",
+      "Angelina Jolie",
+      "Florence Pugh",
+      "Brad Pitt"
+    ],
+    "productionHouses": [
+      "Marvel Studios"
+    ],
+    "director": "Alfonso Cuarón",
+    "synopsis": "After his career is destroyed, a brilliant but arrogant surgeon gets a new lease on life when a sorcerer takes him under her wing and trains him to defend the world against evil."
+  },
+  {
+    "movieId": 30,
+    "movieName": "Mad Max: Fury Road",
+    "genre": [
+      "Action",
+      "Adventure",
+      "Sci-Fi"
+    ],
+    "cast": [
+      "Penélope Cruz",
+      "Matt Damon",
+      "Brad Pitt",
+      "Daniel Kaluuya",
+      "Cate Blanchett",
+      "Natalie Portman"
+    ],
+    "productionHouses": [
+      "Kennedy Miller Productions",
+      "Warner Bros. Pictures",
+      "RatPac Entertainment",
+      "Village Roadshow Pictures"
+    ],
+    "director": "Wes Anderson",
+    "synopsis": "An apocalyptic story set in the furthest reaches of our planet, in a stark desert landscape where humanity is broken, and most everyone is crazed fighting for the necessities of life. Within this world exist two rebels on the run who just might be able to restore order."
+  },
+  {
+    "movieId": 31,
+    "movieName": "Inglourious Basterds",
+    "genre": [
+      "Drama",
+      "Thriller",
+      "War"
+    ],
+    "cast": [
+      "Tom Hanks",
+      "Mahershala Ali",
+      "Mark Ruffalo",
+      "Tilda Swinton",
+      "Jake Gyllenhaal",
+      "Michelle Yeoh"
+    ],
+    "productionHouses": [
+      "The Weinstein Company",
+      "Universal Pictures",
+      "A Band Apart",
+      "Zehnte Babelsberg Film",
+      "Visiona Romantica",
+      "Peninsula Films"
+    ],
+    "director": "Peter Jackson",
+    "synopsis": "In Nazi-occupied France during World War II, a group of Jewish-American soldiers known as \"The Basterds\" are chosen specifically to spread fear throughout the Third Reich by scalping and brutally killing Nazis. The Basterds, lead by Lt. Aldo Raine soon cross paths with a French-Jewish teenage girl who runs a movie theater in Paris which is targeted by the soldiers."
+  },
+  {
+    "movieId": 32,
+    "movieName": "The Hunger Games",
+    "genre": [
+      "Sci-Fi",
+      "Adventure",
+      "Fantasy"
+    ],
+    "cast": [
+      "Helena Bonham Carter",
+      "Tilda Swinton",
+      "Gary Oldman",
+      "Robert Downey Jr."
+    ],
+    "productionHouses": [
+      "Lionsgate",
+      "Color Force"
+    ],
+    "director": "Tim Burton",
+    "synopsis": "Every year in the ruins of what was once North America, the nation of Panem forces each of its twelve districts to send a teenage boy and girl to compete in the Hunger Games.  Part twisted entertainment, part government intimidation tactic, the Hunger Games are a nationally televised event in which “Tributes” must fight with one another until one survivor remains.  Pitted against highly-trained Tributes who have prepared for these Games their entire lives, Katniss is forced to rely upon her sharp instincts as well as the mentorship of drunken former victor Haymitch Abernathy.  If she’s ever to return home to District 12, Katniss must make impossible choices in the arena that weigh survival against humanity and life against love. The world will be watching."
+  },
+  {
+    "movieId": 33,
+    "movieName": "Spider-Man: Homecoming",
+    "genre": [
+      "Action",
+      "Adventure",
+      "Sci-Fi",
+      "Drama"
+    ],
+    "cast": [
+      "Javier Bardem",
+      "Meryl Streep",
+      "Mark Ruffalo",
+      "Daniel Kaluuya",
+      "Scarlett Johansson",
+      "Anthony Hopkins"
+    ],
+    "productionHouses": [
+      "Marvel Studios",
+      "Pascal Pictures",
+      "LStar Capital",
+      "Columbia Pictures"
+    ],
+    "director": "Paul Thomas Anderson",
+    "synopsis": "Following the events of Captain America: Civil War, Peter Parker, with the help of his mentor Tony Stark, tries to balance his life as an ordinary high school student in Queens, New York City, with fighting crime as his superhero alter ego Spider-Man as a new threat, the Vulture, emerges."
+  },
+  {
+    "movieId": 34,
+    "movieName": "Harry Potter and the Chamber of Secrets",
+    "genre": [
+      "Adventure",
+      "Fantasy"
+    ],
+    "cast": [
+      "Saoirse Ronan",
+      "Anya Taylor-Joy",
+      "Chris Evans",
+      "Song Kang-ho",
+      "Margot Robbie",
+      "Mark Ruffalo"
+    ],
+    "productionHouses": [
+      "Warner Bros. Pictures",
+      "Heyday Films",
+      "1492 Pictures"
+    ],
+    "director": "Francis Ford Coppola",
+    "synopsis": "Cars fly, trees fight back, and a mysterious house-elf comes to warn Harry Potter at the start of his second year at Hogwarts. Adventure and danger await when bloody writing on a wall announces: The Chamber Of Secrets Has Been Opened. To save Hogwarts will require all of Harry, Ron and Hermione’s magical abilities and courage."
+  },
+  {
+    "movieId": 35,
+    "movieName": "Guardians of the Galaxy Vol. 2",
+    "genre": [
+      "Sci-Fi",
+      "Adventure",
+      "Action"
+    ],
+    "cast": [
+      "Javier Bardem",
+      "Tom Hardy",
+      "Ian McKellen",
+      "Cate Blanchett",
+      "Ryan Gosling",
+      "Natalie Portman"
+    ],
+    "productionHouses": [
+      "Marvel Studios"
+    ],
+    "director": "James Cameron",
+    "synopsis": "The Guardians must fight to keep their newfound family together as they unravel the mysteries of Peter Quill's true parentage."
+  },
+  {
+    "movieId": 36,
+    "movieName": "The Lord of the Rings: The Two Towers",
+    "genre": [
+      "Adventure",
+      "Fantasy",
+      "Action"
+    ],
+    "cast": [
+      "Tony Leung",
+      "Ian McKellen",
+      "Javier Bardem",
+      "Chris Evans",
+      "Saoirse Ronan",
+      "Daniel Kaluuya"
+    ],
+    "productionHouses": [
+      "New Line Cinema",
+      "WingNut Films",
+      "The Saul Zaentz Company"
+    ],
+    "director": "David Fincher",
+    "synopsis": "Frodo and Sam are trekking to Mordor to destroy the One Ring of Power while Gimli, Legolas and Aragorn search for the orc-captured Merry and Pippin. All along, nefarious wizard Saruman awaits the Fellowship members at the Orthanc Tower in Isengard."
+  },
+  {
+    "movieId": 37,
+    "movieName": "Captain America: The First Avenger",
+    "genre": [
+      "Action",
+      "Adventure",
+      "Sci-Fi"
+    ],
+    "cast": [
+      "Johnny Depp",
+      "Ana de Armas",
+      "Margot Robbie",
+      "Angelina Jolie",
+      "Mark Ruffalo",
+      "Daniel Kaluuya"
+    ],
+    "productionHouses": [
+      "Marvel Studios"
+    ],
+    "director": "Yorgos Lanthimos",
+    "synopsis": "During World War II, Steve Rogers is a sickly man from Brooklyn who's transformed into super-soldier Captain America to aid in the war effort. Rogers must stop the Red Skull – Adolf Hitler's ruthless head of weaponry, and the leader of an organization that intends to use a mysterious device of untold powers for world domination."
+  },
+  {
+    "movieId": 38,
+    "movieName": "Suicide Squad",
+    "genre": [
+      "Action",
+      "Adventure",
+      "Fantasy"
+    ],
+    "cast": [
+      "Tom Hanks",
+      "Ryan Gosling",
+      "Tony Leung",
+      "Lupita Nyong'o",
+      "Matt Damon"
+    ],
+    "productionHouses": [
+      "DC Entertainment",
+      "Dune Entertainment",
+      "Warner Bros. Pictures",
+      "Atlas Entertainment",
+      "DC Comics",
+      "DC Films",
+      "Lin Pictures"
+    ],
+    "director": "Ridley Scott",
+    "synopsis": "From DC Comics comes the Suicide Squad, an antihero team of incarcerated supervillains who act as deniable assets for the United States government, undertaking high-risk black ops missions in exchange for commuted prison sentences."
+  },
+  {
+    "movieId": 39,
+    "movieName": "Harry Potter and the Prisoner of Azkaban",
+    "genre": [
+      "Adventure",
+      "Fantasy"
+    ],
+    "cast": [
+      "Daniel Kaluuya",
+      "Mark Ruffalo",
+      "Ana de Armas",
+      "Timothée Chalamet"
+    ],
+    "productionHouses": [
+      "Warner Bros. Pictures",
+      "1492 Pictures",
+      "Heyday Films",
+      "P of A Productions Limited"
+    ],
+    "director": "David Lynch",
+    "synopsis": "Year three at Hogwarts means new fun and challenges as Harry learns the delicate art of approaching a Hippogriff, transforming shape-shifting Boggarts into hilarity and even turning back time. But the term also brings danger: soul-sucking Dementors hover over the school, an ally of the accursed He-Who-Cannot-Be-Named lurks within the castle walls, and fearsome wizard Sirius Black escapes Azkaban. And Harry will confront them all."
+  },
+  {
+    "movieId": 40,
+    "movieName": "Thor",
+    "genre": [
+      "Adventure",
+      "Fantasy",
+      "Action"
+    ],
+    "cast": [
+      "Leonardo DiCaprio",
+      "Ryan Gosling",
+      "Robert Downey Jr.",
+      "Adam Driver",
+      "Natalie Portman",
+      "Brad Pitt"
+    ],
+    "productionHouses": [
+      "Marvel Studios"
+    ],
+    "director": "Peter Jackson",
+    "synopsis": "Against his father Odin's will, The Mighty Thor - a powerful but arrogant warrior god - recklessly reignites an ancient war. Thor is cast down to Earth and forced to live among humans as punishment. Once here, Thor learns what it takes to be a true hero when the most dangerous villain of his world sends the darkest forces of Asgard to invade Earth."
+  },
+  {
+    "movieId": 41,
+    "movieName": "Iron Man 2",
+    "genre": [
+      "Adventure",
+      "Action",
+      "Sci-Fi"
+    ],
+    "cast": [
+      "Joaquin Phoenix",
+      "Zendaya",
+      "Meryl Streep",
+      "Chris Evans",
+      "Kate Winslet",
+      "Margot Robbie"
+    ],
+    "productionHouses": [
+      "Marvel Studios",
+      "Fairview Entertainment"
+    ],
+    "director": "James Cameron",
+    "synopsis": "With the world now aware of his dual life as the armored superhero Iron Man, billionaire inventor Tony Stark faces pressure from the government, the press and the public to share his technology with the military. Unwilling to let go of his invention, Stark, with Pepper Potts and James 'Rhodey' Rhodes at his side, must forge new alliances – and confront powerful enemies."
+  },
+  {
+    "movieId": 42,
+    "movieName": "Batman Begins",
+    "genre": [
+      "Action",
+      "Crime",
+      "Drama"
+    ],
+    "cast": [
+      "Scarlett Johansson",
+      "Michelle Yeoh",
+      "Johnny Depp",
+      "Ryan Gosling"
+    ],
+    "productionHouses": [
+      "Warner Bros. Pictures",
+      "DC Comics",
+      "Syncopy",
+      "Legendary Pictures",
+      "Patalex III Productions Limited"
+    ],
+    "director": "Bong Joon-ho",
+    "synopsis": "Driven by tragedy, billionaire Bruce Wayne dedicates his life to uncovering and defeating the corruption that plagues his home, Gotham City.  Unable to work within the system, he instead creates a new identity, a symbol of fear for the criminal underworld - The Batman."
+  },
+  {
+    "movieId": 43,
+    "movieName": "Thor: Ragnarok",
+    "genre": [
+      "Action",
+      "Adventure",
+      "Sci-Fi"
+    ],
+    "cast": [
+      "Michelle Yeoh",
+      "Timothée Chalamet",
+      "Anya Taylor-Joy",
+      "Mark Ruffalo",
+      "Ian McKellen"
+    ],
+    "productionHouses": [
+      "Marvel Studios"
+    ],
+    "director": "Steven Spielberg",
+    "synopsis": "Thor is imprisoned on the other side of the universe and finds himself in a race against time to get back to Asgard to stop Ragnarok, the destruction of his home-world and the end of Asgardian civilization, at the hands of a powerful new threat, the ruthless Hela."
+  },
+  {
+    "movieId": 44,
+    "movieName": "Inside Out",
+    "genre": [
+      "Animation",
+      "Family",
+      "Adventure",
+      "Drama",
+      "Comedy"
+    ],
+    "cast": [
+      "Anya Taylor-Joy",
+      "Cate Blanchett",
+      "Saoirse Ronan",
+      "Anthony Hopkins",
+      "Mark Ruffalo"
+    ],
+    "productionHouses": [
+      "Pixar",
+      "Walt Disney Pictures"
+    ],
+    "director": "David Lynch",
+    "synopsis": "Growing up can be a bumpy road, and it's no exception for Riley, who is uprooted from her Midwest life when her father starts a new job in San Francisco. Riley's guiding emotions— Joy, Fear, Anger, Disgust and Sadness—live in Headquarters, the control centre inside Riley's mind, where they help advise her through everyday life and tries to keep things positive, but the emotions conflict on how best to navigate a new city, house and school."
+  },
+  {
+    "movieId": 45,
+    "movieName": "Jurassic World",
+    "genre": [
+      "Action",
+      "Adventure",
+      "Sci-Fi",
+      "Thriller"
+    ],
+    "cast": [
+      "Johnny Depp",
+      "Adam Driver",
+      "Daniel Kaluuya",
+      "Charlotte Rampling",
+      "Scarlett Johansson",
+      "Brad Pitt"
+    ],
+    "productionHouses": [
+      "Amblin Entertainment",
+      "Universal Pictures"
+    ],
+    "director": "Quentin Tarantino",
+    "synopsis": "Twenty-two years after the events of Jurassic Park, Isla Nublar now features a fully functioning dinosaur theme park, Jurassic World, as originally envisioned by John Hammond."
+  },
+  {
+    "movieId": 46,
+    "movieName": "Se7en",
+    "genre": [
+      "Crime",
+      "Mystery",
+      "Thriller"
+    ],
+    "cast": [
+      "Helena Bonham Carter",
+      "Tom Holland",
+      "Kate Winslet",
+      "Isabelle Huppert",
+      "Mahershala Ali"
+    ],
+    "productionHouses": [
+      "New Line Cinema",
+      "Juno Pix",
+      "Cecchi Gori Pictures"
+    ],
+    "director": "Ridley Scott",
+    "synopsis": "Two homicide detectives are on a desperate hunt for a serial killer whose crimes are based on the \"seven deadly sins\" in this dark and haunting film that takes viewers from the tortured remains of one victim to the next. The seasoned Det. Sommerset researches each sin in an effort to get inside the killer's mind, while his novice partner, Mills, scoffs at his efforts to unravel the case."
+  },
+  {
+    "movieId": 47,
+    "movieName": "Harry Potter and the Goblet of Fire",
+    "genre": [
+      "Adventure",
+      "Fantasy"
+    ],
+    "cast": [
+      "Tony Leung",
+      "Tom Hanks",
+      "Mark Ruffalo",
+      "Ana de Armas"
+    ],
+    "productionHouses": [
+      "Warner Bros. Pictures",
+      "Heyday Films",
+      "Patalex IV Productions Limited"
+    ],
+    "director": "Jordan Peele",
+    "synopsis": "When Harry Potter's name emerges from the Goblet of Fire, he becomes a competitor in a grueling battle for glory among three wizarding schools—the Triwizard Tournament. But since Harry never submitted his name for the Tournament, who did? Now Harry must confront a deadly dragon, fierce water demons and an enchanted maze only to find himself in the cruel grasp of He Who Must Not Be Named."
+  },
+  {
+    "movieId": 48,
+    "movieName": "Pirates of the Caribbean: The Curse of the Black Pearl",
+    "genre": [
+      "Adventure",
+      "Fantasy",
+      "Action"
+    ],
+    "cast": [
+      "Anya Taylor-Joy",
+      "Margot Robbie",
+      "Brad Pitt",
+      "Helena Bonham Carter",
+      "Adam Driver"
+    ],
+    "productionHouses": [
+      "Walt Disney Pictures",
+      "Jerry Bruckheimer Films"
+    ],
+    "director": "Francis Ford Coppola",
+    "synopsis": "Jack Sparrow, a freewheeling 18th-century pirate, quarrels with a rival pirate bent on pillaging Port Royal. When the governor's daughter is kidnapped, Sparrow decides to help the girl's love save her."
+  },
+  {
+    "movieId": 49,
+    "movieName": "Harry Potter and the Deathly Hallows: Part 2",
+    "genre": [
+      "Fantasy",
+      "Adventure"
+    ],
+    "cast": [
+      "Benedict Cumberbatch",
+      "Meryl Streep",
+      "Ryan Gosling",
+      "Kate Winslet"
+    ],
+    "productionHouses": [
+      "Warner Bros. Pictures",
+      "Heyday Films"
+    ],
+    "director": "Greta Gerwig",
+    "synopsis": "Harry, Ron and Hermione continue their quest to vanquish the evil Voldemort once and for all. Just as things begin to look hopeless for the young wizards, Harry discovers a trio of magical objects that endow him with powers to rival Voldemort's formidable skills."
+  },
+  {
+    "movieId": 50,
+    "movieName": "Star Wars",
+    "genre": [
+      "Adventure",
+      "Action",
+      "Sci-Fi"
+    ],
+    "cast": [
+      "Mahershala Ali",
+      "Tilda Swinton",
+      "Johnny Depp",
+      "Daniel Kaluuya"
+    ],
+    "productionHouses": [
+      "Lucasfilm Ltd.",
+      "20th Century Fox"
+    ],
+    "director": "Ridley Scott",
+    "synopsis": "Princess Leia is captured and held hostage by the evil Imperial forces in their effort to take over the galactic Empire. Venturesome Luke Skywalker and dashing captain Han Solo team together with the loveable robot duo R2-D2 and C-3PO to rescue the beautiful princess and restore peace and justice in the Empire."
+  },
+  {
+    "movieId": 51,
+    "movieName": "Wonder Woman",
+    "genre": [
+      "Action",
+      "Adventure",
+      "Fantasy"
+    ],
+    "cast": [
+      "Penélope Cruz",
+      "Viola Davis",
+      "Song Kang-ho",
+      "Javier Bardem",
+      "Tilda Swinton"
+    ],
+    "productionHouses": [
+      "Atlas Entertainment",
+      "Cruel & Unusual Films",
+      "DC Films"
+    ],
+    "director": "Steven Spielberg",
+    "synopsis": "An Amazon princess comes to the world of Man in the grips of the First World War to confront the forces of evil and bring an end to human conflict."
+  },
+  {
+    "movieId": 52,
+    "movieName": "Up",
+    "genre": [
+      "Animation",
+      "Comedy",
+      "Family",
+      "Adventure"
+    ],
+    "cast": [
+      "Emma Stone",
+      "Benedict Cumberbatch",
+      "Cate Blanchett",
+      "Anthony Hopkins"
+    ],
+    "productionHouses": [
+      "Pixar"
+    ],
+    "director": "David Lynch",
+    "synopsis": "Carl Fredricksen spent his entire life dreaming of exploring the globe and experiencing life to its fullest. But at age 78, life seems to have passed him by, until a twist of fate (and a persistent 8-year old Wilderness Explorer named Russell) gives him a new lease on life."
+  },
+  {
+    "movieId": 53,
+    "movieName": "Ant-Man",
+    "genre": [
+      "Sci-Fi",
+      "Action",
+      "Adventure"
+    ],
+    "cast": [
+      "Lupita Nyong'o",
+      "Chris Hemsworth",
+      "Anya Taylor-Joy",
+      "Angelina Jolie",
+      "Tom Holland"
+    ],
+    "productionHouses": [
+      "Marvel Studios"
+    ],
+    "director": "Denis Villeneuve",
+    "synopsis": "Armed with the astonishing ability to shrink in scale but increase in strength, master thief Scott Lang must embrace his inner-hero and help his mentor, Doctor Hank Pym, protect the secret behind his spectacular Ant-Man suit from a new generation of towering threats. Against seemingly insurmountable obstacles, Pym and Lang must plan and pull off a heist that will save the world."
+  },
+  {
+    "movieId": 54,
+    "movieName": "The Godfather",
+    "genre": [
+      "Drama",
+      "Crime"
+    ],
+    "cast": [
+      "Song Kang-ho",
+      "Anya Taylor-Joy",
+      "Mahershala Ali",
+      "Timothée Chalamet"
+    ],
+    "productionHouses": [
+      "Paramount",
+      "Alfran Productions"
+    ],
+    "director": "Steven Spielberg",
+    "synopsis": "Spanning the years 1945 to 1955, a chronicle of the fictional Italian-American Corleone crime family. When organized crime family patriarch, Vito Corleone barely survives an attempt on his life, his youngest son, Michael steps in to take care of the would-be killers, launching a campaign of bloody revenge."
+  },
+  {
+    "movieId": 55,
+    "movieName": "The Martian",
+    "genre": [
+      "Drama",
+      "Adventure",
+      "Sci-Fi"
+    ],
+    "cast": [
+      "Robert Downey Jr.",
+      "Natalie Portman",
+      "Lupita Nyong'o",
+      "Chris Evans",
+      "Rami Malek",
+      "Emma Stone"
+    ],
+    "productionHouses": [
+      "Scott Free Productions",
+      "Genre Films"
+    ],
+    "director": "Greta Gerwig",
+    "synopsis": "During a manned mission to Mars, Astronaut Mark Watney is presumed dead after a fierce storm and left behind by his crew. But Watney has survived and finds himself stranded and alone on the hostile planet. With only meager supplies, he must draw upon his ingenuity, wit and spirit to subsist and find a way to signal to Earth that he is alive."
+  },
+  {
+    "movieId": 56,
+    "movieName": "Back to the Future",
+    "genre": [
+      "Adventure",
+      "Comedy",
+      "Sci-Fi"
+    ],
+    "cast": [
+      "Oscar Isaac",
+      "Tony Leung",
+      "Isabelle Huppert",
+      "Saoirse Ronan",
+      "Viola Davis"
+    ],
+    "productionHouses": [
+      "Universal Pictures",
+      "Amblin Entertainment"
+    ],
+    "director": "Yorgos Lanthimos",
+    "synopsis": "Eighties teenager Marty McFly is accidentally sent back in time to 1955, inadvertently disrupting his parents' first meeting and attracting his mother's romantic interest. Marty must repair the damage to history by rekindling his parents' romance and - with the help of his eccentric inventor friend Doc Brown - return to 1985."
+  },
+  {
+    "movieId": 57,
+    "movieName": "Star Wars: The Force Awakens",
+    "genre": [
+      "Adventure",
+      "Action",
+      "Sci-Fi"
+    ],
+    "cast": [
+      "Brad Pitt",
+      "Joaquin Phoenix",
+      "Timothée Chalamet",
+      "Ryan Gosling",
+      "Christian Bale"
+    ],
+    "productionHouses": [
+      "Lucasfilm Ltd.",
+      "Bad Robot"
+    ],
+    "director": "Martin Scorsese",
+    "synopsis": "Thirty years after defeating the Galactic Empire, Han Solo and his allies face a new threat from the evil Kylo Ren and his army of Stormtroopers."
+  },
+  {
+    "movieId": 58,
+    "movieName": "Spider-Man: No Way Home",
+    "genre": [
+      "Action",
+      "Adventure",
+      "Sci-Fi"
+    ],
+    "cast": [
+      "Christian Bale",
+      "Leonardo DiCaprio",
+      "Kate Winslet",
+      "Saoirse Ronan",
+      "Matt Damon"
+    ],
+    "productionHouses": [
+      "Marvel Studios",
+      "Pascal Pictures",
+      "Columbia Pictures"
+    ],
+    "director": "Denis Villeneuve",
+    "synopsis": "Peter Parker is unmasked and no longer able to separate his normal life from the high-stakes of being a super-hero. When he asks for help from Doctor Strange the stakes become even more dangerous, forcing him to discover what it truly means to be Spider-Man."
+  },
+  {
+    "movieId": 59,
+    "movieName": "Harry Potter and the Order of the Phoenix",
+    "genre": [
+      "Adventure",
+      "Fantasy"
+    ],
+    "cast": [
+      "Leonardo DiCaprio",
+      "Jake Gyllenhaal",
+      "Anya Taylor-Joy",
+      "Tilda Swinton",
+      "Emma Stone",
+      "Isabelle Huppert"
+    ],
+    "productionHouses": [
+      "Warner Bros. Pictures",
+      "Heyday Films"
+    ],
+    "director": "Darren Aronofsky",
+    "synopsis": "Returning for his fifth year of study at Hogwarts, Harry is stunned to find that his warnings about the return of Lord Voldemort have been ignored. Left with no choice, Harry takes matters into his own hands, training a small group of students to defend themselves against the dark arts."
+  },
+  {
+    "movieId": 60,
+    "movieName": "Harry Potter and the Half-Blood Prince",
+    "genre": [
+      "Adventure",
+      "Fantasy"
+    ],
+    "cast": [
+      "Benedict Cumberbatch",
+      "Ana de Armas",
+      "Christian Bale",
+      "Anya Taylor-Joy"
+    ],
+    "productionHouses": [
+      "Warner Bros. Pictures",
+      "Heyday Films"
+    ],
+    "director": "Yorgos Lanthimos",
+    "synopsis": "As Lord Voldemort tightens his grip on both the Muggle and wizarding worlds, Hogwarts is no longer a safe haven. Harry suspects perils may even lie within the castle, but Dumbledore is more intent upon preparing him for the final battle fast approaching. Together they work to find the key to unlock Voldemorts defenses and to this end, Dumbledore recruits his old friend and colleague Horace Slughorn, whom he believes holds crucial information. Even as the decisive showdown looms, romance blossoms for Harry, Ron, Hermione and their classmates. Love is in the air, but danger lies ahead and Hogwarts may never be the same again."
+  },
+  {
+    "movieId": 61,
+    "movieName": "Logan",
+    "genre": [
+      "Action",
+      "Drama",
+      "Sci-Fi"
+    ],
+    "cast": [
+      "Michelle Yeoh",
+      "Chris Evans",
+      "Mahershala Ali",
+      "Adam Driver",
+      "Anthony Hopkins"
+    ],
+    "productionHouses": [
+      "Hutch Parker Entertainment",
+      "The Donners' Company",
+      "Genre Films",
+      "20th Century Fox"
+    ],
+    "director": "Quentin Tarantino",
+    "synopsis": "In the near future, a weary Logan cares for an ailing Professor X in a hideout on the Mexican border. But Logan's attempts to hide from the world and his legacy are upended when a young mutant arrives, pursued by dark forces."
+  },
+  {
+    "movieId": 62,
+    "movieName": "Finding Nemo",
+    "genre": [
+      "Animation",
+      "Family"
+    ],
+    "cast": [
+      "Daniel Kaluuya",
+      "Isabelle Huppert",
+      "Rami Malek",
+      "Emma Stone"
+    ],
+    "productionHouses": [
+      "Pixar"
+    ],
+    "director": "Martin Scorsese",
+    "synopsis": "Nemo, an adventurous young clownfish, is unexpectedly taken from his Great Barrier Reef home to a dentist's office aquarium. It's up to his worrisome father Marlin and a friendly but forgetful fish Dory to bring Nemo home -- meeting vegetarian sharks, surfer dude turtles, hypnotic jellyfish, hungry seagulls, and more along the way."
+  },
+  {
+    "movieId": 63,
+    "movieName": "It",
+    "genre": [
+      "Horror",
+      "Fantasy"
+    ],
+    "cast": [
+      "Saoirse Ronan",
+      "Ana de Armas",
+      "Mahershala Ali",
+      "Chris Hemsworth",
+      "Gary Oldman",
+      "Timothée Chalamet"
+    ],
+    "productionHouses": [
+      "New Line Cinema",
+      "Vertigo Entertainment",
+      "Lin Pictures",
+      "KatzSmith Productions"
+    ],
+    "director": "Quentin Tarantino",
+    "synopsis": "In a small town in Maine, seven children known as The Losers Club come face to face with life problems, bullies and a monster that takes the shape of a clown called Pennywise."
+  },
+  {
+    "movieId": 64,
+    "movieName": "John Wick",
+    "genre": [
+      "Action",
+      "Thriller"
+    ],
+    "cast": [
+      "Scarlett Johansson",
+      "Angelina Jolie",
+      "Michelle Yeoh",
+      "Meryl Streep"
+    ],
+    "productionHouses": [
+      "87Eleven",
+      "DefyNite Films",
+      "MJW Films",
+      "Thunder Road"
+    ],
+    "director": "Wes Anderson",
+    "synopsis": "Ex-hitman John Wick comes out of retirement to track down the gangsters that took everything from him."
+  },
+  {
+    "movieId": 65,
+    "movieName": "Fantastic Beasts and Where to Find Them",
+    "genre": [
+      "Fantasy",
+      "Adventure",
+      "Family"
+    ],
+    "cast": [
+      "Viola Davis",
+      "Ana de Armas",
+      "Tom Hanks",
+      "Brad Pitt",
+      "Ian McKellen",
+      "Emma Stone"
+    ],
+    "productionHouses": [
+      "Heyday Films",
+      "Warner Bros. Pictures"
+    ],
+    "director": "Paul Thomas Anderson",
+    "synopsis": "In 1926, Newt Scamander arrives at the Magical Congress of the United States of America with a magically expanded briefcase, which houses a number of dangerous creatures and their habitats. When the creatures escape from the briefcase, it sends the American wizarding authorities after Newt, and threatens to strain even further the state of magical and non-magical relations."
+  },
+  {
+    "movieId": 66,
+    "movieName": "Harry Potter and the Deathly Hallows: Part 1",
+    "genre": [
+      "Adventure",
+      "Fantasy"
+    ],
+    "cast": [
+      "Javier Bardem",
+      "Song Kang-ho",
+      "Christian Bale",
+      "Rami Malek",
+      "Penélope Cruz"
+    ],
+    "productionHouses": [
+      "Warner Bros. Pictures",
+      "Heyday Films"
+    ],
+    "director": "Greta Gerwig",
+    "synopsis": "Harry, Ron and Hermione walk away from their last year at Hogwarts to find and destroy the remaining Horcruxes, putting an end to Voldemort's bid for immortality. But with Harry's beloved Dumbledore dead and Voldemort's unscrupulous Death Eaters on the loose, the world is more dangerous than ever."
+  },
+  {
+    "movieId": 67,
+    "movieName": "Coco",
+    "genre": [
+      "Family",
+      "Animation",
+      "Fantasy",
+      "Musical",
+      "Comedy",
+      "Adventure"
+    ],
+    "cast": [
+      "Tom Hanks",
+      "Scarlett Johansson",
+      "Tony Leung",
+      "Benedict Cumberbatch",
+      "Natalie Portman",
+      "Brad Pitt"
+    ],
+    "productionHouses": [
+      "Pixar",
+      "Walt Disney Pictures"
+    ],
+    "director": "Joel Coen",
+    "synopsis": "Despite his family’s baffling generations-old ban on music, Miguel dreams of becoming an accomplished musician like his idol, Ernesto de la Cruz. Desperate to prove his talent, Miguel finds himself in the stunning and colorful Land of the Dead following a mysterious chain of events. Along the way, he meets charming trickster Hector, and together, they set off on an extraordinary journey to unlock the real story behind Miguel's family history."
+  },
+  {
+    "movieId": 68,
+    "movieName": "Captain America: The Winter Soldier",
+    "genre": [
+      "Action",
+      "Adventure",
+      "Sci-Fi"
+    ],
+    "cast": [
+      "Tom Hardy",
+      "Christian Bale",
+      "Zendaya",
+      "Charlotte Rampling",
+      "Michelle Yeoh"
+    ],
+    "productionHouses": [
+      "Marvel Studios"
+    ],
+    "director": "Greta Gerwig",
+    "synopsis": "After the cataclysmic events in New York with The Avengers, Steve Rogers, aka Captain America is living quietly in Washington, D.C. and trying to adjust to the modern world. But when a S.H.I.E.L.D. colleague comes under attack, Steve becomes embroiled in a web of intrigue that threatens to put the world at risk. Joining forces with the Black Widow, Captain America struggles to expose the ever-widening conspiracy while fighting off professional assassins sent to silence him at every turn. When the full scope of the villainous plot is revealed, Captain America and the Black Widow enlist the help of a new ally, the Falcon. However, they soon find themselves up against an unexpected and formidable enemy—the Winter Soldier."
+  },
+  {
+    "movieId": 69,
+    "movieName": "Spider-Man",
+    "genre": [
+      "Fantasy",
+      "Action"
+    ],
+    "cast": [
+      "Michelle Yeoh",
+      "Mark Ruffalo",
+      "Penélope Cruz",
+      "Kate Winslet"
+    ],
+    "productionHouses": [
+      "Marvel Enterprises",
+      "Laura Ziskin Productions",
+      "Columbia Pictures"
+    ],
+    "director": "Alfonso Cuarón",
+    "synopsis": "After being bitten by a genetically altered spider at Oscorp, nerdy but endearing high school student Peter Parker is endowed with amazing powers to become the superhero known as Spider-Man."
+  },
+  {
+    "movieId": 70,
+    "movieName": "WALL·E",
+    "genre": [
+      "Animation",
+      "Family",
+      "Sci-Fi"
+    ],
+    "cast": [
+      "Tom Holland",
+      "Jake Gyllenhaal",
+      "Christian Bale",
+      "Natalie Portman"
+    ],
+    "productionHouses": [
+      "Pixar",
+      "Walt Disney Pictures"
+    ],
+    "director": "Jordan Peele",
+    "synopsis": "What if mankind had to leave Earth and somebody forgot to turn the last robot off? After hundreds of years doing what he was built for, WALL•E discovers a new purpose in life when he meets a sleek search robot named EVE. EVE comes to realize that WALL•E has inadvertently stumbled upon the key to the planet's future, and races back to space to report to the humans. Meanwhile, WALL•E chases EVE across the galaxy and sets into motion one of the most imaginative adventures ever brought to the big screen."
+  },
+  {
+    "movieId": 71,
+    "movieName": "Gone Girl",
+    "genre": [
+      "Mystery",
+      "Thriller",
+      "Drama"
+    ],
+    "cast": [
+      "Viola Davis",
+      "Jake Gyllenhaal",
+      "Ryan Gosling",
+      "Adam Driver",
+      "Florence Pugh"
+    ],
+    "productionHouses": [
+      "Regency Enterprises",
+      "New Regency Pictures",
+      "Pacific Standard",
+      "TSG Entertainment",
+      "Artemple - Hollywood",
+      "20th Century Fox"
+    ],
+    "director": "Jordan Peele",
+    "synopsis": "With his wife's disappearance having become the focus of an intense media circus, a man sees the spotlight turned on him when it's suspected that he may not be innocent."
+  },
+  {
+    "movieId": 72,
+    "movieName": "The Hobbit: An Unexpected Journey",
+    "genre": [
+      "Adventure",
+      "Fantasy",
+      "Action"
+    ],
+    "cast": [
+      "Rami Malek",
+      "Leonardo DiCaprio",
+      "Tony Leung",
+      "Angelina Jolie",
+      "Tom Hanks",
+      "Zendaya"
+    ],
+    "productionHouses": [
+      "Warner Bros. Pictures",
+      "Metro-Goldwyn-Mayer",
+      "New Line Cinema",
+      "WingNut Films"
+    ],
+    "director": "Joel Coen",
+    "synopsis": "Bilbo Baggins, a hobbit enjoying his quiet life, is swept into an epic quest by Gandalf the Grey and thirteen dwarves who seek to reclaim their mountain home from Smaug, the dragon."
+  },
+  {
+    "movieId": 73,
+    "movieName": "Monsters, Inc.",
+    "genre": [
+      "Animation",
+      "Comedy",
+      "Family"
+    ],
+    "cast": [
+      "Song Kang-ho",
+      "Helena Bonham Carter",
+      "Meryl Streep",
+      "Anya Taylor-Joy",
+      "Matt Damon"
+    ],
+    "productionHouses": [
+      "Pixar"
+    ],
+    "director": "Park Chan-wook",
+    "synopsis": "Lovable Sulley and his wisecracking sidekick Mike Wazowski are the top scare team at Monsters, Inc., the scream-processing factory in Monstropolis. When a little girl named Boo wanders into their world, it's the monsters who are scared silly, and it's up to Sulley and Mike to keep her out of sight and get her back home."
+  },
+  {
+    "movieId": 74,
+    "movieName": "Toy Story",
+    "genre": [
+      "Animation",
+      "Adventure",
+      "Family",
+      "Comedy"
+    ],
+    "cast": [
+      "Timothée Chalamet",
+      "Meryl Streep",
+      "Robert Downey Jr.",
+      "Natalie Portman",
+      "Anthony Hopkins"
+    ],
+    "productionHouses": [
+      "Pixar"
+    ],
+    "director": "Joel Coen",
+    "synopsis": "Led by Woody, Andy's toys live happily in his room until Andy's birthday brings Buzz Lightyear onto the scene. Afraid of losing his place in Andy's heart, Woody plots against Buzz. But when circumstances separate Buzz and Woody from their owner, the duo eventually learns to put aside their differences."
+  },
+  {
+    "movieId": 75,
+    "movieName": "The Revenant",
+    "genre": [
+      "Western",
+      "Drama",
+      "Adventure"
+    ],
+    "cast": [
+      "Zendaya",
+      "Jake Gyllenhaal",
+      "Rami Malek",
+      "Ian McKellen",
+      "Ryan Gosling"
+    ],
+    "productionHouses": [
+      "Monarchy Enterprises S.a.r.l.",
+      "Regency Enterprises",
+      "Appian Way",
+      "CatchPlay",
+      "Anonymous Content",
+      "New Regency Pictures",
+      "Hong Kong Alpha Motion Pictures Co.",
+      "M Productions",
+      "RatPac Entertainment"
+    ],
+    "director": "Darren Aronofsky",
+    "synopsis": "In the 1820s, a frontiersman, Hugh Glass, sets out on a path of vengeance against those who left him for dead after a bear mauling."
+  },
+  {
+    "movieId": 76,
+    "movieName": "Batman v Superman: Dawn of Justice",
+    "genre": [
+      "Action",
+      "Adventure",
+      "Fantasy"
+    ],
+    "cast": [
+      "Ana de Armas",
+      "Angelina Jolie",
+      "Chris Hemsworth",
+      "Isabelle Huppert"
+    ],
+    "productionHouses": [
+      "Warner Bros. Pictures",
+      "RatPac Entertainment",
+      "Atlas Entertainment",
+      "Cruel & Unusual Films",
+      "DC Entertainment",
+      "Syncopy"
+    ],
+    "director": "Sofia Coppola",
+    "synopsis": "Fearing the actions of a god-like Super Hero left unchecked, Gotham City’s own formidable, forceful vigilante takes on Metropolis’s most revered, modern-day savior, while the world wrestles with what sort of hero it really needs. And with Batman and Superman at war with one another, a new threat quickly arises, putting mankind in greater danger than it’s ever known before."
+  },
+  {
+    "movieId": 77,
+    "movieName": "The Lion King",
+    "genre": [
+      "Family",
+      "Animation",
+      "Drama"
+    ],
+    "cast": [
+      "Song Kang-ho",
+      "Angelina Jolie",
+      "Isabelle Huppert",
+      "Ian McKellen",
+      "Michelle Yeoh",
+      "Florence Pugh"
+    ],
+    "productionHouses": [
+      "Walt Disney Pictures",
+      "Walt Disney Feature Animation"
+    ],
+    "director": "Spike Lee",
+    "synopsis": "A young lion prince is cast out of his pride by his cruel uncle, who claims he killed his father. While the uncle rules with an iron paw, the prince grows up beyond the Savannah, living by a philosophy: No worries for the rest of your days. But when his past comes to haunt him, the young prince must decide his fate: Will he remain an outcast or face his demons and become what he needs to be?"
+  },
+  {
+    "movieId": 78,
+    "movieName": "Gladiator",
+    "genre": [
+      "Action",
+      "Drama",
+      "Adventure"
+    ],
+    "cast": [
+      "Margot Robbie",
+      "Michelle Yeoh",
+      "Tilda Swinton",
+      "Robert Downey Jr.",
+      "Saoirse Ronan"
+    ],
+    "productionHouses": [
+      "Universal Pictures",
+      "Scott Free Productions",
+      "Red Wagon Entertainment",
+      "Mill Film",
+      "C & L",
+      "Dawliz",
+      "DreamWorks Pictures"
+    ],
+    "director": "Darren Aronofsky",
+    "synopsis": "In the year 180, the death of emperor Marcus Aurelius throws the Roman Empire into chaos.  Maximus is one of the Roman army's most capable and trusted generals and a key advisor to the emperor.  As Marcus' devious son Commodus ascends to the throne, Maximus is set to be executed.  He escapes, but is captured by slave traders.  Renamed Spaniard and forced to become a gladiator, Maximus must battle to the death with other men for the amusement of paying audiences."
+  },
+  {
+    "movieId": 79,
+    "movieName": "The Truman Show",
+    "genre": [
+      "Comedy",
+      "Drama"
+    ],
+    "cast": [
+      "Mark Ruffalo",
+      "Anya Taylor-Joy",
+      "Brad Pitt",
+      "Tom Hardy",
+      "Benedict Cumberbatch"
+    ],
+    "productionHouses": [
+      "Paramount",
+      "Scott Rudin Productions"
+    ],
+    "director": "Spike Lee",
+    "synopsis": "Truman Burbank is the star of The Truman Show, a 24-hour-a-day reality TV show that broadcasts every aspect of his life without his knowledge. His entire life has been an unending soap opera for consumption by the rest of the world. And everyone he knows, including his wife and his best friend, is really an actor, paid to be part of his life."
+  },
+  {
+    "movieId": 80,
+    "movieName": "The Incredibles",
+    "genre": [
+      "Action",
+      "Adventure",
+      "Animation",
+      "Family"
+    ],
+    "cast": [
+      "Ana de Armas",
+      "Penélope Cruz",
+      "Johnny Depp",
+      "Robert Downey Jr."
+    ],
+    "productionHouses": [
+      "Pixar",
+      "Walt Disney Pictures"
+    ],
+    "director": "Christopher Nolan",
+    "synopsis": "Bob Parr has given up his superhero days to log in time as an insurance adjuster and raise his three children with his formerly heroic wife in suburbia. But when he receives a mysterious assignment, it's time to get back into costume."
+  },
+  {
+    "movieId": 81,
+    "movieName": "Arrival",
+    "genre": [
+      "Drama",
+      "Sci-Fi",
+      "Mystery"
+    ],
+    "cast": [
+      "Anthony Hopkins",
+      "Helena Bonham Carter",
+      "Chris Hemsworth",
+      "Charlotte Rampling",
+      "Anya Taylor-Joy"
+    ],
+    "productionHouses": [
+      "FilmNation Entertainment",
+      "Lava Bear Films",
+      "Reliance Entertainment",
+      "Xenolinguistics",
+      "21 Laps Entertainment",
+      "Paramount",
+      "Stage 6 Films"
+    ],
+    "director": "Greta Gerwig",
+    "synopsis": "Taking place after alien crafts land around the world, an expert linguist is recruited by the military to determine whether they come in peace or are a threat."
+  },
+  {
+    "movieId": 82,
+    "movieName": "Parasite",
+    "genre": [
+      "Comedy",
+      "Thriller",
+      "Drama"
+    ],
+    "cast": [
+      "Tony Leung",
+      "Timothée Chalamet",
+      "Javier Bardem",
+      "Oscar Isaac",
+      "Zendaya"
+    ],
+    "productionHouses": [
+      "Barunson E&A"
+    ],
+    "director": "Yorgos Lanthimos",
+    "synopsis": "All unemployed, Ki-taek's family takes peculiar interest in the wealthy and glamorous Parks for their livelihood until they get entangled in an unexpected incident."
+  },
+  {
+    "movieId": 83,
+    "movieName": "Thor: The Dark World",
+    "genre": [
+      "Action",
+      "Adventure",
+      "Fantasy"
+    ],
+    "cast": [
+      "Anya Taylor-Joy",
+      "Cate Blanchett",
+      "Jake Gyllenhaal",
+      "Oscar Isaac"
+    ],
+    "productionHouses": [
+      "Marvel Studios"
+    ],
+    "director": "Joel Coen",
+    "synopsis": "Thor fights to restore order across the cosmos… but an ancient race led by the vengeful Malekith returns to plunge the universe back into darkness. Faced with an enemy that even Odin and Asgard cannot withstand, Thor must embark on his most perilous and personal journey yet, one that will reunite him with Jane Foster and force him to sacrifice everything to save us all."
+  },
+  {
+    "movieId": 84,
+    "movieName": "The Amazing Spider-Man",
+    "genre": [
+      "Action",
+      "Adventure",
+      "Fantasy"
+    ],
+    "cast": [
+      "Penélope Cruz",
+      "Matt Damon",
+      "Leonardo DiCaprio",
+      "Ana de Armas",
+      "Adam Driver",
+      "Anthony Hopkins"
+    ],
+    "productionHouses": [
+      "Marvel Entertainment",
+      "Laura Ziskin Productions",
+      "Columbia Pictures",
+      "Matt Tolmach Productions",
+      "Arad Productions"
+    ],
+    "director": "Yorgos Lanthimos",
+    "synopsis": "Peter Parker is an outcast high schooler abandoned by his parents as a boy, leaving him to be raised by his Uncle Ben and Aunt May. Like most teenagers, Peter is trying to figure out who he is and how he got to be the person he is today. As Peter discovers a mysterious briefcase that belonged to his father, he begins a quest to understand his parents' disappearance – leading him directly to Oscorp and the lab of Dr. Curt Connors, his father's former partner. As Spider-Man is set on a collision course with Connors' alter ego, The Lizard, Peter will make life-altering choices to use his powers and shape his destiny to become a hero."
+  },
+  {
+    "movieId": 85,
+    "movieName": "Split",
+    "genre": [
+      "Horror",
+      "Thriller"
+    ],
+    "cast": [
+      "Michelle Yeoh",
+      "Daniel Kaluuya",
+      "Benedict Cumberbatch",
+      "Joaquin Phoenix",
+      "Angelina Jolie"
+    ],
+    "productionHouses": [
+      "Universal Pictures",
+      "Blinding Edge Pictures",
+      "Blumhouse Productions"
+    ],
+    "director": "Ridley Scott",
+    "synopsis": "Though Kevin has evidenced 23 personalities to his trusted psychiatrist, Dr. Fletcher, there remains one still submerged who is set to materialize and dominate all the others. Compelled to abduct three teenage girls led by the willful, observant Casey, Kevin reaches a war for survival among all of those contained within him — as well as everyone around him — as the walls between his compartments shatter apart."
+  },
+  {
+    "movieId": 86,
+    "movieName": "Deadpool 2",
+    "genre": [
+      "Action",
+      "Comedy",
+      "Adventure"
+    ],
+    "cast": [
+      "Robert Downey Jr.",
+      "Isabelle Huppert",
+      "Song Kang-ho",
+      "Ana de Armas",
+      "Chris Hemsworth"
+    ],
+    "productionHouses": [
+      "Maximum Effort",
+      "Genre Films",
+      "20th Century Fox"
+    ],
+    "director": "Peter Jackson",
+    "synopsis": "Wisecracking mercenary Deadpool battles the evil and powerful Cable and other bad guys to save a boy's life."
+  },
+  {
+    "movieId": 87,
+    "movieName": "The Shining",
+    "genre": [
+      "Horror",
+      "Thriller"
+    ],
+    "cast": [
+      "Javier Bardem",
+      "Angelina Jolie",
+      "Daniel Kaluuya",
+      "Chris Hemsworth",
+      "Timothée Chalamet"
+    ],
+    "productionHouses": [
+      "Hawk Films",
+      "Peregrine",
+      "Producers Circle",
+      "Warner Bros. Pictures"
+    ],
+    "director": "Park Chan-wook",
+    "synopsis": "Jack Torrance accepts a caretaker job at the Overlook Hotel, where he, along with his wife Wendy and their son Danny, must live isolated from the rest of the world for the winter. But they aren't prepared for the madness that lurks within."
+  },
+  {
+    "movieId": 88,
+    "movieName": "Kill Bill: Vol. 1",
+    "genre": [
+      "Action",
+      "Crime"
+    ],
+    "cast": [
+      "Robert Downey Jr.",
+      "Tony Leung",
+      "Viola Davis",
+      "Javier Bardem",
+      "Helena Bonham Carter",
+      "Angelina Jolie"
+    ],
+    "productionHouses": [
+      "Miramax",
+      "A Band Apart",
+      "Super Cool ManChu"
+    ],
+    "director": "Yorgos Lanthimos",
+    "synopsis": "An assassin is shot by her ruthless employer, Bill, and other members of their assassination circle – but she lives to plot her vengeance."
+  },
+  {
+    "movieId": 89,
+    "movieName": "The Hunger Games: Catching Fire",
+    "genre": [
+      "Adventure",
+      "Action",
+      "Sci-Fi"
+    ],
+    "cast": [
+      "Helena Bonham Carter",
+      "Brad Pitt",
+      "Javier Bardem",
+      "Michelle Yeoh",
+      "Angelina Jolie",
+      "Joaquin Phoenix"
+    ],
+    "productionHouses": [
+      "Lionsgate",
+      "Color Force"
+    ],
+    "director": "Park Chan-wook",
+    "synopsis": "Katniss Everdeen has returned home safe after winning the 74th Annual Hunger Games along with fellow tribute Peeta Mellark. Winning means that they must turn around and leave their family and close friends, embarking on a \"Victor's Tour\" of the districts. Along the way Katniss senses that a rebellion is simmering, but the Capitol is still very much in control as President Snow prepares the 75th Annual Hunger Games (The Quarter Quell) - a competition that could change Panem forever."
+  },
+  {
+    "movieId": 90,
+    "movieName": "The Intouchables",
+    "genre": [
+      "Drama",
+      "Comedy"
+    ],
+    "cast": [
+      "Margot Robbie",
+      "Tom Hanks",
+      "Meryl Streep",
+      "Song Kang-ho",
+      "Cate Blanchett",
+      "Ian McKellen"
+    ],
+    "productionHouses": [
+      "Gaumont",
+      "CinéCinéma",
+      "Quad Productions",
+      "Chaocorp",
+      "Ten Films",
+      "TF1",
+      "Canal+",
+      "TF1 Films Production"
+    ],
+    "director": "David Lynch",
+    "synopsis": "A true story of two men who should never have met – a quadriplegic aristocrat who was injured in a paragliding accident and a young man from the projects."
+  },
+  {
+    "movieId": 91,
+    "movieName": "Get Out",
+    "genre": [
+      "Mystery",
+      "Thriller",
+      "Horror"
+    ],
+    "cast": [
+      "Tom Holland",
+      "Tony Leung",
+      "Mahershala Ali",
+      "Brad Pitt",
+      "Zendaya"
+    ],
+    "productionHouses": [
+      "Monkeypaw Productions",
+      "Blumhouse Productions",
+      "QC Entertainment"
+    ],
+    "director": "Guillermo del Toro",
+    "synopsis": "Chris and his girlfriend Rose go upstate to visit her parents for the weekend. At first, Chris reads the family's overly accommodating behavior as nervous attempts to deal with their daughter's interracial relationship, but as the weekend progresses, a series of increasingly disturbing discoveries lead him to a truth that he never could have imagined."
+  },
+  {
+    "movieId": 92,
+    "movieName": "The Imitation Game",
+    "genre": [
+      "Historical",
+      "Drama",
+      "Thriller",
+      "War"
+    ],
+    "cast": [
+      "Angelina Jolie",
+      "Cate Blanchett",
+      "Gary Oldman",
+      "Michelle Yeoh",
+      "Kate Winslet",
+      "Charlotte Rampling"
+    ],
+    "productionHouses": [
+      "Bristol Automotive",
+      "Black Bear Pictures",
+      "The Weinstein Company",
+      "FilmNation Entertainment"
+    ],
+    "director": "Christopher Nolan",
+    "synopsis": "Based on the real life story of legendary cryptanalyst Alan Turing, the film portrays the nail-biting race against time by Turing and his brilliant team of code-breakers at Britain's top-secret Government Code and Cypher School at Bletchley Park, during the darkest days of World War II."
+  },
+  {
+    "movieId": 93,
+    "movieName": "Bohemian Rhapsody",
+    "genre": [
+      "Musical",
+      "Drama",
+      "Historical"
+    ],
+    "cast": [
+      "Helena Bonham Carter",
+      "Ian McKellen",
+      "Florence Pugh",
+      "Chris Evans"
+    ],
+    "productionHouses": [
+      "GK Films",
+      "Regency Enterprises",
+      "Queen Films",
+      "Tribeca Productions",
+      "New Regency Pictures",
+      "20th Century Fox"
+    ],
+    "director": "Peter Jackson",
+    "synopsis": "Singer Freddie Mercury, guitarist Brian May, drummer Roger Taylor and bass guitarist John Deacon take the music world by storm when they form the rock 'n' roll band Queen in 1970. Hit songs become instant classics. When Mercury's increasingly wild lifestyle starts to spiral out of control, Queen soon faces its greatest challenge yet – finding a way to keep the band together amid the success and excess."
+  },
+  {
+    "movieId": 94,
+    "movieName": "The Green Mile",
+    "genre": [
+      "Fantasy",
+      "Drama",
+      "Crime"
+    ],
+    "cast": [
+      "Brad Pitt",
+      "Rami Malek",
+      "Viola Davis",
+      "Leonardo DiCaprio",
+      "Emma Stone"
+    ],
+    "productionHouses": [
+      "Castle Rock Entertainment",
+      "Darkwoods Productions",
+      "Warner Bros. Pictures",
+      "PolyGram Filmed Entertainment"
+    ],
+    "director": "Yorgos Lanthimos",
+    "synopsis": "A supernatural tale set on death row in a Southern prison, where gentle giant John Coffey possesses the mysterious power to heal people's ailments. When the cell block's head guard, Paul Edgecomb, recognizes Coffey's miraculous gift, he tries desperately to help stave off the condemned man's execution."
+  },
+  {
+    "movieId": 95,
+    "movieName": "The Maze Runner",
+    "genre": [
+      "Action",
+      "Mystery",
+      "Sci-Fi",
+      "Thriller"
+    ],
+    "cast": [
+      "Matt Damon",
+      "Idris Elba",
+      "Anya Taylor-Joy",
+      "Emma Stone",
+      "Ryan Gosling",
+      "Joaquin Phoenix"
+    ],
+    "productionHouses": [
+      "Ingenious Media",
+      "Gotham Group",
+      "Dayday Films",
+      "Temple Hill Entertainment",
+      "TSG Entertainment",
+      "20th Century Fox"
+    ],
+    "director": "James Cameron",
+    "synopsis": "Set in a post-apocalyptic world, young Thomas is deposited in a community of boys after his memory is erased, soon learning they're all trapped in a maze that will require him to join forces with fellow “runners” for a shot at escape."
+  },
+  {
+    "movieId": 96,
+    "movieName": "The Hangover",
+    "genre": [
+      "Comedy"
+    ],
+    "cast": [
+      "Jake Gyllenhaal",
+      "Margot Robbie",
+      "Oscar Isaac",
+      "Mark Ruffalo",
+      "Gary Oldman"
+    ],
+    "productionHouses": [
+      "Legendary Pictures",
+      "Green Hat Films",
+      "Warner Bros. Pictures"
+    ],
+    "director": "Steven Spielberg",
+    "synopsis": "When three friends finally come to after a raucous night of bachelor-party revelry, they find a baby in the closet and a tiger in the bathroom. But they can't seem to locate their best friend, Doug – who's supposed to be tying the knot. Launching a frantic search for Doug, the trio perseveres through a nasty hangover to try to make it to the church on time."
+  },
+  {
+    "movieId": 97,
+    "movieName": "The Empire Strikes Back",
+    "genre": [
+      "Adventure",
+      "Action",
+      "Sci-Fi"
+    ],
+    "cast": [
+      "Ana de Armas",
+      "Charlotte Rampling",
+      "Chris Evans",
+      "Anya Taylor-Joy",
+      "Javier Bardem",
+      "Chris Hemsworth"
+    ],
+    "productionHouses": [
+      "Lucasfilm Ltd."
+    ],
+    "director": "Quentin Tarantino",
+    "synopsis": "The epic saga continues as Luke Skywalker, in hopes of defeating the evil Galactic Empire, learns the ways of the Jedi from aging master Yoda. But Darth Vader is more determined than ever to capture Luke. Meanwhile, rebel leader Princess Leia, cocky Han Solo, Chewbacca, and droids C-3PO and R2-D2 are thrown into various stages of capture, betrayal and despair."
+  },
+  {
+    "movieId": 98,
+    "movieName": "Shrek",
+    "genre": [
+      "Animation",
+      "Comedy",
+      "Fantasy",
+      "Adventure",
+      "Family"
+    ],
+    "cast": [
+      "Ana de Armas",
+      "Brad Pitt",
+      "Cate Blanchett",
+      "Johnny Depp",
+      "Timothée Chalamet"
+    ],
+    "productionHouses": [
+      "DreamWorks Pictures",
+      "Pacific Data Images",
+      "DreamWorks Animation"
+    ],
+    "director": "Steven Spielberg",
+    "synopsis": "It ain't easy bein' green -- especially if you're a likable (albeit smelly) ogre named Shrek. On a mission to retrieve a gorgeous princess from the clutches of a fire-breathing dragon, Shrek teams up with an unlikely compatriot -- a wisecracking donkey."
+  },
+  {
+    "movieId": 99,
+    "movieName": "Ratatouille",
+    "genre": [
+      "Animation",
+      "Comedy",
+      "Family",
+      "Fantasy"
+    ],
+    "cast": [
+      "Lupita Nyong'o",
+      "Saoirse Ronan",
+      "Rami Malek",
+      "Tom Holland"
+    ],
+    "productionHouses": [
+      "Pixar",
+      "Walt Disney Pictures"
+    ],
+    "director": "Paul Thomas Anderson",
+    "synopsis": "Remy, a resident of Paris, appreciates good food and has quite a sophisticated palate. He would love to become a chef so he can create and enjoy culinary masterpieces to his heart's delight. The only problem is, Remy is a rat. When he winds up in the sewer beneath one of Paris' finest restaurants, the rodent gourmet finds himself ideally placed to realize his dream."
+  },
+  {
+    "movieId": 100,
+    "movieName": "Kingsman: The Secret Service",
+    "genre": [
+      "Crime",
+      "Comedy",
+      "Action",
+      "Adventure"
+    ],
+    "cast": [
+      "Lupita Nyong'o",
+      "Penélope Cruz",
+      "Zendaya",
+      "Rami Malek"
+    ],
+    "productionHouses": [
+      "20th Century Fox",
+      "Marv Films",
+      "Cloudy Productions",
+      "TSG Entertainment"
+    ],
+    "director": "Yorgos Lanthimos",
+    "synopsis": "The story of a super-secret spy organization that recruits an unrefined but promising street kid into the agency's ultra-competitive training program just as a global threat emerges from a twisted tech genius."
+  }
+]

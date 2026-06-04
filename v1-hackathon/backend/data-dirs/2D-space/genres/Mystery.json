@@ -1,0 +1,44 @@
+[
+  {
+    "id": "ALP-MOVIE-000",
+    "title": "Default",
+    "x": 10.0,
+    "y": 15.0
+  },
+  {
+    "id": "ALP-MOVIE-121",
+    "title": "Shutter Island",
+    "x": 75.29,
+    "y": 81.01
+  },
+  {
+    "id": "ALP-MOVIE-145",
+    "title": "Se7en",
+    "x": -118.02,
+    "y": -22.46
+  },
+  {
+    "id": "ALP-MOVIE-170",
+    "title": "Gone Girl",
+    "x": -97.23,
+    "y": 137.39
+  },
+  {
+    "id": "ALP-MOVIE-180",
+    "title": "Arrival",
+    "x": 5.39,
+    "y": -134.93
+  },
+  {
+    "id": "ALP-MOVIE-190",
+    "title": "Get Out",
+    "x": -75.24,
+    "y": 104.5
+  },
+  {
+    "id": "ALP-MOVIE-194",
+    "title": "The Maze Runner",
+    "x": -13.06,
+    "y": 90.42
+  }
+]
