@@ -143,6 +143,72 @@ Expected `200`: same fixed fallback (user 100 has no device_id).
 
 ---
 
+## Step 9 — GET /search (Meilisearch)
+
+### Case 1 — Exact title match
+
+```bash
+curl -s "http://localhost:8080/search?q=inception&userId=2" | python3 -m json.tool
+```
+
+Expected `200`: `count` ≥ 1, "Inception" in results with valid `x`/`y` coordinates.
+
+### Case 2 — Typo-tolerant search
+
+```bash
+curl -s "http://localhost:8080/search?q=inceptoin&userId=2" | python3 -m json.tool
+```
+
+Expected `200`: Meilisearch corrects the typo and still returns "Inception".
+
+### Case 3 — Prefix / partial match
+
+```bash
+curl -s "http://localhost:8080/search?q=dark+knight&userId=2" | python3 -m json.tool
+```
+
+Expected `200`: "The Dark Knight" and variants in results.
+
+### Case 4 — Fuzzy multi-word
+
+```bash
+curl -s "http://localhost:8080/search?q=star+wars&userId=2" | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+print(f'count: {d[\"count\"]}')
+for r in d['results']:
+    print(f'  {r[\"title\"]:40s}  genre={r[\"genre\"]:<12s}  rank={r[\"rank\"]}  ({r[\"x\"]:.1f}, {r[\"y\"]:.1f})')
+"
+```
+
+Expected `200`: Star Wars films returned with coordinates inside user 2's genre space.
+
+### Case 5 — Missing `q` param (400)
+
+```bash
+curl -s "http://localhost:8080/search?userId=2"
+```
+
+Expected `400`: `q is required`
+
+### Case 6 — Invalid userId (400)
+
+```bash
+curl -s "http://localhost:8080/search?q=inception&userId=abc"
+```
+
+Expected `400`: `invalid userId`
+
+### Case 7 — Non-existent user (404)
+
+```bash
+curl -s "http://localhost:8080/search?q=inception&userId=99999"
+```
+
+Expected `404`: `user not found`
+
+---
+
 ## Step 4 — GET /api/movies (by genre)
 
 ```bash

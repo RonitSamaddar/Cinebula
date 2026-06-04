@@ -226,6 +226,66 @@ Call this first to know which genres to fetch and in what order.
 
 ---
 
+## 5. Movie Search (Meilisearch)
+
+### `GET /search`
+
+Typo-tolerant, ranked full-text search over all 1,907 movie titles.
+Returns matching movies with their stitched **(x, y)** coordinates inside the user's genre space.
+
+**Query params:**
+
+| Param    | Type   | Required | Description                                |
+|----------|--------|----------|-----------------------------------------|
+| `q`      | string | **Yes**  | Search query (partial or full title)    |
+| `userId` | int    | **Yes**  | User ID — used to resolve genre space   |
+
+**Example requests:**
+```bash
+# Basic search
+curl 'http://localhost:8080/search?q=inception&userId=2'
+
+# Typo-tolerant — still finds "Inception"
+curl 'http://localhost:8080/search?q=inceptoin&userId=2'
+
+# Prefix match
+curl 'http://localhost:8080/search?q=dark+knight&userId=2'
+```
+
+**Response `200`:**
+```json
+{
+  "count": 3,
+  "results": [
+    {
+      "id": "inception",
+      "title": "Inception",
+      "genre": "Action",
+      "rank": 2,
+      "x": 300.0,
+      "y": 0.0
+    }
+  ]
+}
+```
+
+| Field   | Type   | Description                                          |
+|---------|--------|------------------------------------------------------|
+| `id`    | string | Unique content identifier                            |
+| `title` | string | Movie title                                          |
+| `genre` | string | Genre space the movie belongs to (user's top genre)  |
+| `rank`  | int    | Rank of the genre in the user's top-genres list      |
+| `x`     | float  | Stitched 2D x-coordinate in the user's genre space   |
+| `y`     | float  | Stitched 2D y-coordinate in the user's genre space   |
+
+> Results are capped at **50** Meilisearch hits. When a movie appears in multiple genre spaces the entry from the user's **highest-ranked** genre is returned.
+
+**Powered by:** Meilisearch v1.45.2 — index is populated at server startup from `data-dirs/titles/titles.json` (1,907 documents, ~1–2 MB on disk).
+
+**Errors:** `400` missing `q` or invalid `userId` · `404` user not found · `500` Meilisearch unavailable.
+
+---
+
 ## Error Reference
 
 | Status | Meaning                                      |

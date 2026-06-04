@@ -6,6 +6,7 @@ import (
 
 	"cinebula/backend/internal/auth"
 	dataservice "cinebula/backend/internal/data-service"
+	"cinebula/backend/internal/search"
 	topgenres "cinebula/backend/internal/top-genres"
 	"cinebula/backend/internal/user"
 )
@@ -21,6 +22,9 @@ func main() {
 
 	// Movies — proxy to TKACR data service (genre / keyword / language / movie_name)
 	mux.HandleFunc("GET /api/movies", dataservice.Handler)
+
+	// Search — typo-tolerant title search via Meilisearch, returns stitched (x,y) coords
+	mux.HandleFunc("GET /search", search.Handler)
 
 	// User profile (JWT protected)
 	mux.Handle("GET /user/profile", auth.Middleware(http.HandlerFunc(user.ProfileHandler)))
