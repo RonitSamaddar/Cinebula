@@ -152,7 +152,7 @@ Expected `200`: same fixed fallback (user has no device_id).
 
 ---
 
-## Step 9 — GET /search (Meilisearch)
+## Step 4 — GET /search (Meilisearch)
 
 ### Case 1 — Exact title match
 
@@ -224,7 +224,34 @@ Expected `401`: `invalid token`
 
 ---
 
-## Step 4 — GET /api/movies (by genre)
+## Step 5 — GET /api/filters
+
+```bash
+curl -s "http://localhost:8080/api/filters" | python3 -m json.tool
+```
+
+Expected `200`: three filter objects with ids `genre`, `language`, `cast`.
+
+```bash
+# Spot-check: print filter ids and value counts
+curl -s "http://localhost:8080/api/filters" | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+for f in d['filters']:
+    print(f'  {f[\"id\"]:10s}  {len(f[\"values\"]):3d} values   first: {f[\"values\"][0]}')
+"
+```
+
+Expected output:
+```
+  genre       19 values   first: Action
+  language    35 values   first: Arabic
+  cast        30 values   first: Bruce Willis
+```
+
+---
+
+## Step 6 — GET /api/movies (by genre)
 
 ```bash
 curl -s "http://localhost:8080/api/movies?genre=action" | python3 -c "
@@ -232,15 +259,31 @@ import sys, json
 d = json.load(sys.stdin)
 print(f'count: {d[\"count\"]}')
 for m in d['movies'][:3]:
-    print(f'  [{m[\"priority\"]:6.2f}]  {m[\"movie_name\"]}  ({m[\"vote_average\"]}/10)  x={m[\"x\"]:.1f} y={m[\"y\"]:.1f}')
+    print(f'  [{m[\"priority\"]:6.2f}]  {m[\"movie_name\"]}  ({m[\"vote_average\"]}/10)  x={m[\"x\"]:.1f} y={m[\"y\"]:.1f}  watched={m[\"is_watched\"]}')
 "
 ```
 
-Expected `200`: `count` > 0, each movie has `priority` field, `x` and `y` present.
+Expected `200`: `count` > 0, each movie has `priority` and `is_watched` (defaults `false` without token).
+
+### With JWT (is_watched enrichment)
+
+```bash
+curl -s "http://localhost:8080/api/movies?genre=action" \
+  -H "Authorization: Bearer $TOKEN" | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+watched = [m for m in d['movies'] if m['is_watched']]
+print(f'count: {d["count"]}, watched by user: {len(watched)}')
+for m in watched[:5]:
+    print(f'  [WATCHED]  {m["movie_name"]}')
+"
+```
+
+Expected: movies from the user's ACR history show `"is_watched": true`.
 
 ---
 
-## Step 5 — GET /api/movies (genre + keyword + language)
+## Step 7 — GET /api/movies (genre + keyword + language)
 
 ```bash
 curl -s "http://localhost:8080/api/movies?genre=action&keyword=heist&language=en" | python3 -c "
@@ -256,7 +299,7 @@ Expected `200`: all returned movies contain `heist` in their `keywords`.
 
 ---
 
-## Step 6 — GET /api/movies (title search)
+## Step 8 — GET /api/movies (title search)
 
 ```bash
 curl -s "http://localhost:8080/api/movies?movie_name=inception" | python3 -c "
@@ -272,7 +315,7 @@ Expected `200`: Inception in results with a high `priority` score (high vote cou
 
 ---
 
-## Step 7 — GET /api/movies (language only)
+## Step 9 — GET /api/movies (language only)
 
 ```bash
 curl -s "http://localhost:8080/api/movies?language=en" | python3 -c "
@@ -288,7 +331,7 @@ Expected `200`: all movies have `"language": "en"`.
 
 ---
 
-## Step 8 — Full seeding flow (top-genres → api/movies per genre)
+## Step 10 — Full seeding flow (top-genres → api/movies per genre)
 
 Simulates what the phone does on first launch for user 2 (Pratikesh).
 
@@ -312,3 +355,55 @@ done
 ```
 
 Expected: each genre returns movies with `count` > 0 and `priority` populated.
+
+---
+
+## Step 11 — GET /api/similar
+
+### Case 1 — Basic (no token)
+
+```bash
+curl -s "http://localhost:8080/api/similar?movie=Inception&k=5" | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+print(f'count: {d["count"]}')
+for m in d['movies']:
+    print(f'  [{m["priority"]:6.2f}]  {m["movie_name"]}  ({m["vote_average"]}/10)  watched={m["is_watched"]}')
+"
+```
+
+Expected `200`: `count` ≤ 5, all movies related to Inception, `is_watched` is `false` for all.
+
+### Case 2 — With JWT (is_watched enrichment)
+
+```bash
+curl -s "http://localhost:8080/api/similar?movie=Inception&k=10" \
+  -H "Authorization: Bearer $TOKEN" | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+watched = [m['movie_name'] for m in d['movies'] if m['is_watched']]
+print(f'count: {d["count"]}, watched: {watched}')
+"
+```
+
+Expected `200`: movies in user's ACR history show `"is_watched": true`.
+
+### Case 3 — Default count (no k)
+
+```bash
+curl -s "http://localhost:8080/api/similar?movie=The+Dark+Knight" | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+print(f'count: {d["count"]}')
+"
+```
+
+Expected `200`: upstream-default number of results returned.
+
+### Case 4 — Missing movie param (400)
+
+```bash
+curl -s "http://localhost:8080/api/similar"
+```
+
+Expected `400`: `movie is required`

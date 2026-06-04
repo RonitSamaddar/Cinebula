@@ -59,3 +59,38 @@ func Fetch(genre, keyword, language, movieName string) (*MoviesResponse, error) 
 	}
 	return &result, nil
 }
+
+// FetchSimilar calls the TKACR /api/similar endpoint and returns movies similar
+// to the given title.
+//
+//	movie – exact or partial movie name (required)
+//	k     – max number of results; 0 uses the upstream default
+func FetchSimilar(movie string, k int) (*MoviesResponse, error) {
+	u, err := url.Parse(TKACRBaseURL + "/api/similar")
+	if err != nil {
+		return nil, fmt.Errorf("invalid base URL: %w", err)
+	}
+
+	q := u.Query()
+	q.Set("movie", movie)
+	if k > 0 {
+		q.Set("k", fmt.Sprintf("%d", k))
+	}
+	u.RawQuery = q.Encode()
+
+	resp, err := httpClient.Get(u.String())
+	if err != nil {
+		return nil, fmt.Errorf("upstream request failed: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("upstream returned status %d", resp.StatusCode)
+	}
+
+	var result MoviesResponse
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("decode upstream response: %w", err)
+	}
+	return &result, nil
+}

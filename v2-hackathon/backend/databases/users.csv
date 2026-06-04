@@ -5,3 +5,4 @@ user_id,name,age,gender,top_genres,created_at,device_id
 4,Arpit,24,male,"[""Drama"",""Action"",""Adventure"",""Crime"",""Thriller"",""Sci-Fi"",""Fantasy"",""Mystery"",""Comedy""]",2026-06-04T10:03:00Z,9e7f94f2-ssss-47a0-9ed4-bf6d91da9988
 100,Test,25,male,"[""Action"",""Drama"",""Comedy""]",2026-06-04T10:04:00Z,
 101,guest-101,0,,[],2026-06-04T10:16:17Z,
+102,guest-102,0,,[],2026-06-04T16:40:17Z,LG_OLED65C3_001

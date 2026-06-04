@@ -153,8 +153,65 @@ curl 'http://localhost:8080/api/movies?language=en'
 | `casts`       | []string  | Cast list (null if unavailable)               |
 | `x`           | float     | Pre-computed 2D space x-coordinate            |
 | `y`           | float     | Pre-computed 2D space y-coordinate            |
+| `priority`    | float     | IMDb-weighted rating score, normalised 0–100  |
+| `is_watched`  | bool      | `true` if the movie appears in the authenticated user's ACR watch history; always `false` when no valid JWT is sent |
+
+> **`is_watched` enrichment:** send `Authorization: Bearer <JWT>` with any `/api/movies` request to get per-movie watch-history annotations. The endpoint remains public — omitting the token simply leaves every `is_watched` as `false`.
 
 **Errors:** `502` if the upstream data service is unreachable.
+
+**With JWT (is_watched enrichment):**
+```bash
+curl 'http://localhost:8080/api/movies?genre=action' \
+  -H 'Authorization: Bearer $TOKEN'
+```
+Movies the user has previously watched will have `"is_watched": true`.
+
+---
+
+### `GET /api/similar`
+
+Returns movies similar to a given title, with pre-computed **(x, y)** coordinates.
+Proxies `tkacr-dev5.alphonso.tv:8080/api/similar`.
+
+| Param   | Required | Description                              |
+|---------|----------|------------------------------------------|
+| `movie` | **Yes**  | Title to find similar movies for         |
+| `k`     | No       | Max number of results (upstream default if omitted) |
+
+**Example requests:**
+```bash
+# Find similar to Inception (default count)
+curl 'http://localhost:8080/api/similar?movie=Inception'
+
+# Cap to 10 results
+curl 'http://localhost:8080/api/similar?movie=Inception&k=10'
+
+# With JWT for is_watched annotations
+curl 'http://localhost:8080/api/similar?movie=Inception&k=10' \
+  -H 'Authorization: Bearer $TOKEN'
+```
+
+**Response `200`:** same structure as `/api/movies` — `count` + `movies[]` with all fields including `priority` and `is_watched`.
+
+```json
+{
+  "count": 10,
+  "movies": [
+    {
+      "movie_name": "Interstellar",
+      "x": -1498200.4,
+      "y": 12.3,
+      "priority": 82.4,
+      "is_watched": true
+    }
+  ]
+}
+```
+
+**Errors:** `400` missing `movie` param · `502` upstream unreachable.
+
+---
 
 #### Phone Space-Seeding Flow
 

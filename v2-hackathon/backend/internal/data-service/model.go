@@ -20,6 +20,7 @@ type Movie struct {
 	X           float64  `json:"x"`
 	Y           float64  `json:"y"`
 	Priority    float64  `json:"priority"`
+	IsWatched   bool     `json:"is_watched"`
 }
 
 // MoviesResponse mirrors the top-level response envelope from the TKACR API.

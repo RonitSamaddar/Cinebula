@@ -3,8 +3,11 @@ package dataservice
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"strings"
 
+	acrprocessor "cinebula/backend/internal/acr-data-processor"
+	"cinebula/backend/internal/auth"
 	"cinebula/backend/internal/priority"
 )
 
@@ -47,6 +50,84 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		scores := priority.Compute(avgs, counts)
 		for i := range result.Movies {
 			result.Movies[i].Priority = scores[i]
+		}
+	}
+
+	// Enrich is_watched from ACR data if a valid JWT is present.
+	if authHeader := r.Header.Get("Authorization"); strings.HasPrefix(authHeader, "Bearer ") {
+		tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
+		if claims, err := auth.ParseToken(tokenStr); err == nil {
+			if watched, err := acrprocessor.WatchedTitlesForUser(claims.UserID); err == nil && len(watched) > 0 {
+				for i, m := range result.Movies {
+					if watched[strings.ToLower(strings.TrimSpace(m.MovieName))] {
+						result.Movies[i].IsWatched = true
+					}
+				}
+			}
+		}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(result)
+}
+
+// SimilarHandler handles GET /api/similar
+//
+// Required query param:
+//
+//	movie – title to find similar movies for, e.g. ?movie=Inception
+//
+// Optional query param:
+//
+//	k – max results to return (default: upstream decides)
+//
+// If a valid JWT is present in the Authorization header, each movie in the
+// response is annotated with is_watched=true/false from ACR data.
+func SimilarHandler(w http.ResponseWriter, r *http.Request) {
+	q := r.URL.Query()
+
+	movie := strings.TrimSpace(q.Get("movie"))
+	if movie == "" {
+		http.Error(w, "movie is required", http.StatusBadRequest)
+		return
+	}
+
+	k := 0
+	if kStr := strings.TrimSpace(q.Get("k")); kStr != "" {
+		if v, err := strconv.Atoi(kStr); err == nil && v > 0 {
+			k = v
+		}
+	}
+
+	result, err := FetchSimilar(movie, k)
+	if err != nil {
+		http.Error(w, "upstream error: "+err.Error(), http.StatusBadGateway)
+		return
+	}
+
+	if len(result.Movies) > 0 {
+		avgs := make([]float64, len(result.Movies))
+		counts := make([]int, len(result.Movies))
+		for i, m := range result.Movies {
+			avgs[i] = m.VoteAverage
+			counts[i] = m.VoteCount
+		}
+		scores := priority.Compute(avgs, counts)
+		for i := range result.Movies {
+			result.Movies[i].Priority = scores[i]
+		}
+	}
+
+	if authHeader := r.Header.Get("Authorization"); strings.HasPrefix(authHeader, "Bearer ") {
+		tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
+		if claims, err := auth.ParseToken(tokenStr); err == nil {
+			if watched, err := acrprocessor.WatchedTitlesForUser(claims.UserID); err == nil && len(watched) > 0 {
+				for i, m := range result.Movies {
+					if watched[strings.ToLower(strings.TrimSpace(m.MovieName))] {
+						result.Movies[i].IsWatched = true
+					}
+				}
+			}
 		}
 	}
 

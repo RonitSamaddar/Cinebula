@@ -12,6 +12,8 @@ import (
 
 	"cinebula/backend/internal/auth"
 	dataservice "cinebula/backend/internal/data-service"
+	"cinebula/backend/internal/filter"
+	"cinebula/backend/internal/search"
 	topgenres "cinebula/backend/internal/top-genres"
 	"cinebula/backend/internal/user"
 )
@@ -35,8 +37,11 @@ func TestMain(m *testing.M) {
 	// Build the same mux as cmd/server/main.go.
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /auth/login", auth.LoginHandler)
-	mux.HandleFunc("GET /top-genres", topgenres.Handler)
+	mux.Handle("GET /top-genres", auth.Middleware(http.HandlerFunc(topgenres.Handler)))
 	mux.HandleFunc("GET /api/movies", dataservice.Handler)
+	mux.HandleFunc("GET /api/similar", dataservice.SimilarHandler)
+	mux.HandleFunc("GET /api/filters", filter.Handler)
+	mux.Handle("GET /search", auth.Middleware(http.HandlerFunc(search.Handler)))
 	mux.Handle("GET /user/profile", auth.Middleware(http.HandlerFunc(user.ProfileHandler)))
 	testServer = httptest.NewServer(mux)
 

@@ -9,6 +9,7 @@ type ACRUser struct {
 
 // ACRSession represents one viewing session.
 type ACRSession struct {
+	ShowTitle                string   `json:"show_title"`
 	ShowGenres               []string `json:"show_genres"`
 	SessionStartTimestampUTC string   `json:"session_start_timestamp_utc"`
 	SessionEndTimestampUTC   string   `json:"session_end_timestamp_utc"`

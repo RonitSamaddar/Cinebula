@@ -6,6 +6,7 @@ import (
 	"math"
 	"os"
 	"sort"
+	"strings"
 	"time"
 )
 
@@ -54,6 +55,34 @@ func TopGenresForDevice(deviceID string) ([]GenreWeight, error) {
 	}
 
 	return computeTopGenres(found, consts.GenreWeightMatrix)
+}
+
+// WatchedTitlesForUser returns a set of lower-cased movie titles the user has
+// watched, keyed for O(1) lookup. Returns an empty map (not an error) when the
+// user has no ACR data.
+func WatchedTitlesForUser(userID int) (map[string]bool, error) {
+	acrRaw, err := os.ReadFile(acrDataPath)
+	if err != nil {
+		return map[string]bool{}, fmt.Errorf("read ACR data: %w", err)
+	}
+	var users []ACRUser
+	if err := json.Unmarshal(acrRaw, &users); err != nil {
+		return map[string]bool{}, fmt.Errorf("parse ACR data: %w", err)
+	}
+
+	watched := map[string]bool{}
+	for _, u := range users {
+		if u.UserID != userID {
+			continue
+		}
+		for _, s := range u.Sessions {
+			if t := strings.TrimSpace(strings.ToLower(s.ShowTitle)); t != "" {
+				watched[t] = true
+			}
+		}
+		break
+	}
+	return watched, nil
 }
 
 // loadACRData loads and parses acr-data.json and data-consts.json.
