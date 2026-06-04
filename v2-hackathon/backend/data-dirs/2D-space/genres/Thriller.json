@@ -1,0 +1,104 @@
+[
+  {
+    "id": "ALP-MOVIE-000",
+    "title": "Default",
+    "x": 10.0,
+    "y": 15.0
+  },
+  {
+    "id": "ALP-MOVIE-102",
+    "title": "The Dark Knight",
+    "x": 78.37,
+    "y": -36.26
+  },
+  {
+    "id": "ALP-MOVIE-109",
+    "title": "Pulp Fiction",
+    "x": 75.6,
+    "y": 99.58
+  },
+  {
+    "id": "ALP-MOVIE-118",
+    "title": "Joker",
+    "x": -74.32,
+    "y": -125.43
+  },
+  {
+    "id": "ALP-MOVIE-121",
+    "title": "Shutter Island",
+    "x": -144.19,
+    "y": 11.83
+  },
+  {
+    "id": "ALP-MOVIE-125",
+    "title": "The Dark Knight Rises",
+    "x": 149.97,
+    "y": -45.01
+  },
+  {
+    "id": "ALP-MOVIE-130",
+    "title": "Inglourious Basterds",
+    "x": 45.04,
+    "y": 84.37
+  },
+  {
+    "id": "ALP-MOVIE-144",
+    "title": "Jurassic World",
+    "x": 45.53,
+    "y": 76.27
+  },
+  {
+    "id": "ALP-MOVIE-145",
+    "title": "Se7en",
+    "x": 134.88,
+    "y": -90.19
+  },
+  {
+    "id": "ALP-MOVIE-163",
+    "title": "John Wick",
+    "x": -143.89,
+    "y": -104.29
+  },
+  {
+    "id": "ALP-MOVIE-170",
+    "title": "Gone Girl",
+    "x": -112.13,
+    "y": 50.84
+  },
+  {
+    "id": "ALP-MOVIE-181",
+    "title": "Parasite",
+    "x": 19.19,
+    "y": -84.61
+  },
+  {
+    "id": "ALP-MOVIE-184",
+    "title": "Split",
+    "x": 59.84,
+    "y": 80.07
+  },
+  {
+    "id": "ALP-MOVIE-186",
+    "title": "The Shining",
+    "x": -99.66,
+    "y": 32.17
+  },
+  {
+    "id": "ALP-MOVIE-190",
+    "title": "Get Out",
+    "x": 74.38,
+    "y": -115.64
+  },
+  {
+    "id": "ALP-MOVIE-191",
+    "title": "The Imitation Game",
+    "x": 95.79,
+    "y": 139.42
+  },
+  {
+    "id": "ALP-MOVIE-194",
+    "title": "The Maze Runner",
+    "x": -117.57,
+    "y": -142.3
+  }
+]

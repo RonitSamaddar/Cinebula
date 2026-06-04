@@ -1,0 +1,80 @@
+[
+  {
+    "id": "ALP-MOVIE-000",
+    "title": "Default",
+    "x": 10.0,
+    "y": 15.0
+  },
+  {
+    "id": "ALP-MOVIE-102",
+    "title": "The Dark Knight",
+    "x": 65.28,
+    "y": -88.92
+  },
+  {
+    "id": "ALP-MOVIE-109",
+    "title": "Pulp Fiction",
+    "x": 40.27,
+    "y": -70.8
+  },
+  {
+    "id": "ALP-MOVIE-114",
+    "title": "The Shawshank Redemption",
+    "x": -3.44,
+    "y": 121.6
+  },
+  {
+    "id": "ALP-MOVIE-118",
+    "title": "Joker",
+    "x": 103.83,
+    "y": -122.31
+  },
+  {
+    "id": "ALP-MOVIE-122",
+    "title": "The Wolf of Wall Street",
+    "x": -22.93,
+    "y": -67.0
+  },
+  {
+    "id": "ALP-MOVIE-125",
+    "title": "The Dark Knight Rises",
+    "x": -148.94,
+    "y": 81.34
+  },
+  {
+    "id": "ALP-MOVIE-141",
+    "title": "Batman Begins",
+    "x": 41.13,
+    "y": -71.41
+  },
+  {
+    "id": "ALP-MOVIE-145",
+    "title": "Se7en",
+    "x": 72.37,
+    "y": 15.5
+  },
+  {
+    "id": "ALP-MOVIE-153",
+    "title": "The Godfather",
+    "x": -21.69,
+    "y": -147.1
+  },
+  {
+    "id": "ALP-MOVIE-187",
+    "title": "Kill Bill: Vol. 1",
+    "x": -127.43,
+    "y": 114.93
+  },
+  {
+    "id": "ALP-MOVIE-193",
+    "title": "The Green Mile",
+    "x": 121.18,
+    "y": 13.68
+  },
+  {
+    "id": "ALP-MOVIE-199",
+    "title": "Kingsman: The Secret Service",
+    "x": 100.38,
+    "y": 24.75
+  }
+]

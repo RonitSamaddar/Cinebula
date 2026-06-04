@@ -1,0 +1,20 @@
+[
+  {
+    "id": "ALP-MOVIE-000",
+    "title": "Default",
+    "x": 10.0,
+    "y": 15.0
+  },
+  {
+    "id": "ALP-MOVIE-113",
+    "title": "Django Unchained",
+    "x": -56.41,
+    "y": 53.2
+  },
+  {
+    "id": "ALP-MOVIE-174",
+    "title": "The Revenant",
+    "x": 137.45,
+    "y": -31.0
+  }
+]

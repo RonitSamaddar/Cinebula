@@ -1,0 +1,80 @@
+[
+  {
+    "id": "ALP-MOVIE-000",
+    "title": "Default",
+    "x": 10.0,
+    "y": 15.0
+  },
+  {
+    "id": "ALP-MOVIE-143",
+    "title": "Inside Out",
+    "x": -113.68,
+    "y": 145.15
+  },
+  {
+    "id": "ALP-MOVIE-151",
+    "title": "Up",
+    "x": 84.79,
+    "y": -45.84
+  },
+  {
+    "id": "ALP-MOVIE-161",
+    "title": "Finding Nemo",
+    "x": -21.49,
+    "y": -38.83
+  },
+  {
+    "id": "ALP-MOVIE-164",
+    "title": "Fantastic Beasts and Where to Find Them",
+    "x": 1.79,
+    "y": -47.63
+  },
+  {
+    "id": "ALP-MOVIE-166",
+    "title": "Coco",
+    "x": 104.87,
+    "y": 96.7
+  },
+  {
+    "id": "ALP-MOVIE-169",
+    "title": "WALL·E",
+    "x": -118.34,
+    "y": 138.24
+  },
+  {
+    "id": "ALP-MOVIE-172",
+    "title": "Monsters, Inc.",
+    "x": 40.68,
+    "y": 98.61
+  },
+  {
+    "id": "ALP-MOVIE-173",
+    "title": "Toy Story",
+    "x": 62.19,
+    "y": -19.35
+  },
+  {
+    "id": "ALP-MOVIE-176",
+    "title": "The Lion King",
+    "x": 70.14,
+    "y": 139.64
+  },
+  {
+    "id": "ALP-MOVIE-179",
+    "title": "The Incredibles",
+    "x": -68.98,
+    "y": 92.46
+  },
+  {
+    "id": "ALP-MOVIE-197",
+    "title": "Shrek",
+    "x": 11.45,
+    "y": -4.95
+  },
+  {
+    "id": "ALP-MOVIE-198",
+    "title": "Ratatouille",
+    "x": -19.33,
+    "y": 69.31
+  }
+]
