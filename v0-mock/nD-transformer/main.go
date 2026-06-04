@@ -589,6 +589,7 @@ type MovieResponse struct {
 // filter can be comma-separated (e.g. genre=action,comedy) and are OR'd within the group.
 func handleMovies(w http.ResponseWriter, r *http.Request) {
 	cacheKey := "movies?" + r.URL.RawQuery
+	fmt.Println(cacheKey)
 	if serveFromCache(w, cacheKey) {
 		return
 	}
