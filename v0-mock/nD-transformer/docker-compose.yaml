@@ -50,6 +50,18 @@ services:
     depends_on:
       - cassandra
 
+  nd-transformer:
+    build: .
+    container_name: nd-transformer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - opensearch
+      - cassandra
+    environment:
+      - OPENSEARCH_URL=http://opensearch:9200
+      - CASSANDRA_HOST=cassandra
+
 volumes:
   opensearch-data:
   cassandra-data:

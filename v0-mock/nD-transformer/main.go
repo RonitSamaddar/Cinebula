@@ -221,14 +221,27 @@ with open(%q, 'w', newline='') as f:
 // ---------------------------------------------------------------------------
 
 const (
-	opensearchURL = "http://localhost:9200"
-	indexName     = "movie-vectors"
+	indexName = "movie-vectors"
 )
+
+func getOpensearchURL() string {
+	if url := os.Getenv("OPENSEARCH_URL"); url != "" {
+		return url
+	}
+	return "http://localhost:9200"
+}
+
+func getCassandraHost() string {
+	if host := os.Getenv("CASSANDRA_HOST"); host != "" {
+		return host
+	}
+	return "127.0.0.1"
+}
 
 // waitForOpenSearch waits until OpenSearch is reachable (up to 30s).
 func waitForOpenSearch() bool {
 	for i := 0; i < 30; i++ {
-		resp, err := http.Get(opensearchURL)
+		resp, err := http.Get(getOpensearchURL())
 		if err == nil {
 			resp.Body.Close()
 			if resp.StatusCode == 200 {
@@ -243,7 +256,7 @@ func waitForOpenSearch() bool {
 // createIndexIfNotExists creates the knn index with the correct dimension.
 func createIndexIfNotExists(dim int) error {
 	// Check if index exists
-	resp, err := http.Get(opensearchURL + "/" + indexName)
+	resp, err := http.Get(getOpensearchURL() + "/" + indexName)
 	if err != nil {
 		return err
 	}
@@ -275,7 +288,7 @@ func createIndexIfNotExists(dim int) error {
 	}
 
 	body, _ := json.Marshal(mapping)
-	req, _ := http.NewRequest("PUT", opensearchURL+"/"+indexName, bytes.NewReader(body))
+	req, _ := http.NewRequest("PUT", getOpensearchURL()+"/"+indexName, bytes.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
 	resp, err = http.DefaultClient.Do(req)
 	if err != nil {
@@ -299,7 +312,7 @@ func documentExists(movie string) bool {
 		},
 	}
 	body, _ := json.Marshal(query)
-	resp, err := http.Post(opensearchURL+"/"+indexName+"/_search", "application/json", bytes.NewReader(body))
+	resp, err := http.Post(getOpensearchURL()+"/"+indexName+"/_search", "application/json", bytes.NewReader(body))
 	if err != nil {
 		return false
 	}
@@ -326,7 +339,7 @@ func storeVector(movie string, vector []float64) error {
 		"vector":        vector,
 	}
 	body, _ := json.Marshal(doc)
-	resp, err := http.Post(opensearchURL+"/"+indexName+"/_doc", "application/json", bytes.NewReader(body))
+	resp, err := http.Post(getOpensearchURL()+"/"+indexName+"/_doc", "application/json", bytes.NewReader(body))
 	if err != nil {
 		return err
 	}
@@ -342,7 +355,7 @@ func storeVector(movie string, vector []float64) error {
 // skipping any that already exist.
 func storeVectorsInOpenSearch(labels []string, vectors [][]float64) {
 	if !waitForOpenSearch() {
-		fmt.Println("⚠ OpenSearch not reachable at", opensearchURL, "— skipping vector storage")
+		fmt.Println("⚠ OpenSearch not reachable at", getOpensearchURL(), "— skipping vector storage")
 		return
 	}
 	fmt.Println("\nConnected to OpenSearch")
@@ -379,7 +392,7 @@ func getMovieVector(movie string) ([]float64, error) {
 		"_source": []string{"vector"},
 	}
 	body, _ := json.Marshal(query)
-	resp, err := http.Post(opensearchURL+"/"+indexName+"/_search", "application/json", bytes.NewReader(body))
+	resp, err := http.Post(getOpensearchURL()+"/"+indexName+"/_search", "application/json", bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
@@ -422,7 +435,7 @@ func findSimilarMovies(movie string, k int) ([]map[string]interface{}, error) {
 		},
 	}
 	body, _ := json.Marshal(query)
-	resp, err := http.Post(opensearchURL+"/"+indexName+"/_search", "application/json", bytes.NewReader(body))
+	resp, err := http.Post(getOpensearchURL()+"/"+indexName+"/_search", "application/json", bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
@@ -490,7 +503,7 @@ func jsonError(w http.ResponseWriter, msg string, code int) {
 var cassandraSession *gocql.Session
 
 func initCassandra() {
-	cluster := gocql.NewCluster("127.0.0.1")
+	cluster := gocql.NewCluster(getCassandraHost())
 	cluster.Port = 9042
 	cluster.Keyspace = "cinebula"
 	cluster.Consistency = gocql.Quorum
