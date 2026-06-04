@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback, useImperativeHandle, forwardRef } from "react";
+import { useEffect, useRef, useCallback, useImperativeHandle, forwardRef, useState } from "react";
 import { renderStarfield, STAR_CANVAS_W, STAR_CANVAS_H } from "@/canvas/starfield";
 import { renderNebula, NEBULA_CANVAS_W, NEBULA_CANVAS_H, type CategoryColor } from "@/canvas/nebula";
 import { EffectsRenderer } from "@/canvas/effects";
@@ -43,8 +43,10 @@ const GalaxyBackground = forwardRef<GalaxyHandle>(function GalaxyBackground(_, r
   const glowDivRef = useRef<HTMLDivElement>(null);
   const effectsCanvasRef = useRef<HTMLCanvasElement>(null);
   const effectsRendererRef = useRef<EffectsRenderer | null>(null);
-  const breathePhaseRef = useRef(0);
-  const breatheAnimRef = useRef(0);
+  const [isMobile] = useState(() =>
+    typeof window !== "undefined" &&
+    ("ontouchstart" in window || navigator.maxTouchPoints > 0)
+  );
 
   useImperativeHandle(ref, () => ({
     update(cx: number, cy: number) {
@@ -84,35 +86,27 @@ const GalaxyBackground = forwardRef<GalaxyHandle>(function GalaxyBackground(_, r
     if (nebulaDivRef.current) {
       nebulaDivRef.current.style.backgroundImage = `url(${nebulaCanvas.toDataURL("image/png")})`;
     }
-    const effectsCanvas = effectsCanvasRef.current;
-    if (effectsCanvas) {
-      const dpr = window.devicePixelRatio || 1;
-      effectsCanvas.width = window.innerWidth * dpr;
-      effectsCanvas.height = window.innerHeight * dpr;
-      effectsCanvas.style.width = `${window.innerWidth}px`;
-      effectsCanvas.style.height = `${window.innerHeight}px`;
-      const ctx = effectsCanvas.getContext("2d");
-      if (ctx) ctx.scale(dpr, dpr);
-      const renderer = new EffectsRenderer();
-      renderer.init(effectsCanvas);
-      renderer.start();
-      effectsRendererRef.current = renderer;
+    // Skip effects canvas on mobile to save GPU
+    if (!isMobile) {
+      const effectsCanvas = effectsCanvasRef.current;
+      if (effectsCanvas) {
+        const dpr = window.devicePixelRatio || 1;
+        effectsCanvas.width = window.innerWidth * dpr;
+        effectsCanvas.height = window.innerHeight * dpr;
+        effectsCanvas.style.width = `${window.innerWidth}px`;
+        effectsCanvas.style.height = `${window.innerHeight}px`;
+        const ctx = effectsCanvas.getContext("2d");
+        if (ctx) ctx.scale(dpr, dpr);
+        const renderer = new EffectsRenderer();
+        renderer.init(effectsCanvas);
+        renderer.start();
+        effectsRendererRef.current = renderer;
+      }
     }
-  }, []);
-
-  const startBreathe = useCallback(() => {
-    const animate = () => {
-      breathePhaseRef.current += 0.005;
-      const opacity = 0.85 + 0.15 * Math.sin(breathePhaseRef.current);
-      if (starDivRef.current) starDivRef.current.style.opacity = String(opacity);
-      breatheAnimRef.current = requestAnimationFrame(animate);
-    };
-    breatheAnimRef.current = requestAnimationFrame(animate);
-  }, []);
+  }, [isMobile]);
 
   useEffect(() => {
     initCanvases();
-    startBreathe();
     const handleResize = () => {
       const c = effectsCanvasRef.current;
       if (c && effectsRendererRef.current) {
@@ -126,9 +120,8 @@ const GalaxyBackground = forwardRef<GalaxyHandle>(function GalaxyBackground(_, r
     return () => {
       window.removeEventListener("resize", handleResize);
       effectsRendererRef.current?.stop();
-      cancelAnimationFrame(breatheAnimRef.current);
     };
-  }, [initCanvases, startBreathe]);
+  }, [initCanvases]);
 
   return (
     <>
@@ -140,6 +133,7 @@ const GalaxyBackground = forwardRef<GalaxyHandle>(function GalaxyBackground(_, r
           backgroundRepeat: "repeat",
           backgroundSize: `${STAR_CANVAS_W}px ${STAR_CANVAS_H}px`,
           willChange: "background-position",
+          animation: "galaxy-breathe 6s ease-in-out infinite",
         }}
       />
       <div
@@ -149,8 +143,8 @@ const GalaxyBackground = forwardRef<GalaxyHandle>(function GalaxyBackground(_, r
           zIndex: 0,
           backgroundRepeat: "repeat",
           backgroundSize: `${NEBULA_CANVAS_W}px ${NEBULA_CANVAS_H}px`,
-          filter: "blur(30px)",
-          WebkitFilter: "blur(30px)",
+          filter: isMobile ? "blur(15px)" : "blur(30px)",
+          WebkitFilter: isMobile ? "blur(15px)" : "blur(30px)",
           opacity: 0.7,
           willChange: "background-position",
         }}
@@ -165,24 +159,19 @@ const GalaxyBackground = forwardRef<GalaxyHandle>(function GalaxyBackground(_, r
           transform: "translate(-50%, -50%)",
           borderRadius: "50%",
           background: "radial-gradient(circle, rgba(181,108,255,0.15) 0%, transparent 70%)",
-          filter: "blur(60px)", WebkitFilter: "blur(60px)",
+          filter: isMobile ? "blur(25px)" : "blur(60px)",
+          WebkitFilter: isMobile ? "blur(25px)" : "blur(60px)",
           opacity: 0.38,
         }}
       />
-      <canvas
-        ref={effectsCanvasRef}
-        className="pointer-events-none absolute inset-0"
-        style={{ zIndex: 1 }}
-      />
-      <svg
-        className="pointer-events-none absolute inset-0 h-full w-full"
-        style={{ zIndex: 50, opacity: 0.03, mixBlendMode: "overlay" }}
-      >
-        <filter id="grain">
-          <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
-        </filter>
-        <rect width="100%" height="100%" filter="url(#grain)" />
-      </svg>
+      {/* Effects canvas — only rendered on desktop */}
+      {!isMobile && (
+        <canvas
+          ref={effectsCanvasRef}
+          className="pointer-events-none absolute inset-0"
+          style={{ zIndex: 1 }}
+        />
+      )}
     </>
   );
 });

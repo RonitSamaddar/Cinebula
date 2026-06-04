@@ -107,11 +107,12 @@ export default function Home() {
     };
     flyAnimRef.current = requestAnimationFrame(tick);
 
-    if (!hasDragged) {
+    if (!hasDraggedRef.current) {
+      hasDraggedRef.current = true;
       setHasDragged(true);
       if (hintRef.current) hintRef.current.style.display = "none";
     }
-  }, [pushCamera, hasDragged]);
+  }, [pushCamera]);
 
   // Find nearest category to current camera
   const getNearestCategory = useCallback(() => {
@@ -204,15 +205,26 @@ export default function Home() {
     categoriesRef.current = CATEGORIES;
   }, [pushCamera]);
 
+  // rAF-throttled drag: accumulate pointer deltas, apply once per frame
+  const pendingDragRef = useRef<{ dx: number; dy: number; clientX: number; clientY: number } | null>(null);
+  const dragRafRef = useRef(0);
+  const hasDraggedRef = useRef(false);
+  const isDraggingRef = useRef(false);
+
   const onPointerDown = useCallback((e: React.PointerEvent) => {
     if (selectedShow || queueOpen) return;
     cancelAnimationFrame(momentumRef.current);
     cancelAnimationFrame(flyAnimRef.current);
+    cancelAnimationFrame(dragRafRef.current);
     dragRef.current = { active: true, lastX: e.clientX, lastY: e.clientY, lastT: performance.now(), startX: e.clientX, startY: e.clientY };
     velRef.current = { x: 0, y: 0 };
-    // Mark dragging
+    pendingDragRef.current = null;
+    // Use ref to avoid re-render during drag
     if (dragIdleTimer.current) clearTimeout(dragIdleTimer.current);
-    setIsDragging(true);
+    if (!isDraggingRef.current) {
+      isDraggingRef.current = true;
+      setIsDragging(true);
+    }
   }, [selectedShow, queueOpen]);
 
   const onPointerMove = useCallback((e: React.PointerEvent) => {
@@ -221,25 +233,53 @@ export default function Home() {
     const dx = e.clientX - d.lastX;
     const dy = e.clientY - d.lastY;
     const now = performance.now();
-    const dt = Math.max(1, now - d.lastT);
-    velRef.current = { x: -dx / dt * 16, y: -dy / dt * 16 };
+    const dt = Math.max(8, now - d.lastT); // clamp to ~120fps minimum to prevent velocity spikes
+    // Exponential smoothing on velocity (0.3 new, 0.7 old) to prevent jitter
+    const rawVx = -dx / dt * 16;
+    const rawVy = -dy / dt * 16;
+    velRef.current = {
+      x: velRef.current.x * 0.7 + rawVx * 0.3,
+      y: velRef.current.y * 0.7 + rawVy * 0.3,
+    };
     d.lastX = e.clientX;
     d.lastY = e.clientY;
     d.lastT = now;
-    pushCamera(cameraRef.current.x - dx, cameraRef.current.y - dy);
 
-    if (!hasDragged && (Math.abs(e.clientX - d.startX) > 10 || Math.abs(e.clientY - d.startY) > 10)) {
-      setHasDragged(true);
-      if (hintRef.current) hintRef.current.style.display = "none";
+    // Accumulate delta — only push to camera once per rAF
+    if (pendingDragRef.current) {
+      pendingDragRef.current.dx += dx;
+      pendingDragRef.current.dy += dy;
+      pendingDragRef.current.clientX = e.clientX;
+      pendingDragRef.current.clientY = e.clientY;
+    } else {
+      pendingDragRef.current = { dx, dy, clientX: e.clientX, clientY: e.clientY };
+      dragRafRef.current = requestAnimationFrame(() => {
+        const p = pendingDragRef.current;
+        if (!p) return;
+        pushCamera(cameraRef.current.x - p.dx, cameraRef.current.y - p.dy);
+
+        if (!hasDraggedRef.current && (Math.abs(p.clientX - d.startX) > 10 || Math.abs(p.clientY - d.startY) > 10)) {
+          hasDraggedRef.current = true;
+          setHasDragged(true);
+          if (hintRef.current) hintRef.current.style.display = "none";
+        }
+        pendingDragRef.current = null;
+      });
     }
-  }, [pushCamera, hasDragged]);
+  }, [pushCamera]);
 
   const onPointerUp = useCallback(() => {
     if (!dragRef.current.active) return;
     dragRef.current.active = false;
+    cancelAnimationFrame(dragRafRef.current);
+    // Flush any pending drag
+    if (pendingDragRef.current) {
+      pushCamera(cameraRef.current.x - pendingDragRef.current.dx, cameraRef.current.y - pendingDragRef.current.dy);
+      pendingDragRef.current = null;
+    }
     // Mark idle after momentum settles
     if (dragIdleTimer.current) clearTimeout(dragIdleTimer.current);
-    dragIdleTimer.current = setTimeout(() => setIsDragging(false), 600);
+    dragIdleTimer.current = setTimeout(() => { isDraggingRef.current = false; setIsDragging(false); }, 600);
     const decay = 0.95;
     const tick = () => {
       velRef.current.x *= decay;
@@ -255,6 +295,7 @@ export default function Home() {
     cancelAnimationFrame(momentumRef.current);
     cancelAnimationFrame(flyAnimRef.current);
     cancelAnimationFrame(zoomAnimRef.current);
+    cancelAnimationFrame(dragRafRef.current);
   }, []);
 
   // Search: filter shows + spiral layout

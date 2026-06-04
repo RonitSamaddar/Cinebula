@@ -198,7 +198,6 @@ const ShowCards = forwardRef<ShowCardsHandle, ShowCardsProps>(function ShowCards
           style={{
             display: "none",
             zIndex: show.size === "l" ? 4 : show.size === "m" ? 3 : 2,
-            willChange: "transform, opacity",
           }}
         >
           <ShowCard show={show} onTap={handleTap} />

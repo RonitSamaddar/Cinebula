@@ -42,7 +42,6 @@ export default function ShowCard({ show, isQueued, onTap }: ShowCardProps) {
             ? "1.5px solid rgba(230,176,74,0.5)"
             : "1px solid rgba(255,255,255,0.08)",
         cursor: "pointer",
-        willChange: "transform",
       }}
       onPointerDown={(e) => {
         downPos.current = { x: e.clientX, y: e.clientY };
