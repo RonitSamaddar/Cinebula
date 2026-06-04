@@ -299,8 +299,12 @@ export default function Home() {
   const onPointerMove = useCallback((e: React.PointerEvent) => {
     const d = dragRef.current;
     if (!d.active) return;
-    const dx = e.clientX - d.lastX;
-    const dy = e.clientY - d.lastY;
+    const rawDx = e.clientX - d.lastX;
+    const rawDy = e.clientY - d.lastY;
+    // Scale drag by inverse zoom so card movement matches finger movement
+    const z = zoomRef.current;
+    const dx = rawDx / z;
+    const dy = rawDy / z;
     const now = performance.now();
     const dt = Math.max(8, now - d.lastT); // clamp to ~120fps minimum to prevent velocity spikes
     // Exponential smoothing on velocity (0.3 new, 0.7 old) to prevent jitter
