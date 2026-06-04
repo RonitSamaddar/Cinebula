@@ -1299,3 +1299,193 @@
   ]
 }
 [2026-06-04T16:27:31.586Z] Zoom-out: 334 shows, Zoom-in: 704 shows across 9 genres
+[2026-06-04T16:37:07.233Z] === Progressive init: login + genres ===
+{
+  "deviceId": "46426f9c-ssss-4593-9399-21798b0d1148"
+}
+[2026-06-04T16:37:07.349Z] POST /auth/login — success
+{
+  "user_id": 1
+}
+[2026-06-04T16:37:07.453Z] GET /top-genres — success
+{
+  "count": 9
+}
+[2026-06-04T16:37:08.327Z] GET /api/movies?genre=Sci-Fi — success
+{}
+[2026-06-04T16:37:08.346Z] Zoom-out: 0 shows, Zoom-in: 0 shows across 9 genres
+[2026-06-04T16:37:14.061Z] GET /api/movies?genre=Adventure — success
+{
+  "count": 318,
+  "top3": [
+    "Avengers: Infinity War",
+    "Oz the Great and Powerful",
+    "Toy Story"
+  ]
+}
+[2026-06-04T16:37:14.115Z] Zoom-out: 45 shows, Zoom-in: 100 shows across 9 genres
+[2026-06-04T16:37:18.768Z] GET /api/movies?genre=Action — success
+{
+  "count": 348,
+  "top3": [
+    "A Brooklyn State of Mind",
+    "Ran",
+    "Avengers: Infinity War"
+  ]
+}
+[2026-06-04T16:37:18.791Z] Zoom-out: 90 shows, Zoom-in: 200 shows across 9 genres
+[2026-06-04T16:37:22.337Z] GET /api/movies?genre=Fantasy — success
+{
+  "count": 222,
+  "top3": [
+    "A StoryBots Christmas",
+    "Oz the Great and Powerful",
+    "Beauty and the Beast"
+  ]
+}
+[2026-06-04T16:37:22.359Z] Zoom-out: 135 shows, Zoom-in: 300 shows across 9 genres
+[2026-06-04T16:37:25.806Z] GET /api/movies?genre=Family — success
+{
+  "count": 201,
+  "top3": [
+    "Oz the Great and Powerful",
+    "Toy Story",
+    "The Pink Panther"
+  ]
+}
+[2026-06-04T16:37:25.823Z] Zoom-out: 180 shows, Zoom-in: 400 shows across 9 genres
+[2026-06-04T16:37:28.842Z] GET /api/movies?genre=Animation — success
+{
+  "count": 82,
+  "top3": [
+    "A StoryBots Christmas",
+    "Toy Story",
+    "A StoryBots Space Adventure"
+  ]
+}
+[2026-06-04T16:37:28.862Z] Zoom-out: 225 shows, Zoom-in: 477 shows across 9 genres
+[2026-06-04T16:37:34.519Z] GET /api/movies?genre=Comedy — success
+{
+  "count": 517,
+  "top3": [
+    "Good Dick",
+    "Jerry Maguire",
+    "The Money Pit"
+  ]
+}
+[2026-06-04T16:37:34.539Z] Zoom-out: 270 shows, Zoom-in: 577 shows across 9 genres
+[2026-06-04T16:37:36.827Z] GET /api/movies?genre=Western — success
+{
+  "count": 27,
+  "top3": [
+    "The Revenant",
+    "Aces and Eights",
+    "The Treasure of the Sierra Madre"
+  ]
+}
+[2026-06-04T16:37:36.845Z] Zoom-out: 289 shows, Zoom-in: 604 shows across 9 genres
+[2026-06-04T16:37:44.401Z] GET /api/movies?genre=Drama — success
+{
+  "count": 874,
+  "top3": [
+    "A Brooklyn State of Mind",
+    "A Tale of Love and Darkness",
+    "Good Dick"
+  ]
+}
+[2026-06-04T16:37:44.441Z] Zoom-out: 334 shows, Zoom-in: 704 shows across 9 genres
+[2026-06-04T16:44:53.795Z] === Progressive init: login + genres ===
+{
+  "deviceId": "46426f9c-ssss-4593-9399-21798b0d1148"
+}
+[2026-06-04T16:44:53.880Z] POST /auth/login — success
+{
+  "user_id": 1
+}
+[2026-06-04T16:44:53.968Z] GET /top-genres — success
+{
+  "count": 9
+}
+[2026-06-04T16:44:54.667Z] GET /api/movies?genre=Sci-Fi — success
+{}
+[2026-06-04T16:44:54.689Z] Zoom-out: 0 shows, Zoom-in: 0 shows across 9 genres
+[2026-06-04T16:44:59.435Z] GET /api/movies?genre=Adventure — success
+{
+  "count": 318,
+  "top3": [
+    "Avengers: Infinity War",
+    "Oz the Great and Powerful",
+    "Toy Story"
+  ]
+}
+[2026-06-04T16:44:59.460Z] Zoom-out: 45 shows, Zoom-in: 100 shows across 9 genres
+[2026-06-04T16:45:04.240Z] GET /api/movies?genre=Action — success
+{
+  "count": 348,
+  "top3": [
+    "A Brooklyn State of Mind",
+    "Ran",
+    "Avengers: Infinity War"
+  ]
+}
+[2026-06-04T16:45:04.396Z] Zoom-out: 90 shows, Zoom-in: 200 shows across 9 genres
+[2026-06-04T16:45:09.109Z] GET /api/movies?genre=Fantasy — success
+{
+  "count": 222,
+  "top3": [
+    "A StoryBots Christmas",
+    "Oz the Great and Powerful",
+    "Beauty and the Beast"
+  ]
+}
+[2026-06-04T16:45:09.139Z] Zoom-out: 135 shows, Zoom-in: 300 shows across 9 genres
+[2026-06-04T16:45:13.129Z] GET /api/movies?genre=Family — success
+{
+  "count": 201,
+  "top3": [
+    "Oz the Great and Powerful",
+    "Toy Story",
+    "The Pink Panther"
+  ]
+}
+[2026-06-04T16:45:13.181Z] Zoom-out: 180 shows, Zoom-in: 400 shows across 9 genres
+[2026-06-04T16:45:16.426Z] GET /api/movies?genre=Animation — success
+{
+  "count": 82,
+  "top3": [
+    "A StoryBots Christmas",
+    "Toy Story",
+    "A StoryBots Space Adventure"
+  ]
+}
+[2026-06-04T16:45:16.479Z] Zoom-out: 225 shows, Zoom-in: 477 shows across 9 genres
+[2026-06-04T16:45:22.969Z] GET /api/movies?genre=Comedy — success
+{
+  "count": 517,
+  "top3": [
+    "Good Dick",
+    "Jerry Maguire",
+    "The Money Pit"
+  ]
+}
+[2026-06-04T16:45:23.008Z] Zoom-out: 270 shows, Zoom-in: 577 shows across 9 genres
+[2026-06-04T16:45:26.096Z] GET /api/movies?genre=Western — success
+{
+  "count": 27,
+  "top3": [
+    "The Revenant",
+    "Aces and Eights",
+    "The Treasure of the Sierra Madre"
+  ]
+}
+[2026-06-04T16:45:26.517Z] Zoom-out: 289 shows, Zoom-in: 604 shows across 9 genres
+[2026-06-04T16:45:34.454Z] GET /api/movies?genre=Drama — success
+{
+  "count": 874,
+  "top3": [
+    "A Brooklyn State of Mind",
+    "A Tale of Love and Darkness",
+    "Good Dick"
+  ]
+}
+[2026-06-04T16:45:34.606Z] Zoom-out: 334 shows, Zoom-in: 704 shows across 9 genres

@@ -1,12 +1,12 @@
 /**
  * ShowCard — A single show floating in the galaxy.
- * Renders as gradient rectangle with title. No poster images for now (gradient fallback).
- * 4 sizes: L (90px), M (70px), S (50px), XS (36px).
+ * Renders poster image if available, otherwise gradient fallback.
+ * 3 sizes: L (90px), M (70px), S (50px).
  */
 
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import type { Show } from "@/types";
 import { SHOW_SIZE_PX } from "@/config/galaxy";
 
@@ -21,6 +21,8 @@ export default function ShowCard({ show, isQueued, onTap }: ShowCardProps) {
   const fontSize = size >= 70 ? 9 : size >= 50 ? 7 : 6;
   const showTitle = size >= 36;
   const downPos = useRef({ x: 0, y: 0 });
+  const [imgError, setImgError] = useState(false);
+  const hasPoster = show.poster && !imgError;
 
   return (
     <div
@@ -28,7 +30,7 @@ export default function ShowCard({ show, isQueued, onTap }: ShowCardProps) {
       style={{
         width: size,
         height: size * 1.4,
-        background: show.gradient || "linear-gradient(135deg, #2a2a3a, #1a1a2a)",
+        background: hasPoster ? "#0a0a14" : (show.gradient || "linear-gradient(135deg, #2a2a3a, #1a1a2a)"),
         boxShadow: isQueued
           ? "0 0 12px 3px rgba(181,108,255,0.5), 0 0 24px 6px rgba(181,108,255,0.2)"
           : show.watched
@@ -54,6 +56,19 @@ export default function ShowCard({ show, isQueued, onTap }: ShowCardProps) {
         }
       }}
     >
+      {/* Poster image */}
+      {hasPoster && (
+        <img
+          src={show.poster}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          onError={() => setImgError(true)}
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ borderRadius: "inherit" }}
+        />
+      )}
+
       {/* Queued check badge */}
       {isQueued && (
         <div
@@ -87,8 +102,12 @@ export default function ShowCard({ show, isQueued, onTap }: ShowCardProps) {
       {/* Title */}
       {showTitle && (
         <div
-          className="w-full truncate px-0.5 pb-0.5 text-center font-mono font-medium leading-tight text-white/80"
-          style={{ fontSize }}
+          className="relative w-full truncate px-0.5 pb-0.5 text-center font-mono font-medium leading-tight text-white/90"
+          style={{
+            fontSize,
+            background: hasPoster ? "linear-gradient(transparent, rgba(0,0,0,0.8))" : undefined,
+            paddingTop: hasPoster ? 8 : undefined,
+          }}
         >
           {show.title}
         </div>
