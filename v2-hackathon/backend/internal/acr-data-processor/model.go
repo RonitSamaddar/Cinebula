@@ -3,6 +3,7 @@ package acrprocessor
 // ACRUser is one entry from data-dirs/ACR-data/acr-data.json.
 type ACRUser struct {
 	UserID   int          `json:"userId"`
+	DeviceID string       `json:"device_id"`
 	Sessions []ACRSession `json:"sessions"`
 }
 

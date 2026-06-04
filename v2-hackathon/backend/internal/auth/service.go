@@ -33,8 +33,9 @@ func jwtSecret() []byte {
 	return []byte(defaultJWTSecret)
 }
 
-// RegisterUser returns the existing user_id if a user with the same name
-// already exists in users.csv, otherwise appends a new row and returns the new ID.
+// RegisterUser returns the existing user_id if the device_id or name matches an
+// existing record, otherwise appends a new row and returns the new auto-incremented ID.
+// If name is empty a guest name "guest-<id>" is stored.
 func RegisterUser(req LoginRequest) (int, error) {
 	csvMu.Lock()
 	defer csvMu.Unlock()
@@ -47,17 +48,31 @@ func RegisterUser(req LoginRequest) (int, error) {
 		f.Close()
 	}
 
-	// Return existing user_id if name matches (case-insensitive).
-	for i, row := range rows {
-		if i == 0 || len(row) < 2 {
-			continue // skip header
-		}
-		if strings.EqualFold(row[1], req.Name) {
-			id, err := strconv.Atoi(row[0])
-			if err != nil {
+	// Match by device_id first (column 6), if provided.
+	if req.DeviceID != "" {
+		for i, row := range rows {
+			if i == 0 || len(row) < 7 {
 				continue
 			}
-			return id, nil
+			if row[6] == req.DeviceID {
+				if id, err := strconv.Atoi(row[0]); err == nil {
+					return id, nil
+				}
+			}
+		}
+	}
+
+	// Match by name if provided (case-insensitive).
+	if req.Name != "" {
+		for i, row := range rows {
+			if i == 0 || len(row) < 2 {
+				continue
+			}
+			if strings.EqualFold(row[1], req.Name) {
+				if id, err := strconv.Atoi(row[0]); err == nil {
+					return id, nil
+				}
+			}
 		}
 	}
 
@@ -72,9 +87,17 @@ func RegisterUser(req LoginRequest) (int, error) {
 		}
 	}
 
+	name := req.Name
+	if name == "" {
+		name = fmt.Sprintf("guest-%d", nextID)
+	}
+
 	genresJSON, err := json.Marshal(req.TopGenres)
 	if err != nil {
 		return 0, fmt.Errorf("marshal top_genres: %w", err)
+	}
+	if req.TopGenres == nil {
+		genresJSON = []byte("[]")
 	}
 
 	f, err := os.OpenFile(usersCSVPath, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
@@ -86,11 +109,12 @@ func RegisterUser(req LoginRequest) (int, error) {
 	w := csv.NewWriter(f)
 	if err := w.Write([]string{
 		strconv.Itoa(nextID),
-		req.Name,
+		name,
 		strconv.Itoa(req.Age),
 		req.Gender,
 		string(genresJSON),
 		time.Now().UTC().Format(time.RFC3339),
+		req.DeviceID,
 	}); err != nil {
 		return 0, err
 	}

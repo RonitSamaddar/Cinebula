@@ -2,58 +2,121 @@ package topgenres
 
 import (
 	"encoding/json"
+	"math"
 	"net/http"
+	"os"
+	"sort"
 	"strconv"
 
 	acrprocessor "cinebula/backend/internal/acr-data-processor"
+	"cinebula/backend/internal/user"
 )
 
-// noACRUserIDs is the set of user IDs that have no ACR watch data.
-// For these users /top-genres returns 422 Unprocessable Entity.
-var noACRUserIDs = map[int]bool{
-	100: true,
-}
+const dataConstsPath = "./data-dirs/data-consts.json"
 
-// Handler handles GET /top-genres?userId=N
+// Handler handles GET /top-genres
 //
-// Returns the user's top-9 genres with priority weights.
-// Weight is linearly normalised: rank 1 = 1.0, rank N = 1/N.
-// The phone uses these weights and genre names to decide which genre spaces
-// to fetch first via GET /api/movies?genre=<genre>.
+// Optional query params:
+//   deviceId=<uuid>  — match against ACR data by device ID
+//   userId=<int>     — look up user record; if the user has a device_id, use ACR data
+//
+// Resolution order:
+//  1. If deviceId provided (or userId resolves to a user with a device_id) →
+//     ACR lookup by device_id; fallback to case 2 on miss.
+//  2. No device_id resolvable → top-9 from genreRankMatrix,
+//     weights 1.0 (rank 1) … 0.2 (rank 9) in 0.1 steps.
 func Handler(w http.ResponseWriter, r *http.Request) {
-	userID, err := strconv.Atoi(r.URL.Query().Get("userId"))
-	if err != nil || userID <= 0 {
-		http.Error(w, "invalid userId", http.StatusBadRequest)
-		return
+	deviceID := r.URL.Query().Get("deviceId")
+	userID := 0
+	if s := r.URL.Query().Get("userId"); s != "" {
+		userID, _ = strconv.Atoi(s)
 	}
 
-	if noACRUserIDs[userID] {
-		http.Error(w, "no ACR data available for this user", http.StatusUnprocessableEntity)
-		return
-	}
-
-	acr, err := acrprocessor.TopGenresForUser(userID)
-	if err != nil {
-		http.Error(w, "no ACR data available for this user: "+err.Error(), http.StatusUnprocessableEntity)
-		return
-	}
-
-	n := len(acr)
-	if n > 9 {
-		n = 9
-	}
-	genres := make([]GenreWeight, n)
-	for i := 0; i < n; i++ {
-		genres[i] = GenreWeight{
-			Genre:  acr[i].Genre,
-			Rank:   i + 1,
-			Weight: acr[i].Weight,
+	// Resolve device_id from the user record if not supplied directly.
+	if deviceID == "" && userID > 0 {
+		if u, err := user.GetByID(userID); err == nil {
+			deviceID = u.DeviceID
 		}
 	}
 
+	// Case 1/2: ACR lookup when we have a device_id.
+	if deviceID != "" {
+		acr, err := acrprocessor.TopGenresForDevice(deviceID)
+		if err == nil && len(acr) > 0 {
+			n := len(acr)
+			if n > 9 {
+				n = 9
+			}
+			genres := make([]GenreWeight, n)
+			for i := 0; i < n; i++ {
+				genres[i] = GenreWeight{
+					Genre:  acr[i].Genre,
+					Rank:   i + 1,
+					Weight: acr[i].Weight,
+				}
+			}
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(TopGenresResponse{UserID: userID, Genres: genres})
+			return
+		}
+	}
+
+	// Fallback: genreRankMatrix top-9 with fixed descending weights.
+	genres, err := fallbackGenres()
+	if err != nil {
+		http.Error(w, "failed to load genre data: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(TopGenresResponse{
-		UserID: userID,
-		Genres: genres,
-	})
+	json.NewEncoder(w).Encode(TopGenresResponse{UserID: userID, Genres: genres})
 }
+
+// fallbackGenres returns one representative genre per rank (1–9) from
+// genreRankMatrix, picking the genre with the highest TMDB count within each
+// rank tie-group. Weights are assigned linearly: rank 1 = 1.0, rank 9 = 0.2.
+func fallbackGenres() ([]GenreWeight, error) {
+	raw, err := os.ReadFile(dataConstsPath)
+	if err != nil {
+		return nil, err
+	}
+	var consts struct {
+		GenreRankMatrix  map[string]int `json:"genreRankMatrix"`
+		GenreCountMatrix map[string]int `json:"genreCountMatrix"`
+	}
+	if err := json.Unmarshal(raw, &consts); err != nil {
+		return nil, err
+	}
+
+	// Group genres by rank.
+	byRank := map[int][]string{}
+	for genre, rank := range consts.GenreRankMatrix {
+		byRank[rank] = append(byRank[rank], genre)
+	}
+
+	result := make([]GenreWeight, 0, 9)
+	for rank := 1; rank <= 9; rank++ {
+		candidates := byRank[rank]
+		if len(candidates) == 0 {
+			continue
+		}
+		// Pick genre with highest TMDB count; break ties alphabetically.
+		sort.Slice(candidates, func(i, j int) bool {
+			ci := consts.GenreCountMatrix[candidates[i]]
+			cj := consts.GenreCountMatrix[candidates[j]]
+			if ci != cj {
+				return ci > cj
+			}
+			return candidates[i] < candidates[j]
+		})
+		weight := math.Round((1.0-float64(rank-1)*0.1)*10) / 10
+		result = append(result, GenreWeight{
+			Genre:  candidates[0],
+			Rank:   rank,
+			Weight: weight,
+		})
+	}
+
+	return result, nil
+}
+

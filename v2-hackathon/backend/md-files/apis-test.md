@@ -12,6 +12,32 @@ Run **in order** — Step 1 captures `$TOKEN` and `$USER_ID` used by later steps
 
 ## Step 1 — POST /auth/login
 
+### Case A — Anonymous (no fields)
+```bash
+curl -s -X POST http://localhost:8080/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{}' | python3 -m json.tool
+```
+
+Expected `200`: `user_id` assigned, `name` stored as `guest-<id>`, no `device_id` in response.
+```json
+{ "user_id": <number>, "token": "<JWT>" }
+```
+
+### Case B — Device ID only (links to ACR data)
+```bash
+curl -s -X POST http://localhost:8080/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"device_id": "46426f9c-ssss-4593-9399-21798b0d1148"}' \
+  | tee /tmp/login.json | python3 -m json.tool
+```
+
+Expected `200`: returns existing `user_id: 1` (matched via device_id), echoes `device_id`.
+```json
+{ "user_id": 1, "token": "<JWT>", "device_id": "46426f9c-ssss-4593-9399-21798b0d1148" }
+```
+
+### Case C — Full request
 ```bash
 curl -s -X POST http://localhost:8080/auth/login \
   -H "Content-Type: application/json" \
@@ -19,16 +45,14 @@ curl -s -X POST http://localhost:8080/auth/login \
     "name": "Pratikesh",
     "age": 22,
     "gender": "male",
-    "top_genres": ["Sci-Fi","Action","Drama","Thriller","Comedy","Horror","Crime","Mystery","Adventure"]
+    "top_genres": ["Sci-Fi","Action","Drama","Thriller","Comedy","Horror","Crime","Mystery","Adventure"],
+    "device_id": "5336afe5-ssss-4677-9b27-61253b9f6fc3"
   }' | tee /tmp/login.json | python3 -m json.tool
 ```
 
-Expected `200`:
+Expected `200`: returns existing `user_id: 2` (matched via device_id or name).
 ```json
-{
-  "user_id": <number>,
-  "token": "<JWT string>"
-}
+{ "user_id": 2, "token": "<JWT>", "device_id": "5336afe5-ssss-4677-9b27-61253b9f6fc3" }
 ```
 
 Save for later steps:
@@ -63,36 +87,59 @@ Verify: `user_id` matches `$USER_ID`, all fields present.
 
 ---
 
-## Step 3 — GET /top-genres (existing user with ACR data)
+## Step 3 — GET /top-genres
 
-Use one of the seeded users: 1 = Ronit, 2 = Pratikesh, 3 = Vanshika, 4 = Arpit.
+### Case 1 — By userId (resolves device_id → ACR data)
 
 ```bash
 curl -s "http://localhost:8080/top-genres?userId=2" | python3 -m json.tool
 ```
 
-Expected `200`:
-```json
-{
-  "user_id": 1,
-  "genres": [
-    { "genre": "Adventure", "rank": 1, "weight": <number 0-1> },
-    { "genre": "Action",    "rank": 2, "weight": <number 0-1> },
-    ...
-  ]
-}
-```
-
-Verify: `genres` is non-empty, `rank` starts at 1, `weight` values are in (0, 1] and descending.
+Expected `200`: ACR-derived weights, `genres` non-empty, `weight` values in (0, 1] descending.
 
 ```bash
-# Check all 4 ACR users return genres
+# Check all 4 ACR users
 for id in 1 2 3 4; do
   echo -n "userId=$id → "
   curl -s "http://localhost:8080/top-genres?userId=$id" | \
     python3 -c "import sys,json; d=json.load(sys.stdin); print(f'{len(d[\"genres\"])} genres, top: {d[\"genres\"][0][\"genre\"]} ({d[\"genres\"][0][\"weight\"]})')"
 done
 ```
+
+### Case 2 — By deviceId directly
+
+```bash
+curl -s "http://localhost:8080/top-genres?deviceId=46426f9c-ssss-4593-9399-21798b0d1148" | python3 -m json.tool
+```
+
+Expected `200`: same ACR-derived result as `userId=1`.
+
+### Case 3 — No params (fallback to genreRankMatrix)
+
+```bash
+curl -s "http://localhost:8080/top-genres" | python3 -m json.tool
+```
+
+Expected `200`: fixed fallback weights `1.0 → 0.2`, top genre is `Drama`.
+```json
+{
+  "user_id": 0,
+  "genres": [
+    { "genre": "Drama",       "rank": 1, "weight": 1  },
+    { "genre": "Documentary", "rank": 2, "weight": 0.9 },
+    { "genre": "Comedy",      "rank": 3, "weight": 0.8 },
+    ...
+  ]
+}
+```
+
+### Case 3b — userId with no ACR data (fallback)
+
+```bash
+curl -s "http://localhost:8080/top-genres?userId=100" | python3 -m json.tool
+```
+
+Expected `200`: same fixed fallback (user 100 has no device_id).
 
 ---
 
