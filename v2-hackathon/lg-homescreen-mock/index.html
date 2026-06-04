@@ -1068,11 +1068,12 @@ const USERS_TABLE = [
 
 // ═══════════════════════════════════════════
 // PARSE deviceID FROM URL PARAMETER
-// Usage: index.html?deviceId=LG-TV-001
+// Usage: index.html?deviceId=46426f9c-ssss-4593-9399-21798b0d1148
+// Any arbitrary device ID can be passed — it will be encoded in the QR code
 // ═══════════════════════════════════════════
 const urlParams = new URLSearchParams(window.location.search);
-const deviceIdParam = urlParams.get('deviceId') || 'LG-TV-001'; // default to first device
-const currentUser = USERS_TABLE.find(u => u.deviceId === deviceIdParam) || USERS_TABLE[0];
+const deviceIdParam = urlParams.get('deviceId') || urlParams.get('device_id') || 'LG-TV-001';
+const currentUser = USERS_TABLE.find(u => u.deviceId === deviceIdParam) || { deviceId: deviceIdParam, cinebulaId: 'CNB-CUSTOM', userName: 'User' };
 
 // Update UI with user info
 document.getElementById('profileLetter').textContent = currentUser.userName.charAt(0).toUpperCase();

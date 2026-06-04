@@ -400,8 +400,6 @@ export function backendMoviesToShows(
   return { z0: z0Shows, z1: z1Shows, z2: z2Shows };
 }
 
-const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/original";
-
 function makeShow(
   p: { movie: Movie; relX: number; relY: number; worldX: number; worldY: number; size: import("@/types").ShowSize; idx: number },
   catKey: string,
@@ -422,7 +420,7 @@ function makeShow(
     worldX,
     worldY,
     size,
-    poster: movie.image_link ? `${TMDB_IMAGE_BASE}${movie.image_link}` : "",
+    poster: movie.image_link ? `${movie.image_link}` : "",
     gradient: `linear-gradient(135deg, hsl(${(idx * 37) % 360}, 60%, 30%), hsl(${(idx * 37 + 60) % 360}, 50%, 20%))`,
     language: movie.language || "en",
     actors: movie.casts?.slice(0, 3) || [],
