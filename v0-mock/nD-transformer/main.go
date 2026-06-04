@@ -510,13 +510,18 @@ func initCassandra() {
 	cluster.Timeout = 30 * time.Second
 	cluster.ConnectTimeout = 30 * time.Second
 
-	sess, err := cluster.CreateSession()
-	if err != nil {
-		fmt.Printf("⚠ Could not connect to Cassandra: %v\n", err)
-		return
+	// Retry connection up to 60 seconds (Cassandra can be slow to start)
+	for i := 0; i < 30; i++ {
+		sess, err := cluster.CreateSession()
+		if err == nil {
+			cassandraSession = sess
+			fmt.Println("Connected to Cassandra (cinebula keyspace)")
+			return
+		}
+		fmt.Printf("⚠ Cassandra not ready (attempt %d/30): %v\n", i+1, err)
+		time.Sleep(2 * time.Second)
 	}
-	cassandraSession = sess
-	fmt.Println("Connected to Cassandra (cinebula keyspace)")
+	fmt.Println("⚠ Could not connect to Cassandra after 30 attempts")
 }
 
 // MovieResponse is the JSON response for each movie in the genre endpoint.
