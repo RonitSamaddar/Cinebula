@@ -733,6 +733,7 @@ func sanitizeGenreColumn(s string) string {
 }
 func handleSimilar(w http.ResponseWriter, r *http.Request) {
 	movie := r.URL.Query().Get("movie")
+	movie = strings.ToLower(movie)
 	if movie == "" {
 		jsonError(w, "missing required query parameter: movie", http.StatusBadRequest)
 		return
