@@ -27,6 +27,7 @@ export interface Show {
   actors: string[];
   tags: string[];
   watched?: boolean;
+  voteCount?: number;
 }
 
 export interface Category {

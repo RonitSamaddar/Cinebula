@@ -5,7 +5,7 @@
 
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { Show } from "@/types";
 import { CATEGORIES } from "@/data/categories";
 import { useQueueStore } from "@/stores/queue-store";
@@ -17,13 +17,15 @@ interface RecDialogProps {
   onClose: () => void;
 }
 
-const TYPE_LABELS: Record<string, { title: string; icon: string }> = {
-  similar: { title: "SIMILAR TO YOU", icon: "🎯" },
-  mood: { title: "YOUR CATEGORY", icon: "🌙" },
-  wildcard: { title: "WILDCARD", icon: "🎲" },
+const TYPE_LABELS: Record<string, string> = {
+  watched: "FROM YOUR HISTORY",
+  trending: "TRENDING NOW",
+  "hidden-gem": "HIDDEN GEM",
+  wildcard: "DEEP CUT",
 };
 
 function RecCard({ rec }: { rec: Recommendation }) {
+  const [expanded, setExpanded] = useState(false);
   const isQueued = useQueueStore((s) => s.items.some((i) => i.id === rec.show.id));
   const addToQueue = useQueueStore((s) => s.add);
   const removeFromQueue = useQueueStore((s) => s.remove);
@@ -41,92 +43,86 @@ function RecCard({ rec }: { rec: Recommendation }) {
 
   return (
     <div
-      className="flex flex-col overflow-hidden rounded-xl"
+      className="flex flex-col overflow-hidden rounded-xl transition-all duration-200"
       style={{
         background: "rgba(14, 12, 24, 0.95)",
         border: `1px solid ${accent}30`,
         boxShadow: `0 0 20px 2px ${accent}10`,
       }}
+      onClick={() => setExpanded(!expanded)}
     >
-      {/* Type header */}
-      <div
-        className="flex items-center gap-1.5 px-3 py-2"
-        style={{ background: `${accent}15` }}
-      >
-        <span className="text-[12px]">{label.icon}</span>
-        <span
-          className="font-mono text-[8px] font-bold uppercase tracking-[0.2em]"
-          style={{ color: accent }}
-        >
-          {label.title}
-        </span>
-      </div>
-
-      {/* Poster gradient */}
-      <div
-        className="relative h-[80px]"
-        style={{
-          background: rec.show.gradient || `linear-gradient(135deg, ${accent}40, ${accent}10)`,
-        }}
-      >
-        {/* Match badge */}
+      {/* Compact row */}
+      <div className="flex flex-row" style={{ minHeight: 160 }}>
+        {/* Poster (left, portrait) */}
         <div
-          className="absolute right-2 top-2 rounded-full px-2 py-0.5 font-mono text-[8px] font-bold text-white"
-          style={{ background: `${accent}cc` }}
-        >
-          {rec.show.match}%
-        </div>
-        {/* Category badge */}
-        <div
-          className="absolute bottom-2 left-2 rounded-full px-2 py-0.5 font-mono text-[7px] uppercase tracking-[0.1em]"
-          style={{ background: `${accent}30`, color: accent, border: `1px solid ${accent}50` }}
-        >
-          {rec.show.category}
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="flex flex-col gap-1.5 px-3 py-2.5">
-        <h4
-          className="text-[14px] font-semibold leading-tight text-white"
-          style={{ fontFamily: "'Instrument Serif', serif" }}
-        >
-          {rec.show.title}
-        </h4>
-        <div className="flex items-center gap-1.5 font-mono text-[8px] text-white/50">
-          <span>{rec.show.year}</span>
-          <span>·</span>
-          <span>{rec.show.runtime}</span>
-          <span>·</span>
-          <span>{rec.show.genres}</span>
-        </div>
-        <p className="line-clamp-2 text-[10px] leading-relaxed text-white/55">
-          {rec.show.description}
-        </p>
-        {/* Reasoning */}
-        <p
-          className="mt-0.5 text-[9px] italic leading-snug"
-          style={{ color: `${accent}aa` }}
-        >
-          {rec.reasoning}
-        </p>
-      </div>
-
-      {/* Queue button */}
-      <div className="px-3 pb-3">
-        <button
-          className="w-full rounded-lg py-2 font-mono text-[9px] font-bold uppercase tracking-[0.15em] text-white transition-all active:scale-[0.97]"
+          className="relative shrink-0 overflow-hidden"
           style={{
-            background: isQueued
-              ? "rgba(255,255,255,0.08)"
-              : `linear-gradient(135deg, ${accent}cc, ${accent}88)`,
-            border: isQueued ? "1px solid rgba(255,255,255,0.15)" : "none",
+            width: expanded ? 120 : 100,
+            background: rec.show.gradient || `linear-gradient(135deg, ${accent}40, ${accent}10)`,
+            transition: "width 200ms ease",
           }}
-          onPointerDown={(e) => e.stopPropagation()}
-          onClick={(e) => { e.stopPropagation(); handleQueue(); }}
         >
-          {isQueued ? "✓ IN QUEUE" : "+ ADD TO QUEUE"}
-        </button>
+          {rec.show.poster && (
+            <img
+              src={rec.show.poster}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          )}
+          {/* Match badge */}
+          <div
+            className="absolute left-2 top-2 rounded-full px-2 py-0.5 font-mono text-[8px] font-bold text-white"
+            style={{ background: `${accent}cc` }}
+          >
+            {rec.show.match}%
+          </div>
+        </div>
+
+        {/* Text content (right) */}
+        <div className="flex min-w-0 flex-1 flex-col justify-between py-2.5 px-3">
+          {/* Type badge */}
+          <div className="flex items-center">
+            <span
+              className="text-[8px] font-semibold uppercase tracking-[0.15em]"
+              style={{ color: accent, fontFamily: "var(--font-inter), system-ui, sans-serif" }}
+            >
+              {label}
+            </span>
+          </div>
+
+          {/* Title + meta + synopsis */}
+          <div className="flex flex-col gap-1">
+            <h4
+              className="truncate text-[14px] font-semibold leading-tight text-white"
+              style={{ fontFamily: "'Instrument Serif', serif" }}
+            >
+              {rec.show.title}
+            </h4>
+            <div className="flex items-center gap-1.5 font-mono text-[8px] text-white/50">
+              <span>{rec.show.year}</span>
+              <span>·</span>
+              <span>{rec.show.genres}</span>
+            </div>
+            <p className={`text-[9px] leading-snug text-white/60 ${expanded ? "" : "line-clamp-2"}`}>
+              {rec.show.description}
+            </p>
+          </div>
+
+          {/* Queue button */}
+          <button
+            className="w-full rounded-lg py-1.5 font-mono text-[8px] font-bold uppercase tracking-[0.15em] text-white transition-all active:scale-[0.97]"
+            style={{
+              background: isQueued
+                ? "rgba(255,255,255,0.08)"
+                : `linear-gradient(135deg, ${accent}cc, ${accent}88)`,
+              border: isQueued ? "1px solid rgba(255,255,255,0.15)" : "none",
+            }}
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={(e) => { e.stopPropagation(); handleQueue(); }}
+          >
+            {isQueued ? "✓ IN QUEUE" : "+ ADD TO QUEUE"}
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -172,10 +168,10 @@ export default function RecDialog({ shows, onClose }: RecDialogProps) {
           <div className="flex items-center gap-2">
             <span className="text-[18px]">🛸</span>
             <h2
-              className="text-[18px] font-semibold text-white"
-              style={{ fontFamily: "'Instrument Serif', serif" }}
+              className="text-[18px] font-bold tracking-wide text-white"
+              style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}
             >
-              Alien Picks
+              Alien Top Picks
             </h2>
           </div>
           <button
@@ -187,7 +183,6 @@ export default function RecDialog({ shows, onClose }: RecDialogProps) {
         </div>
 
         <p className="shrink-0 px-5 pb-4 font-mono text-[9px] uppercase tracking-[0.15em] text-white/35">
-          Personalized recommendations based on your exploration
         </p>
 
         {/* Scrollable cards */}

@@ -42,67 +42,80 @@ export default function LoadingScreen() {
     <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#07070c]">
       {/* Stars background */}
       <div className="absolute inset-0 overflow-hidden opacity-30">
-        {Array.from({ length: 40 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full bg-white"
-            style={{
-              width: Math.random() * 2 + 1,
-              height: Math.random() * 2 + 1,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animation: `twinkle ${2 + Math.random() * 3}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 2}s`,
-            }}
-          />
-        ))}
+        {Array.from({ length: 40 }).map((_, i) => {
+          // Deterministic pseudo-random using index to avoid hydration mismatch
+          const seed = (i * 7 + 13) % 40;
+          const size = (seed % 3) + 1;
+          const left = ((i * 17 + 5) % 100);
+          const top = ((i * 23 + 11) % 100);
+          const dur = 2 + (seed % 3);
+          const delay = (i % 5) * 0.4;
+          return (
+            <div
+              key={i}
+              className="absolute rounded-full bg-white"
+              style={{
+                width: size,
+                height: size,
+                left: `${left}%`,
+                top: `${top}%`,
+                animation: `twinkle ${dur}s ease-in-out infinite`,
+                animationDelay: `${delay}s`,
+              }}
+            />
+          );
+        })}
       </div>
 
       {/* Alien + Ship (same SVG as AlienCompanion) */}
       <div className="relative flex flex-col items-center" style={{ animation: "float 3s ease-in-out infinite" }}>
         {/* Alien character */}
-        <div className="relative" style={{ width: 64, height: 68 }}>
-          <svg width="64" height="68" viewBox="0 0 44 46" fill="none">
-            <ellipse cx="22" cy="20" rx="14" ry="15" fill="#5cff5c" opacity="0.88" />
-            <ellipse cx="10" cy="24" rx="4" ry="2.5" fill="#ff9fcf" opacity="0.2" />
-            <ellipse cx="34" cy="24" rx="4" ry="2.5" fill="#ff9fcf" opacity="0.2" />
-            <ellipse cx="15" cy="18" rx="5" ry="5.5" fill="#0a2a0a" opacity="0.9" />
-            <ellipse cx="29" cy="18" rx="5" ry="5.5" fill="#0a2a0a" opacity="0.9" />
-            <circle cx="17" cy="16" r="2" fill="rgba(255,255,255,0.7)" />
-            <circle cx="31" cy="16" r="2" fill="rgba(255,255,255,0.7)" />
-            <circle cx="13.5" cy="20" r="1" fill="rgba(255,255,255,0.35)" />
-            <circle cx="27.5" cy="20" r="1" fill="rgba(255,255,255,0.35)" />
-            <path d="M18 27 Q20 29.5 22 27" stroke="#0a2a0a" strokeWidth="1" fill="none" opacity="0.5" />
-            <path d="M22 27 Q24 29.5 26 27" stroke="#0a2a0a" strokeWidth="1" fill="none" opacity="0.5" />
-            <line x1="13" y1="7" x2="8" y2="0" stroke="#5cff5c" strokeWidth="1.5" opacity="0.7" />
-            <circle cx="8" cy="0" r="2.5" fill="#7fff7f" opacity="0.85" />
-            <line x1="31" y1="7" x2="36" y2="0" stroke="#5cff5c" strokeWidth="1.5" opacity="0.7" />
-            <circle cx="36" cy="0" r="2.5" fill="#7fff7f" opacity="0.85" />
+        <div className="relative" style={{ width: 78, height: 75 }}>
+          <svg width="78" height="75" viewBox="0 -4 60 62" fill="none" style={{ overflow: "visible" }}>
+            {/* Antennae */}
+            <line x1="18" y1="8" x2="12" y2="0" stroke="#5cff5c" strokeWidth="1.8" opacity="0.7" />
+            <circle cx="12" cy="0" r="2.5" fill="#7fff7f" opacity="0.85" style={{ animation: "pulse-dot 2s ease-in-out infinite" }} />
+            <line x1="42" y1="8" x2="48" y2="0" stroke="#5cff5c" strokeWidth="1.8" opacity="0.7" />
+            <circle cx="48" cy="0" r="2.5" fill="#7fff7f" opacity="0.85" style={{ animation: "pulse-dot 2s ease-in-out infinite 0.5s" }} />
+
+            {/* Head — round, green */}
+            <ellipse cx="30" cy="18" rx="14" ry="14" fill="#5cff5c" opacity="0.9" />
+
+            {/* Eyes — large, dark */}
+            <ellipse cx="24" cy="16" rx="4.5" ry="5" fill="#0a2a0a" opacity="0.9" />
+            <ellipse cx="36" cy="16" rx="4.5" ry="5" fill="#0a2a0a" opacity="0.9" />
+            {/* Eye shine */}
+            <circle cx="25.5" cy="14.5" r="1.8" fill="rgba(255,255,255,0.7)" />
+            <circle cx="37.5" cy="14.5" r="1.8" fill="rgba(255,255,255,0.7)" />
+
+            {/* Mouth — gentle smile */}
+            <path d="M25 24 Q30 27 35 24" stroke="#0a2a0a" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity="0.5" />
+
+            {/* Body / Torso — dark blue t-shirt */}
+            <rect x="16" y="30" width="28" height="24" rx="6" fill="#1a2744" opacity="0.95" />
+            <path d="M22 30 Q30 33 38 30" stroke="#2a3a5c" strokeWidth="0.8" fill="none" />
           </svg>
         </div>
 
-        {/* Spaceship */}
+        {/* Spaceship — flat saucer below */}
         <div className="-mt-3">
-          <svg width="128" height="58" viewBox="0 0 96 44" fill="none" style={{ filter: "drop-shadow(0 0 16px rgba(127, 255, 127, 0.3))" }}>
-            <ellipse cx="48" cy="28" rx="48" ry="16" fill="url(#loadShipGrad)" opacity="0.9" />
-            <ellipse cx="48" cy="25" rx="33" ry="8" fill="none" stroke="rgba(127, 255, 127, 0.3)" strokeWidth="0.8" />
-            <circle cx="24" cy="25" r="3" fill="rgba(127, 255, 127, 0.5)" />
-            <circle cx="36" cy="24" r="3" fill="rgba(127, 255, 127, 0.6)" />
-            <circle cx="48" cy="23.5" r="3.2" fill="rgba(127, 255, 127, 0.65)" />
-            <circle cx="60" cy="24" r="3" fill="rgba(127, 255, 127, 0.6)" />
-            <circle cx="72" cy="25" r="3" fill="rgba(127, 255, 127, 0.5)" />
-            <ellipse cx="48" cy="16" rx="19" ry="16" fill="url(#loadDomeGrad)" opacity="0.55" />
-            <ellipse cx="48" cy="42" rx="28" ry="4" fill="rgba(127, 255, 127, 0.12)" />
+          <svg width="125" height="50" viewBox="0 0 96 40" fill="none" style={{ filter: "drop-shadow(0 0 16px rgba(127, 255, 127, 0.3))" }}>
+            <ellipse cx="48" cy="14" rx="48" ry="14" fill="url(#loadShipGrad)" opacity="0.9" />
+            <circle cx="20" cy="12" r="2.5" fill="rgba(127, 255, 127, 0.5)" />
+            <circle cx="34" cy="10" r="2.5" fill="rgba(127, 255, 127, 0.6)" />
+            <circle cx="48" cy="9.5" r="3" fill="rgba(127, 255, 127, 0.65)" />
+            <circle cx="62" cy="10" r="2.5" fill="rgba(127, 255, 127, 0.6)" />
+            <circle cx="76" cy="12" r="2.5" fill="rgba(127, 255, 127, 0.5)" />
+            {/* Thrust */}
+            <ellipse cx="48" cy="28" rx="18" ry="3" fill="rgba(127, 255, 127, 0.25)" />
+            <ellipse cx="48" cy="32" rx="12" ry="2.5" fill="rgba(127, 255, 127, 0.15)" />
+            <ellipse cx="48" cy="36" rx="7" ry="2" fill="rgba(127, 255, 127, 0.08)" />
             <defs>
-              <linearGradient id="loadShipGrad" x1="0" y1="14" x2="96" y2="42">
+              <linearGradient id="loadShipGrad" x1="0" y1="0" x2="96" y2="28">
                 <stop offset="0" stopColor="#2a2a40" />
                 <stop offset="0.5" stopColor="#3d3d5c" />
                 <stop offset="1" stopColor="#2a2a40" />
               </linearGradient>
-              <radialGradient id="loadDomeGrad" cx="0.5" cy="0.6">
-                <stop offset="0" stopColor="rgba(127, 255, 127, 0.18)" />
-                <stop offset="1" stopColor="rgba(127, 255, 127, 0.02)" />
-              </radialGradient>
             </defs>
           </svg>
         </div>

@@ -520,11 +520,12 @@ function makeShow(
     worldY,
     size,
     opacityPenalty: opacityPenalty || 0,
-    poster: movie.image_link ? `${movie.image_link}` : "",
+    poster: movie.image_link ? movie.image_link.replace("/w92/", "/w500/") : "",
     gradient: `linear-gradient(135deg, hsl(${(idx * 37) % 360}, 60%, 30%), hsl(${(idx * 37 + 60) % 360}, 50%, 20%))`,
     language: movie.language || "en",
     actors: movie.casts?.slice(0, 3) || [],
     tags: movie.keywords?.slice(0, 3) || [],
     watched: movie.is_watched,
+    voteCount: movie.vote_count || 0,
   };
 }
