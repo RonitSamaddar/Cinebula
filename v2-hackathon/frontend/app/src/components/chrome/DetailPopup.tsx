@@ -82,22 +82,33 @@ export default function DetailPopup({ show, screenX, screenY, onClose }: DetailP
       >
         {/* Poster gradient header */}
         <div
-          className="relative flex items-end p-3"
+          className="relative flex items-end p-3 overflow-hidden"
           style={{
-            height: 100,
+            height: 120,
             background: show.gradient || `linear-gradient(135deg, ${accent}40, ${accent}10)`,
           }}
         >
+          {/* Poster image */}
+          {show.poster && (
+            <img
+              src={show.poster}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover"
+              style={{ opacity: 0.7 }}
+            />
+          )}
+          {/* Dark gradient overlay for readability */}
+          <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(14,12,24,0.9) 0%, transparent 60%)" }} />
           {/* Match badge */}
           <div
-            className="absolute right-2 top-2 rounded-full px-2 py-0.5 font-mono text-[9px] font-bold text-white"
+            className="absolute right-2 top-2 z-10 rounded-full px-2 py-0.5 font-mono text-[9px] font-bold text-white"
             style={{ background: `${accent}cc` }}
           >
             {show.match}% Match
           </div>
           {/* Category badge */}
           <div
-            className="rounded-full px-2 py-0.5 font-mono text-[8px] uppercase tracking-[0.12em]"
+            className="relative rounded-full px-2 py-0.5 font-mono text-[8px] uppercase tracking-[0.12em]"
             style={{ background: `${accent}30`, color: accent, border: `1px solid ${accent}50` }}
           >
             {show.category}

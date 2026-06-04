@@ -141,7 +141,8 @@ const CompassLabels = forwardRef<CompassLabelsHandle, CompassLabelsProps>(functi
         <div
           key={i}
           ref={(el) => { pillRefs.current[i] = el; }}
-          onClick={() => handleTap(i)}
+          onPointerDown={(e) => e.stopPropagation()}
+          onPointerUp={(e) => { e.stopPropagation(); handleTap(i); }}
           className="absolute flex flex-col items-center gap-0.5 rounded-lg px-2 py-1.5 cursor-pointer"
           style={{ ...pillStyle, width: "auto" }}
         >

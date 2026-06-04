@@ -39,7 +39,7 @@ interface MenuDrawerProps {
   /** Open the queue panel */
   onViewQueue?: () => void;
   /** Called with show sets and dynamic categories when backend data loads after QR scan */
-  onBackendShows?: (data: { zoomedOut: Show[]; zoomedIn: Show[] }, categories: Category[]) => void;
+  onBackendShows?: (data: { z0: Show[]; z1: Show[]; z2: Show[] }, categories: Category[]) => void;
 }
 
 export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilters, actors, languages, audioOn = false, onAudioToggle, onViewQueue, onBackendShows }: MenuDrawerProps) {

@@ -18,8 +18,8 @@
  * - dust lanes
  */
 
-const STAR_CANVAS_W = 1400;
-const STAR_CANVAS_H = 1800;
+const STAR_CANVAS_W = 1600;
+const STAR_CANVAS_H = 2200;
 
 interface StarSeed {
   x: number;

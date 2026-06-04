@@ -6,8 +6,8 @@
  * colors blend seamlessly when the tile repeats.
  */
 
-const NEBULA_CANVAS_W = 1200;
-const NEBULA_CANVAS_H = 1200;
+const NEBULA_CANVAS_W = 1400;
+const NEBULA_CANVAS_H = 1400;
 
 export interface CategoryColor {
   key: string;

@@ -246,12 +246,12 @@ export async function fetchGenreMovies(
  * Each top genre from backend IS a category — no mapping needed.
  * Uses actual x,y from backend as relative coordinates within each genre's region.
  *
- * Returns two sets:
- * - zoomedOut: 45 non-overlapping shows per region (5 per screen × 9 screens)
- * - zoomedIn: 100 shows per region (at 3× scale, previously overlapping shows fit)
+ * Returns three sets for 3 zoom levels:
+ * - z0: 30 shows per region (galaxy overview, zoom level 0)
+ * - z1: 60 shows per region (mid zoom, coordinates 2.5× apart)
+ * - z2: 90 shows per region (deep zoom, coordinates 5× apart)
  *
- * Non-overlapping: normalize all shows' x,y → compute world positions → greedily
- * select highest priority shows that don't overlap with already-placed ones.
+ * At render time, only 10 non-overlapping shows are displayed on screen (handled by ShowCards).
  */
 
 // 3 fixed sizes (px dimensions for collision detection)
@@ -279,7 +279,6 @@ interface PlacedShow {
  * Returns true if the intersection area exceeds 50% of B's area.
  */
 function overlaps(a: PlacedShow, bx: number, by: number, bw: number, bh: number): boolean {
-  // Compute intersection rectangle
   const overlapX = Math.max(0, Math.min(a.worldX + a.w / 2, bx + bw / 2) - Math.max(a.worldX - a.w / 2, bx - bw / 2));
   const overlapY = Math.max(0, Math.min(a.worldY + a.h / 2, by + bh / 2) - Math.max(a.worldY - a.h / 2, by - bh / 2));
   const intersectionArea = overlapX * overlapY;
@@ -287,19 +286,31 @@ function overlaps(a: PlacedShow, bx: number, by: number, bw: number, bh: number)
   return intersectionArea > bArea * 0.5;
 }
 
+export interface ZoomLevelShows {
+  z0: import("@/types").Show[];
+  z1: import("@/types").Show[];
+  z2: import("@/types").Show[];
+}
+
 export function backendMoviesToShows(
   topGenres: GenreWeight[],
   moviesByGenre: Record<string, MoviesResponse>,
   categories: import("@/types").Category[],
-): { zoomedOut: import("@/types").Show[]; zoomedIn: import("@/types").Show[] } {
-  const WORLD_W = 1400;
-  const WORLD_H = 1800;
-  const SUBREGION_RADIUS = 280;
-  const SHOWS_ZOOMED_OUT = 45; // max non-overlapping per region
-  const SHOWS_ZOOMED_IN = 100; // at 3× scale, more fit
+): ZoomLevelShows {
+  const WORLD_W = 1600;
+  const WORLD_H = 2200;
+  // Radius per genre — tighter packing, shows stay close to center
+  const SUBREGION_RADIUS = 200;
+  const SHOWS_Z0 = 30;
+  const SHOWS_Z1 = 60;
+  const SHOWS_Z2 = 90;
+  // Zoom scales used for collision detection (simulates how far apart shows appear)
+  const ZOOM_SCALE_1 = 2.5;
+  const ZOOM_SCALE_2 = 5;
 
-  const zoomedOutShows: import("@/types").Show[] = [];
-  const zoomedInShows: import("@/types").Show[] = [];
+  const z0Shows: import("@/types").Show[] = [];
+  const z1Shows: import("@/types").Show[] = [];
+  const z2Shows: import("@/types").Show[] = [];
 
   for (let gi = 0; gi < topGenres.length; gi++) {
     const g = topGenres[gi];
@@ -316,7 +327,7 @@ export function backendMoviesToShows(
     // Sort by priority descending
     const sorted = [...genreData.movies].sort((a, b) => b.priority - a.priority);
 
-    // Normalize x,y across ALL movies in this genre for consistent placement
+    // Normalize x,y
     const allXs = sorted.map((m) => m.x);
     const allYs = sorted.map((m) => m.y);
     const minX = Math.min(...allXs);
@@ -336,50 +347,57 @@ export function backendMoviesToShows(
       return { movie, relX, relY, worldX, worldY, size, idx: i };
     });
 
-    // --- Zoom-out selection: greedy non-overlapping, max SHOWS_ZOOMED_OUT ---
-    const placedOut: PlacedShow[] = [];
-    const selectedOut: typeof positioned = [];
-
+    // --- Z0 (zoom level 0): greedy non-overlapping at 1× scale, max 30 ---
+    const placedZ0: PlacedShow[] = [];
+    const selectedZ0: typeof positioned = [];
     for (const p of positioned) {
-      if (selectedOut.length >= SHOWS_ZOOMED_OUT) break;
+      if (selectedZ0.length >= SHOWS_Z0) break;
       const dims = ICON_SIZES[p.size];
-      const hasOverlap = placedOut.some((placed) => overlaps(placed, p.worldX, p.worldY, dims.w, dims.h));
+      const hasOverlap = placedZ0.some((placed) => overlaps(placed, p.worldX, p.worldY, dims.w, dims.h));
       if (!hasOverlap) {
-        placedOut.push({ worldX: p.worldX, worldY: p.worldY, w: dims.w, h: dims.h });
-        selectedOut.push(p);
+        placedZ0.push({ worldX: p.worldX, worldY: p.worldY, w: dims.w, h: dims.h });
+        selectedZ0.push(p);
       }
     }
 
-    // --- Zoom-in selection: at 3× scale distances are 3× bigger, so more fit ---
-    // Simulate 3× scale: divide collision sizes by 3 (distances effectively triple)
-    const placedIn: PlacedShow[] = [];
-    const selectedIn: typeof positioned = [];
-
+    // --- Z1 (zoom level 1): at 2.5× scale, collision sizes shrink by 2.5 ---
+    const placedZ1: PlacedShow[] = [];
+    const selectedZ1: typeof positioned = [];
     for (const p of positioned) {
-      if (selectedIn.length >= SHOWS_ZOOMED_IN) break;
+      if (selectedZ1.length >= SHOWS_Z1) break;
       const dims = ICON_SIZES[p.size];
-      const scaledW = dims.w / 3;
-      const scaledH = dims.h / 3;
-      const hasOverlap = placedIn.some((placed) => overlaps(placed, p.worldX, p.worldY, scaledW, scaledH));
+      const scaledW = dims.w / ZOOM_SCALE_1;
+      const scaledH = dims.h / ZOOM_SCALE_1;
+      const hasOverlap = placedZ1.some((placed) => overlaps(placed, p.worldX, p.worldY, scaledW, scaledH));
       if (!hasOverlap) {
-        placedIn.push({ worldX: p.worldX, worldY: p.worldY, w: scaledW, h: scaledH });
-        selectedIn.push(p);
+        placedZ1.push({ worldX: p.worldX, worldY: p.worldY, w: scaledW, h: scaledH });
+        selectedZ1.push(p);
       }
     }
 
-    // Build Show objects for zoom-out set
-    for (const p of selectedOut) {
-      zoomedOutShows.push(makeShow(p, catKey, g.genre));
+    // --- Z2 (zoom level 2): at 5× scale, collision sizes shrink by 5 ---
+    const placedZ2: PlacedShow[] = [];
+    const selectedZ2: typeof positioned = [];
+    for (const p of positioned) {
+      if (selectedZ2.length >= SHOWS_Z2) break;
+      const dims = ICON_SIZES[p.size];
+      const scaledW = dims.w / ZOOM_SCALE_2;
+      const scaledH = dims.h / ZOOM_SCALE_2;
+      const hasOverlap = placedZ2.some((placed) => overlaps(placed, p.worldX, p.worldY, scaledW, scaledH));
+      if (!hasOverlap) {
+        placedZ2.push({ worldX: p.worldX, worldY: p.worldY, w: scaledW, h: scaledH });
+        selectedZ2.push(p);
+      }
     }
 
-    // Build Show objects for zoom-in set (includes zoom-out shows + extras)
-    for (const p of selectedIn) {
-      zoomedInShows.push(makeShow(p, catKey, g.genre));
-    }
+    // Build Show objects
+    for (const p of selectedZ0) z0Shows.push(makeShow(p, catKey, g.genre));
+    for (const p of selectedZ1) z1Shows.push(makeShow(p, catKey, g.genre));
+    for (const p of selectedZ2) z2Shows.push(makeShow(p, catKey, g.genre));
   }
 
-  log(`Zoom-out: ${zoomedOutShows.length} shows, Zoom-in: ${zoomedInShows.length} shows across ${topGenres.length} genres`);
-  return { zoomedOut: zoomedOutShows, zoomedIn: zoomedInShows };
+  log(`Z0: ${z0Shows.length}, Z1: ${z1Shows.length}, Z2: ${z2Shows.length} shows across ${topGenres.length} genres`);
+  return { z0: z0Shows, z1: z1Shows, z2: z2Shows };
 }
 
 const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/original";

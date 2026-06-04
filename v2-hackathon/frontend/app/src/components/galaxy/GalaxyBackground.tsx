@@ -13,8 +13,8 @@ const NEBULA_CATEGORIES: CategoryColor[] = CATEGORIES.map((cat) => ({
   y: cat.position.y,
 }));
 
-const WORLD_W = 1400;
-const WORLD_H = 1800;
+const WORLD_W = 1600;
+const WORLD_H = 2200;
 const STAR_PARALLAX = 0.15;
 const NEBULA_PARALLAX = 0.12;
 

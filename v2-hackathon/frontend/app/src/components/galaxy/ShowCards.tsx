@@ -1,13 +1,14 @@
 /**
  * ShowCards — Container that positions all show cards in the galaxy.
  * Uses imperative DOM updates for 60fps panning.
+ * Viewport constraint: only shows max 10 non-overlapping shows on screen at any time.
  */
 
 "use client";
 
 import { useRef, useImperativeHandle, forwardRef, useState, useCallback, useEffect } from "react";
 import type { Show } from "@/types";
-import { WORLD_W, WORLD_H } from "@/config/galaxy";
+import { WORLD_W, WORLD_H, MAX_SHOWS_ON_SCREEN, ICON_DIMS } from "@/config/galaxy";
 import ShowCard from "./ShowCard";
 
 function wrapOffset(cam: number, pos: number, size: number): number {
@@ -24,21 +25,25 @@ export interface ShowCardsHandle {
 
 interface ShowCardsProps {
   onShowTap?: (show: Show, screenX: number, screenY: number) => void;
-  edgeFade?: boolean;
 }
 
-const ShowCards = forwardRef<ShowCardsHandle, ShowCardsProps>(function ShowCards({ onShowTap, edgeFade = false }, ref) {
+const ShowCards = forwardRef<ShowCardsHandle, ShowCardsProps>(function ShowCards({ onShowTap }, ref) {
   const [shows, setShowsState] = useState<Show[]>([]);
   const elMapRef = useRef<Map<string, HTMLDivElement>>(new Map());
   const lastCamRef = useRef({ x: WORLD_W / 2, y: WORLD_H / 2 });
   const lastZoomRef = useRef(1);
   const showsRef = useRef<Show[]>([]);
-  const edgeFadeRef = useRef(edgeFade);
-  edgeFadeRef.current = edgeFade;
+  // Track which shows are currently visible — they stay visible until off-screen
+  const visibleSetRef = useRef<Set<string>>(new Set());
 
   // Keep showsRef in sync
   useEffect(() => {
     showsRef.current = shows;
+  }, [shows]);
+
+  // When show set changes, reset visible tracking
+  useEffect(() => {
+    visibleSetRef.current.clear();
   }, [shows]);
 
   // After shows render, run an update with last known camera to position them
@@ -50,12 +55,6 @@ const ShowCards = forwardRef<ShowCardsHandle, ShowCardsProps>(function ShowCards
       doUpdate(cam.x, cam.y, lastZoomRef.current);
     });
   }, [shows]);
-
-  // Re-apply positions when edgeFade changes (drag state toggle)
-  useEffect(() => {
-    if (showsRef.current.length === 0) return;
-    doUpdate(lastCamRef.current.x, lastCamRef.current.y, lastZoomRef.current);
-  }, [edgeFade]);
 
   const handleTap = useCallback((show: Show) => {
     const el = elMapRef.current.get(show.id);
@@ -70,9 +69,21 @@ const ShowCards = forwardRef<ShowCardsHandle, ShowCardsProps>(function ShowCards
     const vh = window.innerHeight;
     const halfW = vw / 2;
     const halfH = vh / 2;
-    const fade = edgeFadeRef.current;
-    const edgeMargin = 44;
+    const margin = 60;
 
+    interface ScreenShow {
+      show: Show;
+      sx: number;
+      sy: number;
+      w: number;
+      h: number;
+      el: HTMLDivElement;
+    }
+
+    const inViewport: ScreenShow[] = [];
+    const visibleSet = visibleSetRef.current;
+
+    // Step 1: Compute screen positions, partition into in-viewport vs off-screen
     for (const show of showsRef.current) {
       const el = elMapRef.current.get(show.id);
       if (!el) continue;
@@ -82,23 +93,80 @@ const ShowCards = forwardRef<ShowCardsHandle, ShowCardsProps>(function ShowCards
       const sx = halfW + dx;
       const sy = halfH + dy;
 
-      el.style.display = "block";
-      el.style.transform = `translate(${sx}px, ${sy}px) translate(-50%, -50%) scale(${zoom > 1 ? Math.min(zoom * 0.7, 1.8) : 1})`;
+      const dims = ICON_DIMS[show.size] || ICON_DIMS.s;
+      const cardW = dims.w;
+      const cardH = dims.h;
 
-      // Edge fade: cards in the margin zone get reduced opacity when static
-      if (fade) {
-        const distLeft = sx;
-        const distRight = vw - sx;
-        const distTop = sy;
-        const distBottom = vh - sy;
-        const minDist = Math.min(distLeft, distRight, distTop, distBottom);
-        if (minDist < edgeMargin) {
-          el.style.opacity = `${Math.max(0.1, minDist / edgeMargin * 0.5)}`;
-        } else {
-          el.style.opacity = "1";
-        }
+      // Check if show is within viewport (with margin)
+      const inBounds =
+        sx + cardW / 2 > -margin &&
+        sx - cardW / 2 < vw + margin &&
+        sy + cardH / 2 > -margin &&
+        sy - cardH / 2 < vh + margin;
+
+      if (inBounds) {
+        inViewport.push({ show, sx, sy, w: cardW, h: cardH, el });
       } else {
-        el.style.opacity = "1";
+        // Off-screen: hide and remove from visible set
+        el.style.display = "none";
+        visibleSet.delete(show.id);
+      }
+    }
+
+    // Step 2: Separate shows already visible (they stay) from new entrants
+    const alreadyVisible: ScreenShow[] = [];
+    const newEntrants: ScreenShow[] = [];
+
+    for (const s of inViewport) {
+      if (visibleSet.has(s.show.id)) {
+        alreadyVisible.push(s);
+      } else {
+        newEntrants.push(s);
+      }
+    }
+
+    // Step 3: Position all already-visible shows (they never disappear while in viewport)
+    interface Placed { sx: number; sy: number; w: number; h: number }
+    const placed: Placed[] = [];
+
+    for (const s of alreadyVisible) {
+      s.el.style.display = "block";
+      s.el.style.transform = `translate(${s.sx}px, ${s.sy}px) translate(-50%, -50%)`;
+      s.el.style.opacity = "1";
+      placed.push({ sx: s.sx, sy: s.sy, w: s.w, h: s.h });
+    }
+
+    // Step 4: For new entrants, sort by priority desc, check overlap + max cap
+    newEntrants.sort((a, b) => b.show.match - a.show.match);
+
+    for (const s of newEntrants) {
+      // Don't exceed max shows on screen
+      if (placed.length >= MAX_SHOWS_ON_SCREEN) {
+        s.el.style.display = "none";
+        continue;
+      }
+
+      // Check >50% overlap with any currently placed show
+      let hasOverlap = false;
+      for (const p of placed) {
+        const overlapX = Math.max(0, Math.min(p.sx + p.w / 2, s.sx + s.w / 2) - Math.max(p.sx - p.w / 2, s.sx - s.w / 2));
+        const overlapY = Math.max(0, Math.min(p.sy + p.h / 2, s.sy + s.h / 2) - Math.max(p.sy - p.h / 2, s.sy - s.h / 2));
+        const intersectionArea = overlapX * overlapY;
+        const sArea = s.w * s.h;
+        if (intersectionArea > sArea * 0.5) {
+          hasOverlap = true;
+          break;
+        }
+      }
+
+      if (!hasOverlap) {
+        s.el.style.display = "block";
+        s.el.style.transform = `translate(${s.sx}px, ${s.sy}px) translate(-50%, -50%)`;
+        s.el.style.opacity = "1";
+        placed.push({ sx: s.sx, sy: s.sy, w: s.w, h: s.h });
+        visibleSet.add(s.show.id);
+      } else {
+        s.el.style.display = "none";
       }
     }
   }

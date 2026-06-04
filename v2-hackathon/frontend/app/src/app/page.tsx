@@ -42,7 +42,7 @@ export default function Home() {
   const [hasDragged, setHasDragged] = useState(false);
   const [selectedShow, setSelectedShow] = useState<{ show: Show; sx: number; sy: number } | null>(null);
   const [queueOpen, setQueueOpen] = useState(false);
-  const [zoomed, setZoomed] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(0); // 0, 1, 2
   const zoomRef = useRef(1);
   const zoomAnimRef = useRef(0);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -52,8 +52,9 @@ export default function Home() {
   const [isDragging, setIsDragging] = useState(false);
   const dragIdleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const galaxyContainerRef = useRef<HTMLDivElement>(null);
-  const zoomedOutShowsRef = useRef<Show[]>([]);
-  const zoomedInShowsRef = useRef<Show[]>([]);
+  const z0ShowsRef = useRef<Show[]>([]);
+  const z1ShowsRef = useRef<Show[]>([]);
+  const z2ShowsRef = useRef<Show[]>([]);
   const allShowsRef = useRef<Show[]>([]);
 
   // Connection flow states
@@ -142,14 +143,16 @@ export default function Home() {
     const cx = cameraRef.current.x;
     const cy = cameraRef.current.y;
     const startZoom = zoomRef.current;
-    const targetZoom = 3;
+    const newLevel = Math.min(2, zoomLevel + 1);
+    const targetZoom = newLevel === 0 ? 1 : newLevel === 1 ? 2.5 : 5;
     const duration = 600;
     const startT = performance.now();
 
-    setZoomed(true);
+    setZoomLevel(newLevel);
 
-    // Switch to zoomed-in show set (100 per region)
-    cardsRef.current?.setShows(zoomedInShowsRef.current);
+    // Switch to appropriate show set for this zoom level
+    const showSet = newLevel === 0 ? z0ShowsRef.current : newLevel === 1 ? z1ShowsRef.current : z2ShowsRef.current;
+    cardsRef.current?.setShows(showSet);
 
     const tick = (now: number) => {
       const t = Math.min(1, (now - startT) / duration);
@@ -159,23 +162,25 @@ export default function Home() {
       if (t < 1) zoomAnimRef.current = requestAnimationFrame(tick);
     };
     zoomAnimRef.current = requestAnimationFrame(tick);
-  }, [pushCamera]);
+  }, [pushCamera, zoomLevel]);
 
-  // Zoom out to galaxy view (1× scale)
+  // Zoom out (decrease zoom level)
   const zoomOut = useCallback(() => {
     cancelAnimationFrame(momentumRef.current);
     cancelAnimationFrame(flyAnimRef.current);
     cancelAnimationFrame(zoomAnimRef.current);
 
     const startZoom = zoomRef.current;
-    const targetZoom = 1;
+    const newLevel = Math.max(0, zoomLevel - 1);
+    const targetZoom = newLevel === 0 ? 1 : newLevel === 1 ? 2.5 : 5;
     const duration = 600;
     const startT = performance.now();
     const cx = cameraRef.current.x;
     const cy = cameraRef.current.y;
 
-    // Switch to zoomed-out show set (45 non-overlapping per region)
-    cardsRef.current?.setShows(zoomedOutShowsRef.current);
+    // Switch to appropriate show set for this zoom level
+    const showSet = newLevel === 0 ? z0ShowsRef.current : newLevel === 1 ? z1ShowsRef.current : z2ShowsRef.current;
+    cardsRef.current?.setShows(showSet);
 
     const tick = (now: number) => {
       const t = Math.min(1, (now - startT) / duration);
@@ -185,11 +190,11 @@ export default function Home() {
       if (t < 1) {
         zoomAnimRef.current = requestAnimationFrame(tick);
       } else {
-        setZoomed(false);
+        setZoomLevel(newLevel);
       }
     };
     zoomAnimRef.current = requestAnimationFrame(tick);
-  }, [pushCamera]);
+  }, [pushCamera, zoomLevel]);
 
   // Load data + trigger initial position for all layers
   useEffect(() => {
@@ -291,11 +296,11 @@ export default function Home() {
         onPointerCancel={onPointerUp}
       >
         <GalaxyBackground ref={galaxyRef} />
-        <ShowCards ref={cardsRef} onShowTap={(show, sx, sy) => setSelectedShow({ show, sx, sy })} edgeFade={!isDragging} />
+        <ShowCards ref={cardsRef} onShowTap={(show, sx, sy) => setSelectedShow({ show, sx, sy })} />
         <CategoryLabels ref={labelsRef} />
         <UserRing />
-        {!zoomed && <CategoryPill ref={pillRef} visible={isDragging} />}
-        {!zoomed && <CompassLabels ref={compassRef} onNavigate={flyTo} visible={!isDragging} />}
+        {zoomLevel === 0 && <CategoryPill ref={pillRef} visible={isDragging} />}
+        {zoomLevel === 0 && <CompassLabels ref={compassRef} onNavigate={flyTo} visible={!isDragging} />}
 
         {/* Alien companion */}
         <AlienCompanion
@@ -304,7 +309,7 @@ export default function Home() {
         />
 
         {/* Burger menu button */}
-        {!zoomed && (
+        {zoomLevel === 0 && (
           <button
             className="pointer-events-auto absolute flex flex-col items-center justify-center gap-[4px] rounded-full active:scale-90"
             style={{
@@ -339,18 +344,18 @@ export default function Home() {
             style={{
               width: 52,
               height: 52,
-              background: zoomed
+              background: zoomLevel >= 2
                 ? "rgba(30, 25, 50, 0.5)"
                 : "linear-gradient(135deg, rgba(100, 80, 220, 0.9), rgba(140, 100, 255, 0.8))",
-              border: zoomed
+              border: zoomLevel >= 2
                 ? "1px solid rgba(255,255,255,0.08)"
                 : "2px solid rgba(180, 160, 255, 0.6)",
               backdropFilter: "blur(12px)",
-              opacity: zoomed ? 0.35 : 1,
-              boxShadow: zoomed ? "none" : "0 0 20px rgba(140, 100, 255, 0.4), 0 4px 12px rgba(0,0,0,0.4)",
+              opacity: zoomLevel >= 2 ? 0.35 : 1,
+              boxShadow: zoomLevel >= 2 ? "none" : "0 0 20px rgba(140, 100, 255, 0.4), 0 4px 12px rgba(0,0,0,0.4)",
             }}
-            disabled={zoomed}
-            onClick={() => { if (!zoomed) zoomIn(); }}
+            disabled={zoomLevel >= 2}
+            onClick={() => { if (zoomLevel < 2) zoomIn(); }}
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
               <circle cx="11" cy="11" r="7" />
@@ -364,18 +369,18 @@ export default function Home() {
             style={{
               width: 52,
               height: 52,
-              background: !zoomed
+              background: zoomLevel <= 0
                 ? "rgba(30, 25, 50, 0.5)"
                 : "linear-gradient(135deg, rgba(100, 80, 220, 0.9), rgba(140, 100, 255, 0.8))",
-              border: !zoomed
+              border: zoomLevel <= 0
                 ? "1px solid rgba(255,255,255,0.08)"
                 : "2px solid rgba(180, 160, 255, 0.6)",
               backdropFilter: "blur(12px)",
-              opacity: !zoomed ? 0.35 : 1,
-              boxShadow: !zoomed ? "none" : "0 0 20px rgba(140, 100, 255, 0.4), 0 4px 12px rgba(0,0,0,0.4)",
+              opacity: zoomLevel <= 0 ? 0.35 : 1,
+              boxShadow: zoomLevel <= 0 ? "none" : "0 0 20px rgba(140, 100, 255, 0.4), 0 4px 12px rgba(0,0,0,0.4)",
             }}
-            disabled={!zoomed}
-            onClick={() => { if (zoomed) zoomOut(); }}
+            disabled={zoomLevel <= 0}
+            onClick={() => { if (zoomLevel > 0) zoomOut(); }}
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
               <circle cx="11" cy="11" r="7" />
@@ -414,10 +419,11 @@ export default function Home() {
           onViewQueue={() => { setMenuOpen(false); setQueueOpen(true); }}
           onBackendShows={(data, categories) => {
             categoriesRef.current = categories;
-            zoomedOutShowsRef.current = data.zoomedOut;
-            zoomedInShowsRef.current = data.zoomedIn;
-            allShowsRef.current = data.zoomedOut;
-            cardsRef.current?.setShows(data.zoomedOut);
+            z0ShowsRef.current = data.z0;
+            z1ShowsRef.current = data.z1;
+            z2ShowsRef.current = data.z2;
+            allShowsRef.current = data.z0;
+            cardsRef.current?.setShows(data.z0);
           }}
         />
       )}
@@ -468,10 +474,11 @@ export default function Home() {
               // Helper: rebuild shows from whatever we have so far
               const rebuildShows = () => {
                 const data = backendMoviesToShows(topGenres, moviesByGenre, categories);
-                zoomedOutShowsRef.current = data.zoomedOut;
-                zoomedInShowsRef.current = data.zoomedIn;
-                allShowsRef.current = data.zoomedOut;
-                cardsRef.current?.setShows(data.zoomedOut);
+                z0ShowsRef.current = data.z0;
+                z1ShowsRef.current = data.z1;
+                z2ShowsRef.current = data.z2;
+                allShowsRef.current = data.z0;
+                cardsRef.current?.setShows(data.z0);
               };
 
               // Start 10s loading timer — loading screen stays for exactly 10s

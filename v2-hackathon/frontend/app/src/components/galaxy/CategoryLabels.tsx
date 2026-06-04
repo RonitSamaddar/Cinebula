@@ -2,9 +2,7 @@
 
 import { useRef, useImperativeHandle, forwardRef } from "react";
 import { CATEGORIES } from "@/data/categories";
-
-const WORLD_W = 1400;
-const WORLD_H = 1800;
+import { WORLD_W, WORLD_H } from "@/config/galaxy";
 
 const CATEGORY_POSITIONS = CATEGORIES.map((cat) => ({
   key: cat.key,

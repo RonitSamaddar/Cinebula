@@ -3,28 +3,38 @@
  */
 
 // World dimensions (px)
-export const WORLD_W = 1400;
-export const WORLD_H = 1800;
+export const WORLD_W = 1600;
+export const WORLD_H = 2200;
 
 // Category layout
 export const CATEGORY_COUNT = 9;
-export const CATEGORY_SUBREGION_RADIUS = 280; // px radius around each category center
+export const CATEGORY_SUBREGION_RADIUS = 200; // px radius per genre region
 
-// Region = 9x screen size. Max 5 shows per screen bounds → 45 per region zoomed out
-export const SHOWS_PER_SCREEN = 5;
-export const REGION_SCREEN_MULTIPLE = 9;
-export const SHOWS_ZOOMED_OUT = SHOWS_PER_SCREEN * REGION_SCREEN_MULTIPLE; // 45
-export const SHOWS_ZOOMED_IN = 100; // shows visible when zoomed in
+// Max shows visible on screen at any time (hard cap)
+export const MAX_SHOWS_ON_SCREEN = 10;
 
-// Zoom states
-export const ZOOM_OUT_SCALE = 1;
-export const ZOOM_IN_SCALE = 3;
+// Shows per region at each zoom level
+export const SHOWS_PER_REGION_Z0 = 30;
+export const SHOWS_PER_REGION_Z1 = 60;
+export const SHOWS_PER_REGION_Z2 = 90;
 
-// Show card sizes (px) — 3 fixed sizes
+// Zoom states — 3 discrete levels
+export const ZOOM_LEVEL_0 = 1;   // galaxy overview
+export const ZOOM_LEVEL_1 = 2.5; // mid zoom
+export const ZOOM_LEVEL_2 = 5;   // deep zoom
+
+// Show card sizes (px) — 3 fixed sizes, same at all zoom levels
 export const SHOW_SIZE_PX: Record<string, number> = {
   l: 90,
   m: 70,
   s: 50,
+};
+
+// Icon collision dimensions (w × h at aspect ratio 1:1.4)
+export const ICON_DIMS: Record<string, { w: number; h: number }> = {
+  l: { w: 90, h: 126 },
+  m: { w: 70, h: 98 },
+  s: { w: 50, h: 70 },
 };
 
 // Camera / physics
@@ -36,10 +46,10 @@ export const STAR_PARALLAX = 0.15;
 export const NEBULA_PARALLAX = 0.12;
 
 // Canvas tile sizes
-export const STAR_CANVAS_W = 1400;
-export const STAR_CANVAS_H = 1800;
-export const NEBULA_CANVAS_W = 1200;
-export const NEBULA_CANVAS_H = 1200;
+export const STAR_CANVAS_W = 1600;
+export const STAR_CANVAS_H = 2200;
+export const NEBULA_CANVAS_W = 1400;
+export const NEBULA_CANVAS_H = 1400;
 
 // Glow
 export const GLOW_DISTANCE_FACTOR = 0.00001;
