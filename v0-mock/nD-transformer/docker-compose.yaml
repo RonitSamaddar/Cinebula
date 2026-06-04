@@ -51,7 +51,10 @@ services:
       - cassandra
 
   nd-transformer:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    pull_policy: build
     container_name: nd-transformer
     ports:
       - "8080:8080"
