@@ -60,14 +60,14 @@ func loadIMDBMap(path string) (map[string]string, error) {
 
 // fetchIMDBPage fetches the IMDB page HTML using curl to bypass WAF
 func fetchIMDBPage(imdbID string) (string, error) {
-	time.Sleep(1 * time.Second)
+	time.Sleep(200 * time.Millisecond)
 
 	cmd := exec.Command("curl",
 		fmt.Sprintf("https://www.imdb.com/title/%s/", imdbID),
 		"-H", "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
 		"-H", "accept-language: en-US,en;q=0.9",
 		"-H", "cache-control: max-age=0",
-		"-b", "session-id=130-3844437-4031345; session-id-time=2082787201l; ubid-main=133-4880155-8879254; ci=eyJhZ2VTaWduYWwiOiJBRFVMVCIsImlzR2RwciI6ZmFsc2V9; ad-oo=0; session-token=or0/LRzdQ2AHzyaLKKJqM8U/jsG2OABJuWVD/5PPdxUWynMFJSuNIB6tK+x6rsbCOO0LEKmzaPwLavdSxJ2Ua8H4SoxKo6+Kc2TiB+ogkgWFMlHX3Bu+O1VUy/ZsSVt0NP14Xxd/zB9CeB3+NEUv4afNLo3UxBHcfy7oEARADPzS31VbhxZTRJ8sYMybSpD3Q1Px8cE65awZcmMvKHiO3m1mRYDldbbf; csm-hit=tb:E2686FZ2JGHT37RM6TK5+s-8V5MYKR2ZT9HN9VWBKEH|1780569526314&t:1780569526314&adb:adblk_no; aws-waf-token=3e012f03-fb89-43a7-b43c-79ed67fb5462:EQoAg+BKDUsJAAAA:3iN4AIdSymHqyLuUZ4fyYhtefZlxOVqWAkZ1AztB8gou1dWL+0W3CjOa6c0Y9acyBFIBIhw//+UqicIwqKZNh5JliIJYzHo3GNTHS3u5uYCc0C+uHEVZ03Xj7fvpJ2RGJ9GvykY8DLdaK+utT3yTz9zzudB56otph8ws4Zv/77UizLjFCGuTbJvllvV6sSI=",
+		"-b", "session-id=130-3844437-4031345; session-id-time=2082787201l; ubid-main=133-4880155-8879254; ci=eyJhZ2VTaWduYWwiOiJBRFVMVCIsImlzR2RwciI6ZmFsc2V9; ad-oo=0; session-token=VP16azEhE1oE61TV5CAHZ1RlzSk8iyIxmGhkrn77g4nAcDeCVWIjskg4ZFANoQHhxf/QiShwepsEB/oUMLhadsM6vNWSDtdy8RGOvfibLU7eWGgUvqKIRTiHCfaxVlcaXaYN3RjbV3urzUn3W1TxKteoA3xOLZJhCOwXf3B8vducIlndV8ujByPD1/zdC/RUnjQGKRqMcj1u4a21GN5ucXOX5ojhgUwd; csm-hit=tb:E2686FZ2JGHT37RM6TK5+s-Z89V6HAGAPKJ5WKJX24E|1780569852126&t:1780569852127&adb:adblk_no; aws-waf-token=3e012f03-fb89-43a7-b43c-79ed67fb5462:EQoAaMFJxBUNAAAA:VWgyoujXdobzIEIVjNDztdgOLtpBPDdIioYV/iVnRndKvbtDuB2MX3/LAJ7Vq6XeiiDT2rdGfvoDZdVJMDpk/8hDUVGtjLgPyEIGA4X/ADq90phc/i6tkb1x1a7AAkhuvJy0u+BCmON2mzUBM4jiLH3KsBpWUZ9OO8RQ8T3aa7VTbiXqHaNk+Bb8zzDms+4=",
 		"-H", "priority: u=0, i",
 		"-H", `sec-ch-ua: "Chromium";v="148", "Google Chrome";v="148", "Not/A)Brand";v="99"`,
 		"-H", "sec-ch-ua-mobile: ?0",
