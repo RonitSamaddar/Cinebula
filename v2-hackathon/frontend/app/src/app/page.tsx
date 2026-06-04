@@ -45,6 +45,10 @@ export default function Home() {
   const [zoomLevel, setZoomLevel] = useState(0); // 0, 1, 2
   const zoomRef = useRef(1);
   const zoomAnimRef = useRef(0);
+  const zoomLevelRef = useRef(0);
+  const pinchActiveRef = useRef(false);
+  const pinchStartDistRef = useRef(0);
+  const pinchStartZoomRef = useRef(1);
   const [menuOpen, setMenuOpen] = useState(false);
   const [recOpen, setRecOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useState(false);
@@ -204,67 +208,40 @@ export default function Home() {
     return best;
   }, []);
 
-  // Zoom in at current camera position (to 3× scale)
-  const zoomIn = useCallback(() => {
-    cancelAnimationFrame(momentumRef.current);
-    cancelAnimationFrame(flyAnimRef.current);
-    cancelAnimationFrame(zoomAnimRef.current);
+  // Continuous zoom — adjusts camera so the focal screen point stays fixed
+  const applyZoom = useCallback((newZoom: number, focalScreenX?: number, focalScreenY?: number) => {
+    const oldZoom = zoomRef.current;
+    const clamped = Math.max(1, Math.min(5, newZoom));
+    if (Math.abs(clamped - oldZoom) < 0.001) return;
 
-    const cx = cameraRef.current.x;
-    const cy = cameraRef.current.y;
-    const startZoom = zoomRef.current;
-    const newLevel = Math.min(2, zoomLevel + 1);
-    const targetZoom = newLevel === 0 ? 1 : newLevel === 1 ? 2.5 : 5;
-    const duration = 600;
-    const startT = performance.now();
+    // Adjust camera so the world point under the focal stays in place
+    if (focalScreenX !== undefined && focalScreenY !== undefined) {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const fx = focalScreenX - vw / 2;
+      const fy = focalScreenY - vh / 2;
+      cameraRef.current.x += fx * (1 / oldZoom - 1 / clamped);
+      cameraRef.current.y += fy * (1 / oldZoom - 1 / clamped);
+    }
 
-    setZoomLevel(newLevel);
+    zoomRef.current = clamped;
 
-    // Switch to appropriate show set for this zoom level
-    const showSet = newLevel === 0 ? z0ShowsRef.current : newLevel === 1 ? z1ShowsRef.current : z2ShowsRef.current;
-    cardsRef.current?.setShows(showSet);
+    // Determine show-set level from continuous zoom value
+    let newLevel: number;
+    if (clamped < 1.75) newLevel = 0;
+    else if (clamped < 3.75) newLevel = 1;
+    else newLevel = 2;
 
-    const tick = (now: number) => {
-      const t = Math.min(1, (now - startT) / duration);
-      const ease = 1 - Math.pow(1 - t, 3);
-      zoomRef.current = startZoom + (targetZoom - startZoom) * ease;
-      pushCamera(cx, cy);
-      if (t < 1) zoomAnimRef.current = requestAnimationFrame(tick);
-    };
-    zoomAnimRef.current = requestAnimationFrame(tick);
-  }, [pushCamera, zoomLevel]);
+    // Switch show set when crossing a threshold
+    if (newLevel !== zoomLevelRef.current) {
+      zoomLevelRef.current = newLevel;
+      const showSet = newLevel === 0 ? z0ShowsRef.current : newLevel === 1 ? z1ShowsRef.current : z2ShowsRef.current;
+      if (showSet.length > 0) cardsRef.current?.setShows(showSet);
+      setZoomLevel(newLevel);
+    }
 
-  // Zoom out (decrease zoom level)
-  const zoomOut = useCallback(() => {
-    cancelAnimationFrame(momentumRef.current);
-    cancelAnimationFrame(flyAnimRef.current);
-    cancelAnimationFrame(zoomAnimRef.current);
-
-    const startZoom = zoomRef.current;
-    const newLevel = Math.max(0, zoomLevel - 1);
-    const targetZoom = newLevel === 0 ? 1 : newLevel === 1 ? 2.5 : 5;
-    const duration = 600;
-    const startT = performance.now();
-    const cx = cameraRef.current.x;
-    const cy = cameraRef.current.y;
-
-    // Switch to appropriate show set for this zoom level
-    const showSet = newLevel === 0 ? z0ShowsRef.current : newLevel === 1 ? z1ShowsRef.current : z2ShowsRef.current;
-    cardsRef.current?.setShows(showSet);
-
-    const tick = (now: number) => {
-      const t = Math.min(1, (now - startT) / duration);
-      const ease = 1 - Math.pow(1 - t, 3);
-      zoomRef.current = startZoom + (targetZoom - startZoom) * ease;
-      pushCamera(cx, cy);
-      if (t < 1) {
-        zoomAnimRef.current = requestAnimationFrame(tick);
-      } else {
-        setZoomLevel(newLevel);
-      }
-    };
-    zoomAnimRef.current = requestAnimationFrame(tick);
-  }, [pushCamera, zoomLevel]);
+    pushCamera(cameraRef.current.x, cameraRef.current.y);
+  }, [pushCamera]);
 
   // Load data + trigger initial position for all layers
   useEffect(() => {
@@ -281,7 +258,7 @@ export default function Home() {
   const isDraggingRef = useRef(false);
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
-    if (selectedShow || queueOpen) return;
+    if (selectedShow || queueOpen || pinchActiveRef.current) return;
     cancelAnimationFrame(momentumRef.current);
     cancelAnimationFrame(flyAnimRef.current);
     cancelAnimationFrame(dragRafRef.current);
@@ -298,7 +275,7 @@ export default function Home() {
 
   const onPointerMove = useCallback((e: React.PointerEvent) => {
     const d = dragRef.current;
-    if (!d.active) return;
+    if (!d.active || pinchActiveRef.current) return;
     const rawDx = e.clientX - d.lastX;
     const rawDy = e.clientY - d.lastY;
     // Scale drag by inverse zoom so card movement matches finger movement
@@ -374,6 +351,77 @@ export default function Home() {
     cancelAnimationFrame(dragRafRef.current);
   }, []);
 
+  // ── Pinch-to-zoom (touch) ──────────────────────────────────────────
+  useEffect(() => {
+    const el = galaxyContainerRef.current;
+    if (!el) return;
+
+    const getTouchDist = (t: TouchList) => {
+      const dx = t[0].clientX - t[1].clientX;
+      const dy = t[0].clientY - t[1].clientY;
+      return Math.sqrt(dx * dx + dy * dy);
+    };
+
+    const onTouchStart = (e: TouchEvent) => {
+      if (e.touches.length >= 2) {
+        // Cancel any active drag — pinch takes over
+        dragRef.current.active = false;
+        cancelAnimationFrame(momentumRef.current);
+        cancelAnimationFrame(dragRafRef.current);
+        pinchActiveRef.current = true;
+        pinchStartDistRef.current = getTouchDist(e.touches);
+        pinchStartZoomRef.current = zoomRef.current;
+        e.preventDefault();
+      }
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length >= 2 && pinchActiveRef.current) {
+        const dist = getTouchDist(e.touches);
+        const ratio = dist / pinchStartDistRef.current;
+        const newZoom = pinchStartZoomRef.current * ratio;
+        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        applyZoom(newZoom, midX, midY);
+        e.preventDefault();
+      }
+    };
+
+    const onTouchEnd = (e: TouchEvent) => {
+      if (e.touches.length < 2) {
+        pinchActiveRef.current = false;
+      }
+    };
+
+    el.addEventListener("touchstart", onTouchStart, { passive: false });
+    el.addEventListener("touchmove", onTouchMove, { passive: false });
+    el.addEventListener("touchend", onTouchEnd);
+    el.addEventListener("touchcancel", onTouchEnd);
+
+    return () => {
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
+      el.removeEventListener("touchend", onTouchEnd);
+      el.removeEventListener("touchcancel", onTouchEnd);
+    };
+  }, [applyZoom]);
+
+  // ── Wheel-to-zoom (desktop) ────────────────────────────────────────
+  useEffect(() => {
+    const el = galaxyContainerRef.current;
+    if (!el) return;
+
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      // Multiplicative factor so zoom speed feels natural
+      const factor = e.deltaY > 0 ? 0.94 : 1.06;
+      applyZoom(zoomRef.current * factor, e.clientX, e.clientY);
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [applyZoom]);
+
   // Search: filter shows + spiral layout
   const handleSearch = useCallback((filters: SearchFilters) => {
     setMenuOpen(false);
@@ -444,66 +492,6 @@ export default function Home() {
             <span className="block h-[1.5px] w-[14px] rounded-full bg-white/70" />
           </button>
         )}
-
-        {/* Zoom +/- buttons */}
-        <div
-          className="pointer-events-auto absolute flex flex-col gap-2"
-          style={{
-            bottom: "max(calc(env(safe-area-inset-bottom, 12px) + 16px), 28px)",
-            left: 16,
-            zIndex: 20,
-          }}
-        >
-          <button
-            className="flex items-center justify-center rounded-full active:scale-90 transition-all duration-200"
-            style={{
-              width: 52,
-              height: 52,
-              background: zoomLevel >= 2
-                ? "rgba(30, 25, 50, 0.5)"
-                : "linear-gradient(135deg, rgba(100, 80, 220, 0.9), rgba(140, 100, 255, 0.8))",
-              border: zoomLevel >= 2
-                ? "1px solid rgba(255,255,255,0.08)"
-                : "2px solid rgba(180, 160, 255, 0.6)",
-              backdropFilter: "blur(12px)",
-              opacity: zoomLevel >= 2 ? 0.35 : 1,
-              boxShadow: zoomLevel >= 2 ? "none" : "0 0 20px rgba(140, 100, 255, 0.4), 0 4px 12px rgba(0,0,0,0.4)",
-            }}
-            disabled={zoomLevel >= 2}
-            onClick={() => { if (zoomLevel < 2) zoomIn(); }}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
-              <circle cx="11" cy="11" r="7" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-              <line x1="11" y1="8" x2="11" y2="14" />
-              <line x1="8" y1="11" x2="14" y2="11" />
-            </svg>
-          </button>
-          <button
-            className="flex items-center justify-center rounded-full active:scale-90 transition-all duration-200"
-            style={{
-              width: 52,
-              height: 52,
-              background: zoomLevel <= 0
-                ? "rgba(30, 25, 50, 0.5)"
-                : "linear-gradient(135deg, rgba(100, 80, 220, 0.9), rgba(140, 100, 255, 0.8))",
-              border: zoomLevel <= 0
-                ? "1px solid rgba(255,255,255,0.08)"
-                : "2px solid rgba(180, 160, 255, 0.6)",
-              backdropFilter: "blur(12px)",
-              opacity: zoomLevel <= 0 ? 0.35 : 1,
-              boxShadow: zoomLevel <= 0 ? "none" : "0 0 20px rgba(140, 100, 255, 0.4), 0 4px 12px rgba(0,0,0,0.4)",
-            }}
-            disabled={zoomLevel <= 0}
-            onClick={() => { if (zoomLevel > 0) zoomOut(); }}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
-              <circle cx="11" cy="11" r="7" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-              <line x1="8" y1="11" x2="14" y2="11" />
-            </svg>
-          </button>
-        </div>
 
         {/* Drag hint */}
         {!hasDragged && (

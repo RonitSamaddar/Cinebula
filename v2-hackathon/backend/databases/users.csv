@@ -10,3 +10,5 @@ user_id,name,age,gender,top_genres,created_at,device_id
 104,IntegrationTestUser-Idempotent,0,,[],2026-06-04T18:02:03Z,
 105,guest-105,0,,[],2026-06-04T18:35:12Z,LG-TV-001
 106,guest-106,0,,[],2026-06-04T19:21:00Z,direct-access
+105,guest-105,0,,[],2026-06-04T19:37:59Z,http://rewards.mrmakhana.com
+1,guest-1,0,,[],2026-06-04T21:01:23Z,direct-access
