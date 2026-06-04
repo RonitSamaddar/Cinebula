@@ -6,4 +6,4 @@ const TKACRBaseURL = "http://tkacr-dev5.alphonso.tv:8080"
 
 // TMDBImagePrefix is prepended to image_link paths returned by the upstream API
 // to form fully qualified poster/backdrop URLs.
-const TMDBImagePrefix = "https://image.tmdb.org/t/p/original/"
+const TMDBImagePrefix = "https://image.tmdb.org/t/p/w92/"

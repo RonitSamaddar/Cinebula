@@ -459,69 +459,73 @@ export default function Home() {
 
             // Progressive loading runs underneath the opaque loading screen
             (async () => {
-              const session = await loginAndFetchGenres(deviceId);
-              if (!session || session.topGenres.length === 0) {
+              try {
+                const session = await loginAndFetchGenres(deviceId);
+                if (!session || !session.topGenres || session.topGenres.length === 0) {
+                  return;
+                }
+
+                const { topGenres, token } = session;
+                const categories = buildCategories(topGenres.map(g => g.genre));
+                categoriesRef.current = categories;
+
+                const moviesByGenre: Record<string, import("@/services/backend").MoviesResponse> = {};
+
+                // Helper: rebuild shows from whatever we have so far
+                const rebuildShows = () => {
+                  const data = backendMoviesToShows(topGenres, moviesByGenre, categories);
+                  z0ShowsRef.current = data.z0;
+                  z1ShowsRef.current = data.z1;
+                  z2ShowsRef.current = data.z2;
+                  allShowsRef.current = data.z0;
+                  cardsRef.current?.setShows(data.z0);
+                };
+
+                // Start 10s loading timer — loading screen stays for exactly 10s
+                const loadingStart = Date.now();
+                const LOADING_DURATION = 15000;
+
+                // Phase 1: Load center genre (position index 3)
+                const centerIdx = Math.min(LOAD_ORDER_CENTER, topGenres.length - 1);
+                const centerGenre = topGenres[centerIdx];
+                if (centerGenre) {
+                  const result = await fetchGenreMovies(centerGenre.genre, token);
+                  if (result?.movies?.length) moviesByGenre[centerGenre.genre] = result;
+                }
+                rebuildShows();
+
+                // Phase 2: Load 4 side genres one by one
+                for (const idx of LOAD_ORDER_SIDES) {
+                  if (idx >= topGenres.length) continue;
+                  const g = topGenres[idx];
+                  const result = await fetchGenreMovies(g.genre, token);
+                  if (result?.movies?.length) {
+                    moviesByGenre[g.genre] = result;
+                    rebuildShows();
+                  }
+                }
+
+                // Phase 3: Load remaining genres
+                for (const idx of LOAD_ORDER_REMAINING) {
+                  if (idx >= topGenres.length) continue;
+                  const g = topGenres[idx];
+                  const result = await fetchGenreMovies(g.genre, token);
+                  if (result?.movies?.length) {
+                    moviesByGenre[g.genre] = result;
+                    rebuildShows();
+                  }
+                }
+
+                // Wait until 10s have passed since loading started
+                const elapsed = Date.now() - loadingStart;
+                if (elapsed < LOADING_DURATION) {
+                  await new Promise((r) => setTimeout(r, LOADING_DURATION - elapsed));
+                }
+              } catch (err) {
+                console.error("[backend] QR scan loading failed:", err);
+              } finally {
                 setLoading(false);
-                return;
               }
-
-              const { topGenres, token } = session;
-              const categories = buildCategories(topGenres.map(g => g.genre));
-              categoriesRef.current = categories;
-
-              const moviesByGenre: Record<string, import("@/services/backend").MoviesResponse> = {};
-
-              // Helper: rebuild shows from whatever we have so far
-              const rebuildShows = () => {
-                const data = backendMoviesToShows(topGenres, moviesByGenre, categories);
-                z0ShowsRef.current = data.z0;
-                z1ShowsRef.current = data.z1;
-                z2ShowsRef.current = data.z2;
-                allShowsRef.current = data.z0;
-                cardsRef.current?.setShows(data.z0);
-              };
-
-              // Start 10s loading timer — loading screen stays for exactly 10s
-              const loadingStart = Date.now();
-              const LOADING_DURATION = 15000;
-
-              // Phase 1: Load center genre (position index 3)
-              const centerIdx = Math.min(LOAD_ORDER_CENTER, topGenres.length - 1);
-              const centerGenre = topGenres[centerIdx];
-              if (centerGenre) {
-                const result = await fetchGenreMovies(centerGenre.genre, token);
-                if (result?.movies?.length) moviesByGenre[centerGenre.genre] = result;
-              }
-              rebuildShows();
-
-              // Phase 2: Load 4 side genres one by one
-              for (const idx of LOAD_ORDER_SIDES) {
-                if (idx >= topGenres.length) continue;
-                const g = topGenres[idx];
-                const result = await fetchGenreMovies(g.genre, token);
-                if (result?.movies?.length) {
-                  moviesByGenre[g.genre] = result;
-                  rebuildShows();
-                }
-              }
-
-              // Phase 3: Load remaining genres
-              for (const idx of LOAD_ORDER_REMAINING) {
-                if (idx >= topGenres.length) continue;
-                const g = topGenres[idx];
-                const result = await fetchGenreMovies(g.genre, token);
-                if (result?.movies?.length) {
-                  moviesByGenre[g.genre] = result;
-                  rebuildShows();
-                }
-              }
-
-              // Wait until 10s have passed since loading started
-              const elapsed = Date.now() - loadingStart;
-              if (elapsed < LOADING_DURATION) {
-                await new Promise((r) => setTimeout(r, LOADING_DURATION - elapsed));
-              }
-              setLoading(false);
             })();
           }}
           onClose={() => setScannerOpen(false)}
