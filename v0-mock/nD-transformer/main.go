@@ -605,10 +605,10 @@ func handleMovies(w http.ResponseWriter, r *http.Request) {
 	languageParam := r.URL.Query().Get("language")
 	castParam := r.URL.Query().Get("cast")
 
-	if genreParam == "" && keywordParam == "" && languageParam == "" && castParam == "" {
-		jsonError(w, "at least one filter required: genre, keyword, language, cast", http.StatusBadRequest)
-		return
-	}
+	// if genreParam == "" && keywordParam == "" && languageParam == "" && castParam == "" {
+	// 	jsonError(w, "at least one filter required: genre, keyword, language, cast", http.StatusBadRequest)
+	// 	return
+	// }
 
 	// Build CQL WHERE clauses
 	var conditions []string
