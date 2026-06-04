@@ -12,10 +12,15 @@ import QueuePanel from "@/components/chrome/QueuePanel";
 import MenuDrawer from "@/components/chrome/MenuDrawer";
 import AlienCompanion from "@/components/chrome/AlienCompanion";
 import RecDialog from "@/components/chrome/RecDialog";
+import ConnectDialog from "@/components/chrome/ConnectDialog";
+import LoadingScreen from "@/components/chrome/LoadingScreen";
+import QRScanner from "@/components/chrome/QRScanner";
+import { loginAndFetchGenres, fetchGenreMovies, backendMoviesToShows, LOAD_ORDER_CENTER, LOAD_ORDER_SIDES, LOAD_ORDER_REMAINING } from "@/services/backend";
+import { buildCategories } from "@/data/categories";
 import { initAudio, toggleAudio, isAudioPlaying } from "@/lib/audio";
 import type { Show, Category } from "@/types";
 import { CATEGORIES } from "@/data/categories";
-import { WORLD_W, WORLD_H, ZOOM_IN_SCALE, ZOOM_OUT_SCALE } from "@/config/galaxy";
+import { WORLD_W, WORLD_H } from "@/config/galaxy";
 import { searchShows, spiralLayout, hasActiveFilters as checkFilters, type SearchFilters } from "@/lib/search";
 
 const wrap = (v: number, max: number) => ((v % max) + max) % max;
@@ -47,9 +52,14 @@ export default function Home() {
   const [isDragging, setIsDragging] = useState(false);
   const dragIdleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const galaxyContainerRef = useRef<HTMLDivElement>(null);
-  const allShowsRef = useRef<Show[]>([]); // current visible set
-  const zoomOutShowsRef = useRef<Show[]>([]); // 5 per region
-  const zoomInShowsRef = useRef<Show[]>([]); // 100 per region
+  const zoomedOutShowsRef = useRef<Show[]>([]);
+  const zoomedInShowsRef = useRef<Show[]>([]);
+  const allShowsRef = useRef<Show[]>([]);
+
+  // Connection flow states
+  const [connected, setConnected] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [scannerOpen, setScannerOpen] = useState(false);
 
   // Init audio context on first render
   useEffect(() => {
@@ -123,7 +133,7 @@ export default function Home() {
     return best;
   }, []);
 
-  // Zoom in at current camera position
+  // Zoom in at current camera position (to 3× scale)
   const zoomIn = useCallback(() => {
     cancelAnimationFrame(momentumRef.current);
     cancelAnimationFrame(flyAnimRef.current);
@@ -132,14 +142,14 @@ export default function Home() {
     const cx = cameraRef.current.x;
     const cy = cameraRef.current.y;
     const startZoom = zoomRef.current;
-    const targetZoom = 2.5;
+    const targetZoom = 3;
     const duration = 600;
     const startT = performance.now();
 
     setZoomed(true);
 
-    // Use all backend shows (already loaded)
-    cardsRef.current?.setShows(allShowsRef.current);
+    // Switch to zoomed-in show set (100 per region)
+    cardsRef.current?.setShows(zoomedInShowsRef.current);
 
     const tick = (now: number) => {
       const t = Math.min(1, (now - startT) / duration);
@@ -151,7 +161,7 @@ export default function Home() {
     zoomAnimRef.current = requestAnimationFrame(tick);
   }, [pushCamera]);
 
-  // Zoom out to galaxy view
+  // Zoom out to galaxy view (1× scale)
   const zoomOut = useCallback(() => {
     cancelAnimationFrame(momentumRef.current);
     cancelAnimationFrame(flyAnimRef.current);
@@ -164,8 +174,8 @@ export default function Home() {
     const cx = cameraRef.current.x;
     const cy = cameraRef.current.y;
 
-    // Restore shows for galaxy view (use whatever is currently loaded)
-    cardsRef.current?.setShows(allShowsRef.current);
+    // Switch to zoomed-out show set (45 non-overlapping per region)
+    cardsRef.current?.setShows(zoomedOutShowsRef.current);
 
     const tick = (now: number) => {
       const t = Math.min(1, (now - startT) / duration);
@@ -242,81 +252,6 @@ export default function Home() {
     cancelAnimationFrame(zoomAnimRef.current);
   }, []);
 
-  // Pinch-to-zoom via native touch events
-  useEffect(() => {
-    const el = galaxyContainerRef.current;
-    if (!el) return;
-
-    const getTouchDist = (e: TouchEvent) => {
-      const t0 = e.touches[0];
-      const t1 = e.touches[1];
-      const dx = t1.clientX - t0.clientX;
-      const dy = t1.clientY - t0.clientY;
-      return Math.sqrt(dx * dx + dy * dy);
-    };
-
-    const onTouchStart = (e: TouchEvent) => {
-      if (e.touches.length === 2) {
-        pinchRef.current = { startDist: getTouchDist(e), active: true };
-      }
-    };
-
-    const onTouchMove = (e: TouchEvent) => {
-      if (e.touches.length === 2 && pinchRef.current.active) {
-        e.preventDefault(); // prevent browser zoom
-      }
-    };
-
-    const onTouchEnd = (e: TouchEvent) => {
-      if (!pinchRef.current.active) return;
-      if (e.touches.length < 2) {
-        // Pinch ended — check direction
-        const endDist = e.changedTouches.length > 0 && e.touches.length === 1
-          ? Math.sqrt(
-              Math.pow(e.touches[0].clientX - e.changedTouches[0].clientX, 2) +
-              Math.pow(e.touches[0].clientY - e.changedTouches[0].clientY, 2)
-            )
-          : 0;
-        // Use the last known distance from move events
-        pinchRef.current.active = false;
-      }
-    };
-
-    // Track last distance during move for final comparison
-    let lastDist = 0;
-    const onTouchMoveTrack = (e: TouchEvent) => {
-      if (e.touches.length === 2 && pinchRef.current.active) {
-        lastDist = getTouchDist(e);
-        e.preventDefault();
-      }
-    };
-
-    const onTouchEndFinal = (e: TouchEvent) => {
-      if (!pinchRef.current.active) return;
-      if (e.touches.length < 2) {
-        const ratio = lastDist / pinchRef.current.startDist;
-        pinchRef.current.active = false;
-        if (ratio > 1.3) {
-          // Pinch out (spread) → zoom in
-          if (zoomRef.current < 2) zoomIn();
-        } else if (ratio < 0.7) {
-          // Pinch in (pinch) → zoom out
-          if (zoomRef.current > 1.5) zoomOut();
-        }
-      }
-    };
-
-    el.addEventListener("touchstart", onTouchStart, { passive: true });
-    el.addEventListener("touchmove", onTouchMoveTrack, { passive: false });
-    el.addEventListener("touchend", onTouchEndFinal, { passive: true });
-
-    return () => {
-      el.removeEventListener("touchstart", onTouchStart);
-      el.removeEventListener("touchmove", onTouchMoveTrack);
-      el.removeEventListener("touchend", onTouchEndFinal);
-    };
-  }, [zoomIn, zoomOut]);
-
   // Search: filter shows + spiral layout
   const handleSearch = useCallback((filters: SearchFilters) => {
     setMenuOpen(false);
@@ -390,6 +325,66 @@ export default function Home() {
           </button>
         )}
 
+        {/* Zoom +/- buttons */}
+        <div
+          className="pointer-events-auto absolute flex flex-col gap-2"
+          style={{
+            bottom: "max(calc(env(safe-area-inset-bottom, 12px) + 16px), 28px)",
+            right: 16,
+            zIndex: 20,
+          }}
+        >
+          <button
+            className="flex items-center justify-center rounded-full active:scale-90 transition-all duration-200"
+            style={{
+              width: 52,
+              height: 52,
+              background: zoomed
+                ? "rgba(30, 25, 50, 0.5)"
+                : "linear-gradient(135deg, rgba(100, 80, 220, 0.9), rgba(140, 100, 255, 0.8))",
+              border: zoomed
+                ? "1px solid rgba(255,255,255,0.08)"
+                : "2px solid rgba(180, 160, 255, 0.6)",
+              backdropFilter: "blur(12px)",
+              opacity: zoomed ? 0.35 : 1,
+              boxShadow: zoomed ? "none" : "0 0 20px rgba(140, 100, 255, 0.4), 0 4px 12px rgba(0,0,0,0.4)",
+            }}
+            disabled={zoomed}
+            onClick={() => { if (!zoomed) zoomIn(); }}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
+              <circle cx="11" cy="11" r="7" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              <line x1="11" y1="8" x2="11" y2="14" />
+              <line x1="8" y1="11" x2="14" y2="11" />
+            </svg>
+          </button>
+          <button
+            className="flex items-center justify-center rounded-full active:scale-90 transition-all duration-200"
+            style={{
+              width: 52,
+              height: 52,
+              background: !zoomed
+                ? "rgba(30, 25, 50, 0.5)"
+                : "linear-gradient(135deg, rgba(100, 80, 220, 0.9), rgba(140, 100, 255, 0.8))",
+              border: !zoomed
+                ? "1px solid rgba(255,255,255,0.08)"
+                : "2px solid rgba(180, 160, 255, 0.6)",
+              backdropFilter: "blur(12px)",
+              opacity: !zoomed ? 0.35 : 1,
+              boxShadow: !zoomed ? "none" : "0 0 20px rgba(140, 100, 255, 0.4), 0 4px 12px rgba(0,0,0,0.4)",
+            }}
+            disabled={!zoomed}
+            onClick={() => { if (zoomed) zoomOut(); }}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
+              <circle cx="11" cy="11" r="7" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              <line x1="8" y1="11" x2="14" y2="11" />
+            </svg>
+          </button>
+        </div>
+
         {/* Drag hint */}
         {!hasDragged && (
           <div
@@ -417,10 +412,12 @@ export default function Home() {
             setAudioOn(playing);
           }}
           onViewQueue={() => { setMenuOpen(false); setQueueOpen(true); }}
-          onBackendShows={(shows, categories) => {
+          onBackendShows={(data, categories) => {
             categoriesRef.current = categories;
-            allShowsRef.current = shows;
-            cardsRef.current?.setShows(shows);
+            zoomedOutShowsRef.current = data.zoomedOut;
+            zoomedInShowsRef.current = data.zoomedIn;
+            allShowsRef.current = data.zoomedOut;
+            cardsRef.current?.setShows(data.zoomedOut);
           }}
         />
       )}
@@ -440,6 +437,92 @@ export default function Home() {
           onClose={() => setRecOpen(false)}
         />
       )}
+
+      {/* Initial connect dialog — shown before QR scan */}
+      {!connected && !loading && !scannerOpen && (
+        <ConnectDialog onConnect={() => setScannerOpen(true)} />
+      )}
+
+      {/* QR Scanner (initial flow) */}
+      {!connected && scannerOpen && (
+        <QRScanner
+          onScan={(deviceId) => {
+            setScannerOpen(false);
+            setLoading(true);
+            setConnected(true); // Show galaxy underneath loading screen
+
+            // Progressive loading runs underneath the opaque loading screen
+            (async () => {
+              const session = await loginAndFetchGenres(deviceId);
+              if (!session || session.topGenres.length === 0) {
+                setLoading(false);
+                return;
+              }
+
+              const { topGenres, token } = session;
+              const categories = buildCategories(topGenres.map(g => g.genre));
+              categoriesRef.current = categories;
+
+              const moviesByGenre: Record<string, import("@/services/backend").MoviesResponse> = {};
+
+              // Helper: rebuild shows from whatever we have so far
+              const rebuildShows = () => {
+                const data = backendMoviesToShows(topGenres, moviesByGenre, categories);
+                zoomedOutShowsRef.current = data.zoomedOut;
+                zoomedInShowsRef.current = data.zoomedIn;
+                allShowsRef.current = data.zoomedOut;
+                cardsRef.current?.setShows(data.zoomedOut);
+              };
+
+              // Start 10s loading timer — loading screen stays for exactly 10s
+              const loadingStart = Date.now();
+              const LOADING_DURATION = 15000;
+
+              // Phase 1: Load center genre (position index 3)
+              const centerIdx = Math.min(LOAD_ORDER_CENTER, topGenres.length - 1);
+              const centerGenre = topGenres[centerIdx];
+              if (centerGenre) {
+                const result = await fetchGenreMovies(centerGenre.genre, token);
+                if (result?.movies?.length) moviesByGenre[centerGenre.genre] = result;
+              }
+              rebuildShows();
+
+              // Phase 2: Load 4 side genres one by one
+              for (const idx of LOAD_ORDER_SIDES) {
+                if (idx >= topGenres.length) continue;
+                const g = topGenres[idx];
+                const result = await fetchGenreMovies(g.genre, token);
+                if (result?.movies?.length) {
+                  moviesByGenre[g.genre] = result;
+                  rebuildShows();
+                }
+              }
+
+              // Phase 3: Load remaining genres
+              for (const idx of LOAD_ORDER_REMAINING) {
+                if (idx >= topGenres.length) continue;
+                const g = topGenres[idx];
+                const result = await fetchGenreMovies(g.genre, token);
+                if (result?.movies?.length) {
+                  moviesByGenre[g.genre] = result;
+                  rebuildShows();
+                }
+              }
+
+              // Wait until 10s have passed since loading started
+              const elapsed = Date.now() - loadingStart;
+              if (elapsed < LOADING_DURATION) {
+                await new Promise((r) => setTimeout(r, LOADING_DURATION - elapsed));
+              }
+              setLoading(false);
+            })();
+          }}
+          onClose={() => setScannerOpen(false)}
+        />
+      )}
+
+      {/* Loading screen — while fetching genres/shows */}
+      {loading && <LoadingScreen />}
     </div>
   );
 }

@@ -10,21 +10,21 @@ export const WORLD_H = 1800;
 export const CATEGORY_COUNT = 9;
 export const CATEGORY_SUBREGION_RADIUS = 280; // px radius around each category center
 
-// Region = 9 × screen size total. At any time 1 screen is visible.
-// Zoom-out: max 5 shows visible per screen → 5 per region shown
-// Zoom-in: scale 3x, region has 100 content
-export const SHOWS_PER_SCREEN_ZOOMOUT = 5; // max shows on one screen in zoom-out
-export const SHOWS_PER_REGION_ZOOMOUT = SHOWS_PER_SCREEN_ZOOMOUT; // visible per region in zoom-out (since 1 region ≈ 1 screen)
-export const SHOWS_PER_REGION_ZOOMIN = 100; // shows visible per region when zoomed in
-export const ZOOM_IN_SCALE = 3; // zoom-in multiplier
-export const ZOOM_OUT_SCALE = 1; // default zoom level
+// Region = 9x screen size. Max 5 shows per screen bounds → 45 per region zoomed out
+export const SHOWS_PER_SCREEN = 5;
+export const REGION_SCREEN_MULTIPLE = 9;
+export const SHOWS_ZOOMED_OUT = SHOWS_PER_SCREEN * REGION_SCREEN_MULTIPLE; // 45
+export const SHOWS_ZOOMED_IN = 100; // shows visible when zoomed in
 
-// Show card sizes (px)
+// Zoom states
+export const ZOOM_OUT_SCALE = 1;
+export const ZOOM_IN_SCALE = 3;
+
+// Show card sizes (px) — 3 fixed sizes
 export const SHOW_SIZE_PX: Record<string, number> = {
   l: 90,
   m: 70,
   s: 50,
-  xs: 36,
 };
 
 // Camera / physics

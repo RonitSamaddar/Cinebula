@@ -1,4 +1,4 @@
-export type ShowSize = "l" | "m" | "s" | "xs";
+export type ShowSize = "l" | "m" | "s";
 
 export type CategoryKey = string;
 

@@ -38,8 +38,8 @@ interface MenuDrawerProps {
   onAudioToggle?: () => void;
   /** Open the queue panel */
   onViewQueue?: () => void;
-  /** Called with zoom-out/zoom-in shows and dynamic categories when backend data loads after QR scan */
-  onBackendShows?: (zoomOutShows: Show[], zoomInShows: Show[], categories: Category[]) => void;
+  /** Called with show sets and dynamic categories when backend data loads after QR scan */
+  onBackendShows?: (data: { zoomedOut: Show[]; zoomedIn: Show[] }, categories: Category[]) => void;
 }
 
 export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilters, actors, languages, audioOn = false, onAudioToggle, onViewQueue, onBackendShows }: MenuDrawerProps) {
@@ -427,8 +427,8 @@ export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilter
             initializeBackend(id).then((result) => {
               if (result && onBackendShows) {
                 const categories = buildCategories(result.topGenres.map(g => g.genre));
-                const { zoomOutShows, zoomInShows } = backendMoviesToShows(result.topGenres, result.moviesByGenre, categories);
-                onBackendShows(zoomOutShows, zoomInShows, categories);
+                const data = backendMoviesToShows(result.topGenres, result.moviesByGenre, categories);
+                onBackendShows(data, categories);
               }
             });
           }}
