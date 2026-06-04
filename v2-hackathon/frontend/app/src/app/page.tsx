@@ -14,9 +14,8 @@ import AlienCompanion from "@/components/chrome/AlienCompanion";
 import RecDialog from "@/components/chrome/RecDialog";
 import { initAudio, toggleAudio, isAudioPlaying } from "@/lib/audio";
 import type { Show, Category } from "@/types";
-import { fetchCategories, fetchAllInitialShows, fetchAllZoomedShows } from "@/services/api";
 import { CATEGORIES } from "@/data/categories";
-import { WORLD_W, WORLD_H } from "@/config/galaxy";
+import { WORLD_W, WORLD_H, ZOOM_IN_SCALE, ZOOM_OUT_SCALE } from "@/config/galaxy";
 import { searchShows, spiralLayout, hasActiveFilters as checkFilters, type SearchFilters } from "@/lib/search";
 
 const wrap = (v: number, max: number) => ((v % max) + max) % max;
@@ -47,9 +46,10 @@ export default function Home() {
   const [audioOn, setAudioOn] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const dragIdleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const pinchRef = useRef<{ startDist: number; active: boolean }>({ startDist: 0, active: false });
   const galaxyContainerRef = useRef<HTMLDivElement>(null);
-  const allShowsRef = useRef<Show[]>([]);
+  const allShowsRef = useRef<Show[]>([]); // current visible set
+  const zoomOutShowsRef = useRef<Show[]>([]); // 5 per region
+  const zoomInShowsRef = useRef<Show[]>([]); // 100 per region
 
   // Init audio context on first render
   useEffect(() => {
@@ -138,10 +138,8 @@ export default function Home() {
 
     setZoomed(true);
 
-    // Load all shows (50 per category) for zoomed view
-    fetchAllZoomedShows(categoriesRef.current).then((allShows) => {
-      cardsRef.current?.setShows(allShows);
-    });
+    // Use all backend shows (already loaded)
+    cardsRef.current?.setShows(allShowsRef.current);
 
     const tick = (now: number) => {
       const t = Math.min(1, (now - startT) / duration);
@@ -166,10 +164,8 @@ export default function Home() {
     const cx = cameraRef.current.x;
     const cy = cameraRef.current.y;
 
-    // Restore initial shows (20 per category) for galaxy view
-    fetchAllInitialShows(categoriesRef.current).then((initialShows) => {
-      cardsRef.current?.setShows(initialShows);
-    });
+    // Restore shows for galaxy view (use whatever is currently loaded)
+    cardsRef.current?.setShows(allShowsRef.current);
 
     const tick = (now: number) => {
       const t = Math.min(1, (now - startT) / duration);
@@ -189,14 +185,8 @@ export default function Home() {
   useEffect(() => {
     // Position background/labels/pill immediately
     pushCamera(cameraRef.current.x, cameraRef.current.y);
-    // Load shows async
-    (async () => {
-      const cats = await fetchCategories();
-      categoriesRef.current = cats;
-      const shows = await fetchAllInitialShows(cats);
-      allShowsRef.current = shows;
-      cardsRef.current?.setShows(shows);
-    })();
+    // Set categories for labels (no mock shows — wait for backend)
+    categoriesRef.current = CATEGORIES;
   }, [pushCamera]);
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
@@ -427,6 +417,11 @@ export default function Home() {
             setAudioOn(playing);
           }}
           onViewQueue={() => { setMenuOpen(false); setQueueOpen(true); }}
+          onBackendShows={(shows, categories) => {
+            categoriesRef.current = categories;
+            allShowsRef.current = shows;
+            cardsRef.current?.setShows(shows);
+          }}
         />
       )}
 

@@ -130,3 +130,225 @@
   "filtersLoaded": 3,
   "genresWithMovies": 5
 }
+[2026-06-04T14:48:47.028Z] === Backend initialization started ===
+{
+  "deviceId": "46426f9c-ssss-4593-9399-21798b0d1148"
+}
+[2026-06-04T14:48:47.240Z] POST /auth/login — success
+{
+  "user_id": 1,
+  "token": "eyJhbGciOiJIUzI1NiIs..."
+}
+[2026-06-04T14:48:47.347Z] GET /top-genres — success
+{
+  "count": 9,
+  "top3": [
+    {
+      "genre": "Adventure",
+      "rank": 1,
+      "weight": 0.3267
+    },
+    {
+      "genre": "Action",
+      "rank": 2,
+      "weight": 0.1994
+    },
+    {
+      "genre": "Fantasy",
+      "rank": 3,
+      "weight": 0.1578
+    }
+  ]
+}
+[2026-06-04T14:48:47.401Z] GET /api/filters — success
+{
+  "filters": [
+    {
+      "id": "genre",
+      "count": 20
+    },
+    {
+      "id": "language",
+      "count": 35
+    },
+    {
+      "id": "cast",
+      "count": 30
+    }
+  ]
+}
+[2026-06-04T14:48:52.351Z] GET /api/movies?genre=Adventure — success
+{
+  "count": 318,
+  "top3": [
+    "Avengers: Infinity War",
+    "Oz the Great and Powerful",
+    "Toy Story"
+  ]
+}
+[2026-06-04T14:48:57.268Z] GET /api/movies?genre=Action — success
+{
+  "count": 348,
+  "top3": [
+    "A Brooklyn State of Mind",
+    "Ran",
+    "Avengers: Infinity War"
+  ]
+}
+[2026-06-04T14:49:00.809Z] GET /api/movies?genre=Fantasy — success
+{
+  "count": 222,
+  "top3": [
+    "A StoryBots Christmas",
+    "Oz the Great and Powerful",
+    "Beauty and the Beast"
+  ]
+}
+[2026-06-04T14:49:01.516Z] GET /api/movies?genre=Sci-Fi — success
+{}
+[2026-06-04T14:49:05.860Z] GET /api/movies?genre=Family — success
+{
+  "count": 201,
+  "top3": [
+    "Oz the Great and Powerful",
+    "Toy Story",
+    "The Pink Panther"
+  ]
+}
+[2026-06-04T14:49:05.932Z] === Backend initialization complete ===
+{
+  "userId": 1,
+  "genresLoaded": 9,
+  "filtersLoaded": 3,
+  "genresWithMovies": 5
+}
+[2026-06-04T14:49:06.007Z] Converted 1089 backend movies to Show objects across 9 genres
+[2026-06-04T14:58:07.379Z] === Backend initialization started ===
+{
+  "deviceId": "46426f9c-ssss-4593-9399-21798b0d1148"
+}
+[2026-06-04T14:58:07.519Z] POST /auth/login — success
+{
+  "user_id": 1,
+  "token": "eyJhbGciOiJIUzI1NiIs..."
+}
+[2026-06-04T14:58:07.609Z] GET /top-genres — success
+{
+  "count": 9,
+  "top3": [
+    {
+      "genre": "Adventure",
+      "rank": 1,
+      "weight": 0.3267
+    },
+    {
+      "genre": "Action",
+      "rank": 2,
+      "weight": 0.1994
+    },
+    {
+      "genre": "Fantasy",
+      "rank": 3,
+      "weight": 0.1578
+    }
+  ]
+}
+[2026-06-04T14:58:07.709Z] GET /api/filters — success
+{
+  "filters": [
+    {
+      "id": "genre",
+      "count": 20
+    },
+    {
+      "id": "language",
+      "count": 35
+    },
+    {
+      "id": "cast",
+      "count": 30
+    }
+  ]
+}
+[2026-06-04T14:58:12.513Z] GET /api/movies?genre=Adventure — success
+{
+  "count": 318,
+  "top3": [
+    "Avengers: Infinity War",
+    "Oz the Great and Powerful",
+    "Toy Story"
+  ]
+}
+[2026-06-04T14:58:17.102Z] GET /api/movies?genre=Action — success
+{
+  "count": 348,
+  "top3": [
+    "A Brooklyn State of Mind",
+    "Ran",
+    "Avengers: Infinity War"
+  ]
+}
+[2026-06-04T14:58:20.671Z] GET /api/movies?genre=Fantasy — success
+{
+  "count": 222,
+  "top3": [
+    "A StoryBots Christmas",
+    "Oz the Great and Powerful",
+    "Beauty and the Beast"
+  ]
+}
+[2026-06-04T14:58:21.001Z] GET /api/movies?genre=Sci-Fi — success
+{}
+[2026-06-04T14:58:24.444Z] GET /api/movies?genre=Family — success
+{
+  "count": 201,
+  "top3": [
+    "Oz the Great and Powerful",
+    "Toy Story",
+    "The Pink Panther"
+  ]
+}
+[2026-06-04T14:58:27.499Z] GET /api/movies?genre=Animation — success
+{
+  "count": 82,
+  "top3": [
+    "A StoryBots Christmas",
+    "Toy Story",
+    "A StoryBots Space Adventure"
+  ]
+}
+[2026-06-04T14:58:33.316Z] GET /api/movies?genre=Comedy — success
+{
+  "count": 517,
+  "top3": [
+    "Good Dick",
+    "Jerry Maguire",
+    "The Money Pit"
+  ]
+}
+[2026-06-04T14:58:35.552Z] GET /api/movies?genre=Western — success
+{
+  "count": 27,
+  "top3": [
+    "The Revenant",
+    "Aces and Eights",
+    "The Treasure of the Sierra Madre"
+  ]
+}
+[2026-06-04T14:58:43.038Z] GET /api/movies?genre=Drama — success
+{
+  "count": 874,
+  "top3": [
+    "A Brooklyn State of Mind",
+    "A Tale of Love and Darkness",
+    "Good Dick"
+  ]
+}
+[2026-06-04T14:58:43.061Z] === Backend initialization complete ===
+{
+  "userId": 1,
+  "genresLoaded": 9,
+  "filtersLoaded": 3,
+  "genresWithMovies": 9
+}
+[2026-06-04T14:58:43.100Z] Converted 160 backend movies to Show objects across 9 genres

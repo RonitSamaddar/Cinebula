@@ -10,11 +10,14 @@ export const WORLD_H = 1800;
 export const CATEGORY_COUNT = 9;
 export const CATEGORY_SUBREGION_RADIUS = 280; // px radius around each category center
 
-// Show counts
-export const SHOWS_PER_CATEGORY = 50;
-export const INITIAL_VISIBLE_PER_CATEGORY = 20; // loaded per category at galaxy zoom
-export const ZOOMED_VISIBLE_PER_CATEGORY = 50; // loaded when zoomed into a category
-export const MAX_ON_SCREEN = 10; // max show cards visible on screen at once
+// Region = 9 × screen size total. At any time 1 screen is visible.
+// Zoom-out: max 5 shows visible per screen → 5 per region shown
+// Zoom-in: scale 3x, region has 100 content
+export const SHOWS_PER_SCREEN_ZOOMOUT = 5; // max shows on one screen in zoom-out
+export const SHOWS_PER_REGION_ZOOMOUT = SHOWS_PER_SCREEN_ZOOMOUT; // visible per region in zoom-out (since 1 region ≈ 1 screen)
+export const SHOWS_PER_REGION_ZOOMIN = 100; // shows visible per region when zoomed in
+export const ZOOM_IN_SCALE = 3; // zoom-in multiplier
+export const ZOOM_OUT_SCALE = 1; // default zoom level
 
 // Show card sizes (px)
 export const SHOW_SIZE_PX: Record<string, number> = {

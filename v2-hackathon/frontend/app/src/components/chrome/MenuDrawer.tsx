@@ -9,7 +9,9 @@ import { useRef, useState, useCallback, useEffect } from "react";
 import type { SearchFilters } from "@/lib/search";
 import { useQueueStore } from "@/stores/queue-store";
 import { useTVStore } from "@/stores/tv-store";
-import { initializeBackend } from "@/services/backend";
+import { initializeBackend, backendMoviesToShows } from "@/services/backend";
+import { buildCategories } from "@/data/categories";
+import type { Show, Category } from "@/types";
 import QRScanner from "./QRScanner";
 
 const DEFAULT_LANGUAGES = ["English", "Spanish", "Korean", "Japanese", "French", "German"];
@@ -36,9 +38,11 @@ interface MenuDrawerProps {
   onAudioToggle?: () => void;
   /** Open the queue panel */
   onViewQueue?: () => void;
+  /** Called with zoom-out/zoom-in shows and dynamic categories when backend data loads after QR scan */
+  onBackendShows?: (zoomOutShows: Show[], zoomInShows: Show[], categories: Category[]) => void;
 }
 
-export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilters, actors, languages, audioOn = false, onAudioToggle, onViewQueue }: MenuDrawerProps) {
+export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilters, actors, languages, audioOn = false, onAudioToggle, onViewQueue, onBackendShows }: MenuDrawerProps) {
   const LANGUAGES = languages ?? DEFAULT_LANGUAGES;
   const ACTORS = actors ?? DEFAULT_ACTORS;
   const queueCount = useQueueStore((s) => s.items.length);
@@ -420,7 +424,13 @@ export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilter
           onScan={(id) => {
             setDeviceId(id);
             setScannerOpen(false);
-            initializeBackend(id);
+            initializeBackend(id).then((result) => {
+              if (result && onBackendShows) {
+                const categories = buildCategories(result.topGenres.map(g => g.genre));
+                const { zoomOutShows, zoomInShows } = backendMoviesToShows(result.topGenres, result.moviesByGenre, categories);
+                onBackendShows(zoomOutShows, zoomInShows, categories);
+              }
+            });
           }}
           onClose={() => setScannerOpen(false)}
         />

@@ -1,15 +1,6 @@
 export type ShowSize = "l" | "m" | "s" | "xs";
 
-export type CategoryKey =
-  | "drama"
-  | "sci-fi"
-  | "comedy"
-  | "thriller"
-  | "romance"
-  | "horror"
-  | "action"
-  | "crime"
-  | "fantasy";
+export type CategoryKey = string;
 
 export interface Show {
   id: string;

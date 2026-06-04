@@ -1,65 +1,44 @@
 import { Category, CategoryKey } from "@/types";
 
 /**
- * Default 9 categories — will be replaced by backend response.
- * Positions are normalized (0–1) in world space.
+ * 9 grid positions for category regions in world space.
+ * Each top genre from backend gets assigned one position in order.
  */
-export const CATEGORIES: Category[] = [
-  {
-    key: "drama",
-    label: "DRAMA · EMOTIONAL",
-    accent: "#b56cff",
-    position: { x: 0.50, y: 0.08, z: 0 },
-  },
-  {
-    key: "sci-fi",
-    label: "SCI-FI · MIND-BENDING",
-    accent: "#6fa8e8",
-    position: { x: 0.16, y: 0.24, z: 0 },
-  },
-  {
-    key: "comedy",
-    label: "COMEDY · LIGHT",
-    accent: "#3fb89e",
-    position: { x: 0.84, y: 0.24, z: 0 },
-  },
-  {
-    key: "action",
-    label: "ACTION · INTENSE",
-    accent: "#ff9f43",
-    position: { x: 0.50, y: 0.40, z: 0 },
-  },
-  {
-    key: "thriller",
-    label: "THRILLER · GRIPPING",
-    accent: "#ff7a6c",
-    position: { x: 0.18, y: 0.56, z: 0 },
-  },
-  {
-    key: "romance",
-    label: "ROMANCE · WARM",
-    accent: "#e6b04a",
-    position: { x: 0.82, y: 0.56, z: 0 },
-  },
-  {
-    key: "crime",
-    label: "CRIME · GRITTY",
-    accent: "#7c8a99",
-    position: { x: 0.38, y: 0.72, z: 0 },
-  },
-  {
-    key: "fantasy",
-    label: "FANTASY · EPIC",
-    accent: "#e056a0",
-    position: { x: 0.68, y: 0.72, z: 0 },
-  },
-  {
-    key: "horror",
-    label: "HORROR · DARK",
-    accent: "#c44040",
-    position: { x: 0.50, y: 0.90, z: 0 },
-  },
+export const CATEGORY_POSITIONS: { x: number; y: number; z: number }[] = [
+  { x: 0.50, y: 0.08, z: 0 },
+  { x: 0.16, y: 0.24, z: 0 },
+  { x: 0.84, y: 0.24, z: 0 },
+  { x: 0.50, y: 0.40, z: 0 },
+  { x: 0.18, y: 0.56, z: 0 },
+  { x: 0.82, y: 0.56, z: 0 },
+  { x: 0.38, y: 0.72, z: 0 },
+  { x: 0.68, y: 0.72, z: 0 },
+  { x: 0.50, y: 0.90, z: 0 },
 ];
+
+const ACCENT_COLORS = [
+  "#b56cff", "#6fa8e8", "#3fb89e", "#ff9f43", "#ff7a6c",
+  "#e6b04a", "#7c8a99", "#e056a0", "#c44040",
+];
+
+/**
+ * Build categories dynamically from backend top genres.
+ * Each genre gets a position from the grid and an accent color.
+ */
+export function buildCategories(genreNames: string[]): Category[] {
+  return genreNames.slice(0, 9).map((genre, i) => ({
+    key: genre.toLowerCase() as CategoryKey,
+    label: genre.toUpperCase(),
+    accent: ACCENT_COLORS[i % ACCENT_COLORS.length],
+    position: CATEGORY_POSITIONS[i],
+  }));
+}
+
+/** Fallback default categories (used before backend responds) */
+export const CATEGORIES: Category[] = buildCategories([
+  "Adventure", "Action", "Fantasy", "Sci-Fi", "Family",
+  "Animation", "Comedy", "Western", "Drama",
+]);
 
 export const CATEGORY_MAP: Record<CategoryKey, Category> = Object.fromEntries(
   CATEGORIES.map((c) => [c.key, c])

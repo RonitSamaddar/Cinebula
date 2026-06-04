@@ -52,13 +52,20 @@ export interface FiltersResponse {
 
 export interface Movie {
   movie_name: string;
+  image_link?: string;
   vote_average: number;
-  priority: number;
+  vote_count?: number;
+  popularity?: number;
+  genres?: string[];
+  language?: string;
+  imdb_rating?: number;
+  synopsis?: string;
+  keywords?: string[];
+  casts?: string[];
   x: number;
   y: number;
+  priority: number;
   is_watched: boolean;
-  keywords?: string[];
-  language?: string;
 }
 
 export interface MoviesResponse {
@@ -120,9 +127,9 @@ export async function initializeBackend(deviceId: string) {
     await log("GET /api/filters — FAILED", { error: String(err) });
   }
 
-  // Step 4: Movies per top genre
+  // Step 4: Movies per top genre (serially, for all top genres)
   const moviesByGenre: Record<string, MoviesResponse> = {};
-  for (const g of topGenres.slice(0, 5)) {
+  for (const g of topGenres) {
     try {
       const res = await fetch(
         proxyUrl(`/api/movies?genre=${encodeURIComponent(g.genre.toLowerCase())}`),
@@ -147,4 +154,107 @@ export async function initializeBackend(deviceId: string) {
   });
 
   return { token, userId, topGenres, filters, moviesByGenre };
+}
+
+/**
+ * Convert backend movies into frontend Show[] mapped to galaxy positions.
+ * Each top genre from backend IS a category — no mapping needed.
+ * Uses actual x,y from backend as relative coordinates within each genre's region.
+ * Normalizes x,y per genre to [0,1] range, then maps to world space.
+ *
+ * Two zoom states:
+ * - Zoom-out: 5 shows per region (highest priority)
+ * - Zoom-in (3x): 100 shows per region
+ * We store up to 100 per region; the page controls which subset is visible.
+ */
+export function backendMoviesToShows(
+  topGenres: GenreWeight[],
+  moviesByGenre: Record<string, MoviesResponse>,
+  categories: import("@/types").Category[],
+): { zoomOutShows: import("@/types").Show[]; zoomInShows: import("@/types").Show[] } {
+  const WORLD_W = 1400;
+  const WORLD_H = 1800;
+  const SUBREGION_RADIUS = 280;
+  const SHOWS_PER_REGION_ZOOMOUT = 5;
+  const SHOWS_PER_REGION_ZOOMIN = 100;
+
+  const zoomOutShows: import("@/types").Show[] = [];
+  const zoomInShows: import("@/types").Show[] = [];
+
+  for (let gi = 0; gi < topGenres.length; gi++) {
+    const g = topGenres[gi];
+    const genreData = moviesByGenre[g.genre];
+    if (!genreData?.movies?.length) continue;
+
+    // Each genre IS a category — use the category at same index
+    const catKey = g.genre.toLowerCase();
+    const cat = categories.find((c) => c.key === catKey);
+    if (!cat) continue;
+
+    const cx = cat.position.x * WORLD_W;
+    const cy = cat.position.y * WORLD_H;
+
+    // Sort by priority descending
+    const sorted = [...genreData.movies].sort((a, b) => b.priority - a.priority);
+    // Cap at max for zoom-in
+    const capped = sorted.slice(0, SHOWS_PER_REGION_ZOOMIN);
+
+    // Compute x,y bounds for normalization within this genre's movies
+    const xs = capped.map((m) => m.x);
+    const ys = capped.map((m) => m.y);
+    const minX = Math.min(...xs);
+    const maxX = Math.max(...xs);
+    const minY = Math.min(...ys);
+    const maxY = Math.max(...ys);
+    const rangeX = maxX - minX || 1;
+    const rangeY = maxY - minY || 1;
+
+    capped.forEach((movie, i) => {
+      // Normalize backend x,y to [0,1] relative coords within this genre
+      const relX = (movie.x - minX) / rangeX;
+      const relY = (movie.y - minY) / rangeY;
+
+      // Map to world space within category subregion
+      const worldX = cx + (relX - 0.5) * 2 * SUBREGION_RADIUS;
+      const worldY = cy + (relY - 0.5) * 2 * SUBREGION_RADIUS;
+
+      // Determine size based on priority (0-100)
+      let size: import("@/types").ShowSize = "xs";
+      if (movie.priority > 80) size = "l";
+      else if (movie.priority > 50) size = "m";
+      else if (movie.priority > 30) size = "s";
+
+      const show: import("@/types").Show = {
+        id: `${catKey}-${i}`,
+        title: movie.movie_name,
+        year: 2020,
+        runtime: "2h",
+        genres: g.genre,
+        description: movie.synopsis || `Rating: ${movie.vote_average}/10`,
+        match: Math.round(movie.priority),
+        category: catKey,
+        relX,
+        relY,
+        worldX,
+        worldY,
+        size,
+        poster: movie.image_link || "",
+        gradient: `linear-gradient(135deg, hsl(${(i * 37) % 360}, 60%, 30%), hsl(${(i * 37 + 60) % 360}, 50%, 20%))`,
+        language: movie.language || "en",
+        actors: movie.casts?.slice(0, 3) || [],
+        tags: movie.keywords?.slice(0, 3) || [],
+        watched: movie.is_watched,
+      };
+
+      // Top 5 per region go into zoom-out set
+      if (i < SHOWS_PER_REGION_ZOOMOUT) {
+        zoomOutShows.push(show);
+      }
+      // All go into zoom-in set
+      zoomInShows.push(show);
+    });
+  }
+
+  log(`Converted shows: ${zoomOutShows.length} zoom-out, ${zoomInShows.length} zoom-in across ${topGenres.length} genres`);
+  return { zoomOutShows, zoomInShows };
 }
