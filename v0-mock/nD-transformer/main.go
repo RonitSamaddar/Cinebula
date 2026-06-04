@@ -503,7 +503,6 @@ func jsonError(w http.ResponseWriter, msg string, code int) {
 var cassandraSession *gocql.Session
 
 func initCassandra() {
-	time.Sleep(60 * time.Second)
 	cluster := gocql.NewCluster(getCassandraHost())
 	cluster.Port = 9042
 	cluster.Keyspace = "cinebula"
