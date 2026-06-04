@@ -6,7 +6,7 @@ const MOVIE_JSON_PATH = path.join(__dirname, "movie.json");
 const CSV_PATH = path.join(__dirname, "TMDB_movie_dataset_v11.csv");
 const CHATGPT_URL = "https://chatgpt.com";
 const SUB_BATCH_SIZE = 25; // movies per ChatGPT tab
-const PARALLEL_TABS = 1; // number of concurrent ChatGPT tabs
+const PARALLEL_TABS = 4; // number of concurrent ChatGPT tabs
 
 // Read existing movies
 function readExistingMovies(): any[] {
@@ -185,7 +185,6 @@ async function processSubBatch(
     }
 
     const sampleEntry = {
-        rank: chunkStart,
         movie: "Example Movie",
         tags: "tag1, tag2, tag3, tag4, tag5, ...",
     };
@@ -194,7 +193,6 @@ async function processSubBatch(
 ${JSON.stringify(sampleEntry, null, 2)}
 
 Where:
-- "rank" starts from ${chunkStart} and increments
 - "movie" is the movie name
 - "tags" is a comma-separated string of around 50 descriptive tags including genre, themes, characters, directors, actors, mood, style
 
