@@ -3,7 +3,6 @@ package auth
 import (
 	"encoding/json"
 	"net/http"
-	"strings"
 )
 
 var validGenres = map[string]bool{
@@ -17,7 +16,7 @@ var validGenres = map[string]bool{
 }
 
 // LoginHandler handles POST /auth/login.
-// Body: { name, age, gender, top_genres[] (3-10) }
+// All fields are optional. Providing device_id links the account to ACR watch data.
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	var req LoginRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -25,22 +24,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if strings.TrimSpace(req.Name) == "" {
-		http.Error(w, "name is required", http.StatusBadRequest)
-		return
-	}
-	if req.Age < 1 || req.Age > 120 {
-		http.Error(w, "age must be between 1 and 120", http.StatusBadRequest)
-		return
-	}
-	if strings.TrimSpace(req.Gender) == "" {
-		http.Error(w, "gender is required", http.StatusBadRequest)
-		return
-	}
-	if len(req.TopGenres) < 3 || len(req.TopGenres) > 10 {
-		http.Error(w, "top_genres must contain 3-10 genres", http.StatusBadRequest)
-		return
-	}
+	// Validate genres only if provided
 	for _, g := range req.TopGenres {
 		if !validGenres[g] {
 			http.Error(w, "unknown genre: "+g, http.StatusBadRequest)
@@ -61,5 +45,5 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(LoginResponse{UserID: userID, Token: token})
+	json.NewEncoder(w).Encode(LoginResponse{UserID: userID, Token: token, DeviceID: req.DeviceID})
 }

@@ -14,40 +14,13 @@ const (
 	dataConstsPath = "./data-dirs/data-consts.json"
 )
 
-// TopGenresForUser reads acr-data.json and data-consts.json, computes
-// watch-time-weighted genre scores for the given user, and returns genres
-// sorted by descending weight.
-//
-// Algorithm (mirrors users-top-genre.py):
-//  1. For each session, compute duration in seconds.
-//  2. Distribute duration equally across all genres of that title.
-//  3. Apply per-genre bias from genreWeightMatrix (dampens over-represented genres).
-//  4. Normalise adjusted totals to [0, 1].
-//  5. Return genres with weight > 0, sorted descending.
-//
-// Returns an error if the user has no ACR data.
+// TopGenresForUser computes watch-time-weighted genre scores for the given userID.
 func TopGenresForUser(userID int) ([]GenreWeight, error) {
-	// load ACR data
-	acrRaw, err := os.ReadFile(acrDataPath)
+	users, consts, err := loadACRData()
 	if err != nil {
-		return nil, fmt.Errorf("read ACR data: %w", err)
-	}
-	var users []ACRUser
-	if err := json.Unmarshal(acrRaw, &users); err != nil {
-		return nil, fmt.Errorf("parse ACR data: %w", err)
+		return nil, err
 	}
 
-	// load genre bias matrix
-	constsRaw, err := os.ReadFile(dataConstsPath)
-	if err != nil {
-		return nil, fmt.Errorf("read data-consts: %w", err)
-	}
-	var consts dataConsts
-	if err := json.Unmarshal(constsRaw, &consts); err != nil {
-		return nil, fmt.Errorf("parse data-consts: %w", err)
-	}
-
-	// find user entry
 	var found *ACRUser
 	for i := range users {
 		if users[i].UserID == userID {
@@ -59,6 +32,63 @@ func TopGenresForUser(userID int) ([]GenreWeight, error) {
 		return nil, fmt.Errorf("user %d not found in ACR data", userID)
 	}
 
+	return computeTopGenres(found, consts.GenreWeightMatrix)
+}
+
+// TopGenresForDevice looks up a user by device_id and returns their top genres.
+func TopGenresForDevice(deviceID string) ([]GenreWeight, error) {
+	users, consts, err := loadACRData()
+	if err != nil {
+		return nil, err
+	}
+
+	var found *ACRUser
+	for i := range users {
+		if users[i].DeviceID == deviceID {
+			found = &users[i]
+			break
+		}
+	}
+	if found == nil {
+		return nil, fmt.Errorf("device %q not found in ACR data", deviceID)
+	}
+
+	return computeTopGenres(found, consts.GenreWeightMatrix)
+}
+
+// loadACRData loads and parses acr-data.json and data-consts.json.
+func loadACRData() ([]ACRUser, dataConsts, error) {
+	var consts dataConsts
+
+	acrRaw, err := os.ReadFile(acrDataPath)
+	if err != nil {
+		return nil, consts, fmt.Errorf("read ACR data: %w", err)
+	}
+	var users []ACRUser
+	if err := json.Unmarshal(acrRaw, &users); err != nil {
+		return nil, consts, fmt.Errorf("parse ACR data: %w", err)
+	}
+
+	constsRaw, err := os.ReadFile(dataConstsPath)
+	if err != nil {
+		return nil, consts, fmt.Errorf("read data-consts: %w", err)
+	}
+	if err := json.Unmarshal(constsRaw, &consts); err != nil {
+		return nil, consts, fmt.Errorf("parse data-consts: %w", err)
+	}
+
+	return users, consts, nil
+}
+
+// computeTopGenres computes watch-time-weighted genre scores for the given ACR user.
+//
+// Algorithm:
+//  1. For each session, compute duration in seconds.
+//  2. Distribute duration equally across all genres of that title.
+//  3. Apply per-genre bias from genreWeightMatrix (dampens over-represented genres).
+//  4. Normalise adjusted totals to [0, 1].
+//  5. Return genres with weight > 0, sorted descending.
+func computeTopGenres(found *ACRUser, wm map[string]float64) ([]GenreWeight, error) {
 	// step 1+2: accumulate seconds per genre
 	genreSeconds := map[string]float64{}
 	for _, s := range found.Sessions {
@@ -72,13 +102,13 @@ func TopGenresForUser(userID int) ([]GenreWeight, error) {
 		}
 	}
 	if len(genreSeconds) == 0 {
-		return nil, fmt.Errorf("no watch data for user %d", userID)
+		return nil, fmt.Errorf("no watch data for user/device")
 	}
 
 	// step 3: apply genre bias matrix
 	adjusted := make(map[string]float64, len(genreSeconds))
 	for g, secs := range genreSeconds {
-		bias := consts.GenreWeightMatrix[g]
+		bias := wm[g]
 		if bias == 0 {
 			bias = 1.0
 		}

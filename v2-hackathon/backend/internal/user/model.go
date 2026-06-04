@@ -8,4 +8,5 @@ type User struct {
 	Gender    string   `json:"gender"`
 	TopGenres []string `json:"top_genres"`
 	CreatedAt string   `json:"created_at"`
+	DeviceID  string   `json:"device_id,omitempty"`
 }

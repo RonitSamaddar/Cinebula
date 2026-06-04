@@ -35,17 +35,52 @@ func GetByID(userID int) (*User, error) {
 		if id != userID {
 			continue
 		}
-		age, _ := strconv.Atoi(row[2])
-		var genres []string
-		_ = json.Unmarshal([]byte(row[4]), &genres)
-		return &User{
-			UserID:    id,
-			Name:      row[1],
-			Age:       age,
-			Gender:    row[3],
-			TopGenres: genres,
-			CreatedAt: row[5],
-		}, nil
+		return rowToUser(row), nil
 	}
 	return nil, fmt.Errorf("user %d not found", userID)
+}
+
+// GetByDeviceID reads users.csv and returns the user with the matching device_id.
+func GetByDeviceID(deviceID string) (*User, error) {
+	f, err := os.Open(usersCSVPath)
+	if err != nil {
+		return nil, fmt.Errorf("cannot open users.csv: %w", err)
+	}
+	defer f.Close()
+
+	r := csv.NewReader(f)
+	rows, err := r.ReadAll()
+	if err != nil {
+		return nil, fmt.Errorf("read users.csv: %w", err)
+	}
+
+	for i, row := range rows {
+		if i == 0 || len(row) < 7 {
+			continue
+		}
+		if row[6] == deviceID {
+			return rowToUser(row), nil
+		}
+	}
+	return nil, fmt.Errorf("device %q not found", deviceID)
+}
+
+// rowToUser maps a CSV row to a User struct.
+func rowToUser(row []string) *User {
+	age, _ := strconv.Atoi(row[2])
+	var genres []string
+	_ = json.Unmarshal([]byte(row[4]), &genres)
+	deviceID := ""
+	if len(row) >= 7 {
+		deviceID = row[6]
+	}
+	return &User{
+		UserID:    func() int { id, _ := strconv.Atoi(row[0]); return id }(),
+		Name:      row[1],
+		Age:       age,
+		Gender:    row[3],
+		TopGenres: genres,
+		CreatedAt: row[5],
+		DeviceID:  deviceID,
+	}
 }

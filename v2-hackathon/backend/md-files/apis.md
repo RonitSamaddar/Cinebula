@@ -11,30 +11,47 @@ All endpoints return `Content-Type: application/json`.
 ### `POST /auth/login`
 
 Register a new user and receive a JWT for protected endpoints.
+**All fields are optional.** Providing `device_id` links the account to ACR watch-history data, enabling personalised top-genres.
 
-**Request body:**
+**Minimal request (anonymous guest):**
+```json
+{}
+```
+
+**With device ID only (links to ACR data):**
+```json
+{
+  "device_id": "46426f9c-ssss-4593-9399-21798b0d1148"
+}
+```
+
+**Full request:**
 ```json
 {
   "name": "Pratikesh",
   "age": 22,
   "gender": "male",
-  "top_genres": ["Sci-Fi", "Action", "Drama", "Thriller", "Comedy", "Horror", "Crime", "Mystery", "Adventure"]
+  "top_genres": ["Sci-Fi", "Action", "Drama", "Thriller", "Comedy", "Horror", "Crime", "Mystery", "Adventure"],
+  "device_id": "46426f9c-ssss-4593-9399-21798b0d1148"
 }
 ```
 
-| Field        | Type     | Rules                                 |
-|--------------|----------|---------------------------------------|
-| `name`       | string   | Non-empty                             |
-| `age`        | int      | 1 – 120                               |
-| `gender`     | string   | Non-empty                             |
-| `top_genres` | []string | 3 – 9 valid genre names               |
+| Field        | Type     | Required | Notes                                          |
+|--------------|----------|----------|------------------------------------------------|
+| `name`       | string   | No       | Defaults to `guest-<id>` if omitted            |
+| `age`        | int      | No       |                                                |
+| `gender`     | string   | No       |                                                |
+| `top_genres` | []string | No       | If provided, must be valid genre names         |
+| `device_id`  | string   | No       | Links account to ACR data for personalisation  |
 
 **Response `200`:**
 ```json
-{ "user_id": 3, "token": "<JWT>" }
+{ "user_id": 3, "token": "<JWT>", "device_id": "46426f9c-ssss-4593-9399-21798b0d1148" }
 ```
 
-**Errors:** `400` bad input.
+> `device_id` is echoed back only when provided in the request.
+
+**Errors:** `400` unknown genre name.
 
 ---
 
@@ -155,36 +172,57 @@ for genre in top_genres:
 
 ## 4. Top Genres
 
-### `GET /top-genres?userId=<id>`
+### `GET /top-genres`
 
 Returns the user's top-9 genres with priority weights.
 Call this first to know which genres to fetch and in what order.
 
-**Query params:**
+**Query params (all optional):**
 
-| Param    | Type | Required | Description        |
-|----------|------|----------|--------------------||
-| `userId` | int  | Yes      | User ID from login |
+| Param      | Type   | Description                                              |
+|------------|--------|----------------------------------------------------------|
+| `userId`   | int    | User ID from login — looks up device_id from users.csv   |
+| `deviceId` | string | ACR device UUID — takes priority over userId             |
 
-**Response `200`:**
+**Resolution order:**
+1. `deviceId` provided → ACR watch-history lookup → weighted genres
+2. `userId` provided → resolve `device_id` from user record → ACR lookup
+3. No `device_id` resolvable (or no ACR data found) → **fallback**: top-9 from `genreRankMatrix`, weights `1.0 → 0.2`
+
+**Response `200` — ACR-derived (cases 1 & 2):**
 ```json
 {
-  "user_id": 3,
+  "user_id": 2,
   "genres": [
-    { "genre": "Sci-Fi",    "rank": 1, "weight": 1.0   },
-    { "genre": "Action",    "rank": 2, "weight": 0.889 },
-    { "genre": "Drama",     "rank": 3, "weight": 0.778 },
-    { "genre": "Thriller",  "rank": 4, "weight": 0.667 },
-    { "genre": "Comedy",    "rank": 5, "weight": 0.556 },
-    { "genre": "Horror",    "rank": 6, "weight": 0.444 },
-    { "genre": "Crime",     "rank": 7, "weight": 0.333 },
-    { "genre": "Mystery",   "rank": 8, "weight": 0.222 },
-    { "genre": "Adventure", "rank": 9, "weight": 0.111 }
+    { "genre": "Action",    "rank": 1, "weight": 0.3521 },
+    { "genre": "Adventure", "rank": 2, "weight": 0.2134 },
+    { "genre": "Sci-Fi",    "rank": 3, "weight": 0.1847 },
+    ...
   ]
 }
 ```
 
-**Errors:** `400` invalid userId, `404` user not found.
+**Response `200` — Fallback (case 3, no device_id / no ACR data):**
+```json
+{
+  "user_id": 0,
+  "genres": [
+    { "genre": "Drama",       "rank": 1, "weight": 1.0 },
+    { "genre": "Documentary", "rank": 2, "weight": 0.9 },
+    { "genre": "Comedy",      "rank": 3, "weight": 0.8 },
+    { "genre": "Animation",   "rank": 4, "weight": 0.7 },
+    { "genre": "Romance",     "rank": 5, "weight": 0.6 },
+    { "genre": "Action",      "rank": 6, "weight": 0.5 },
+    { "genre": "Family",      "rank": 7, "weight": 0.4 },
+    { "genre": "Sci-Fi",      "rank": 8, "weight": 0.3 },
+    { "genre": "War",         "rank": 9, "weight": 0.2 }
+  ]
+}
+```
+
+> Fallback genres are ranked by TMDB content volume (rarest genres are boosted via `genreWeightMatrix`).
+
+**Errors:** `500` if `data-consts.json` cannot be read.
 
 ---
 
