@@ -1,0 +1,132 @@
+[2026-06-04T14:16:45.700Z] === Backend initialization started ===
+{
+  "deviceId": "LG-TV-001"
+}
+[2026-06-04T14:16:46.042Z] POST /auth/login — FAILED
+{
+  "error": "TypeError: Load failed"
+}
+[2026-06-04T14:20:31.065Z] === Backend initialization started ===
+{
+  "deviceId": "LG-TV-001"
+}
+[2026-06-04T14:20:31.134Z] POST /auth/login — FAILED
+{
+  "error": "TypeError: Load failed"
+}
+[2026-06-04T14:21:04.787Z] === Backend initialization started ===
+{
+  "deviceId": "LG-TV-001"
+}
+[2026-06-04T14:21:04.863Z] POST /auth/login — FAILED
+{
+  "error": "TypeError: Load failed"
+}
+[2026-06-04T14:22:02.908Z] === Backend initialization started ===
+{
+  "deviceId": "46426f9c-ssss-4593-9399-21798b0d1148/"
+}
+[2026-06-04T14:22:02.985Z] POST /auth/login — FAILED
+{
+  "error": "TypeError: Load failed"
+}
+[2026-06-04T14:22:41.901Z] === Backend initialization started ===
+{
+  "deviceId": "46426f9c-ssss-4593-9399-21798b0d1148"
+}
+[2026-06-04T14:22:42.066Z] POST /auth/login — FAILED
+{
+  "error": "TypeError: Load failed"
+}
+[2026-06-04T14:29:06.096Z] === Backend initialization started ===
+{
+  "deviceId": "46426f9c-ssss-4593-9399-21798b0d1148"
+}
+[2026-06-04T14:29:06.463Z] POST /auth/login — success
+{
+  "user_id": 1,
+  "token": "eyJhbGciOiJIUzI1NiIs..."
+}
+[2026-06-04T14:29:06.550Z] GET /top-genres — success
+{
+  "count": 9,
+  "top3": [
+    {
+      "genre": "Adventure",
+      "rank": 1,
+      "weight": 0.3267
+    },
+    {
+      "genre": "Action",
+      "rank": 2,
+      "weight": 0.1994
+    },
+    {
+      "genre": "Fantasy",
+      "rank": 3,
+      "weight": 0.1578
+    }
+  ]
+}
+[2026-06-04T14:29:06.575Z] GET /api/filters — success
+{
+  "filters": [
+    {
+      "id": "genre",
+      "count": 20
+    },
+    {
+      "id": "language",
+      "count": 35
+    },
+    {
+      "id": "cast",
+      "count": 30
+    }
+  ]
+}
+[2026-06-04T14:29:12.378Z] GET /api/movies?genre=Adventure — success
+{
+  "count": 318,
+  "top3": [
+    "Avengers: Infinity War",
+    "Oz the Great and Powerful",
+    "Toy Story"
+  ]
+}
+[2026-06-04T14:29:17.157Z] GET /api/movies?genre=Action — success
+{
+  "count": 348,
+  "top3": [
+    "A Brooklyn State of Mind",
+    "Ran",
+    "Avengers: Infinity War"
+  ]
+}
+[2026-06-04T14:29:21.295Z] GET /api/movies?genre=Fantasy — success
+{
+  "count": 222,
+  "top3": [
+    "A StoryBots Christmas",
+    "Oz the Great and Powerful",
+    "Beauty and the Beast"
+  ]
+}
+[2026-06-04T14:29:21.557Z] GET /api/movies?genre=Sci-Fi — success
+{}
+[2026-06-04T14:29:25.697Z] GET /api/movies?genre=Family — success
+{
+  "count": 201,
+  "top3": [
+    "Oz the Great and Powerful",
+    "Toy Story",
+    "The Pink Panther"
+  ]
+}
+[2026-06-04T14:29:25.709Z] === Backend initialization complete ===
+{
+  "userId": 1,
+  "genresLoaded": 9,
+  "filtersLoaded": 3,
+  "genresWithMovies": 5
+}

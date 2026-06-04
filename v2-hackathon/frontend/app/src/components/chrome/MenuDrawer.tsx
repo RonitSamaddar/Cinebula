@@ -9,6 +9,7 @@ import { useRef, useState, useCallback, useEffect } from "react";
 import type { SearchFilters } from "@/lib/search";
 import { useQueueStore } from "@/stores/queue-store";
 import { useTVStore } from "@/stores/tv-store";
+import { initializeBackend } from "@/services/backend";
 import QRScanner from "./QRScanner";
 
 const DEFAULT_LANGUAGES = ["English", "Spanish", "Korean", "Japanese", "French", "German"];
@@ -419,6 +420,7 @@ export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilter
           onScan={(id) => {
             setDeviceId(id);
             setScannerOpen(false);
+            initializeBackend(id);
           }}
           onClose={() => setScannerOpen(false)}
         />
