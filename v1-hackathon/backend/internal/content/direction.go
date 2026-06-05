@@ -8,22 +8,8 @@ import (
 
 // DirectionResult describes what the user will find in a given direction.
 type DirectionResult struct {
-	Direction string        `json:"direction"`
-	Summary   string        `json:"summary"`
-	TopTags   []ScoredTag   `json:"top_tags"`
-	Movies    []ScoredMovie `json:"sample_movies"`
-}
-
-type ScoredTag struct {
-	Tag   string  `json:"tag"`
-	Score float64 `json:"score"`
-}
-
-type ScoredMovie struct {
-	Title string  `json:"title"`
-	X     float64 `json:"x"`
-	Y     float64 `json:"y"`
-	Score float64 `json:"score"`
+	Direction string `json:"direction"`
+	Summary   string `json:"summary"`
 }
 
 // directionVectors maps direction names to unit vectors (x, y).
@@ -119,9 +105,7 @@ func QueryDirection(userX, userY float64, direction string, radius float64, topN
 	if len(scored) == 0 {
 		return &DirectionResult{
 			Direction: direction,
-			Summary:   "nothing notable in this direction",
-			TopTags:   []ScoredTag{},
-			Movies:    []ScoredMovie{},
+			Summary:   "",
 		}
 	}
 
@@ -147,53 +131,17 @@ func QueryDirection(userX, userY float64, direction string, radius float64, topN
 	sort.Slice(tagList, func(i, j int) bool {
 		return tagList[i].score > tagList[j].score
 	})
-	if len(tagList) > topN {
-		tagList = tagList[:topN]
-	}
-
-	// Normalize scores relative to max
-	maxScore := 0.0
-	if len(tagList) > 0 {
-		maxScore = tagList[0].score
-	}
-	resultTags := make([]ScoredTag, len(tagList))
-	for i, t := range tagList {
-		resultTags[i] = ScoredTag{
-			Tag:   t.tag,
-			Score: math.Round(t.score/maxScore*100) / 100,
-		}
-	}
-
-	// Top 5 sample movies by score
-	sort.Slice(scored, func(i, j int) bool {
-		return scored[i].score > scored[j].score
-	})
-	sampleCount := 5
-	if len(scored) < sampleCount {
-		sampleCount = len(scored)
-	}
-	sampleMovies := make([]ScoredMovie, sampleCount)
-	for i := 0; i < sampleCount; i++ {
-		sampleMovies[i] = ScoredMovie{
-			Title: scored[i].title,
-			X:     scored[i].x,
-			Y:     scored[i].y,
-			Score: math.Round(scored[i].score*1000) / 1000,
-		}
-	}
 
 	// Build summary: top 2 keywords only
 	summaryTags := make([]string, 0, 2)
-	for i := 0; i < 2 && i < len(resultTags); i++ {
-		summaryTags = append(summaryTags, resultTags[i].Tag)
+	for i := 0; i < 2 && i < len(tagList); i++ {
+		summaryTags = append(summaryTags, tagList[i].tag)
 	}
 	summary := strings.Join(summaryTags, ", ")
 
 	return &DirectionResult{
 		Direction: direction,
 		Summary:   summary,
-		TopTags:   resultTags,
-		Movies:    sampleMovies,
 	}
 }
 
