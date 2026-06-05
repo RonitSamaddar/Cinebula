@@ -29,11 +29,14 @@
             --accent-red: #f87171;
             --glass: rgba(244, 235, 217, 0.04);
             --glass-border: rgba(244, 235, 217, 0.08);
-            --scale: min(1vw, 1.8vh);
+            --scale: clamp(10px, min(1.4vw, 2.4vh), 18px);
         }
 
         html {
             font-size: var(--scale);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
         }
 
         html,
@@ -202,12 +205,22 @@
         }
 
         [data-slide="8"] .paradox-text {
-            font-size: 2.6rem;
-            max-width: 70rem;
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-size: 1.9rem;
+            font-weight: 400;
+            line-height: 1.6;
+            letter-spacing: 0.01em;
+            max-width: 65rem;
+            color: rgba(244, 235, 217, 0.7);
+        }
+
+        [data-slide="8"] .paradox-text em {
+            color: var(--accent-violet);
         }
 
         [data-slide="8"] .headline {
             font-size: 8rem;
+            margin-bottom: 0;
         }
 
         .slide-paradox.active .headline {
@@ -2372,11 +2385,12 @@
 
         <!-- SLIDE 8: PRODUCT INTRO -->
         <div class="slide slide-paradox" data-slide="8">
-            <div class="paradox-grid" style="grid-template-rows: 20% 20% 40% 20%;">
+            <div class="paradox-grid" style="grid-template-rows: 15% 22% 3% 35% 25%;">
                 <div class="paradox-section"></div>
                 <div class="paradox-section paradox-title-section">
                     <h1 class="headline"><em>Cinebula</em></h1>
                 </div>
+                <div class="paradox-section"></div>
                 <div class="paradox-section paradox-body-section">
                     <p class="paradox-text">Cinebula is an intelligent <em>spatial discovery experience</em> for
                         streaming — a <em>phone-native</em> companion to the TV that turns content browsing into
@@ -2407,7 +2421,7 @@
                     <div class="stat-label">OTT Partner Redirects (US + EU) with 5% sponsored content </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value"> 5% lift </div>
+                    <div class="stat-value"> +5% impression </div>
                     <div class="stat-label">LG Channels Growth</div>
                 </div>
                 <div class="stat-card">
