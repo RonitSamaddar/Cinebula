@@ -1,0 +1,120 @@
+/* Human Figure Component
+   Usage:
+     Standing (front-facing):  <div class="human human--standing"><div class="human__head"></div><div class="human__neck"></div><div class="human__body"></div></div>
+     Seated (back-facing):     <div class="human human--seated"><div class="human__head"></div><div class="human__shoulders"></div></div>
+   
+   Size modifier classes: human--sm, human--md (default), human--lg
+*/
+
+.human {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+/* Head */
+.human__head {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-violet), var(--accent-blue));
+    position: relative;
+    box-shadow: 0 0 2rem rgba(167, 139, 250, 0.2);
+}
+
+/* Neck */
+.human__neck {
+    width: 1.4rem;
+    height: 0.8rem;
+    background: linear-gradient(135deg, var(--accent-violet), var(--accent-blue));
+}
+
+/* Body (standing) */
+.human__body {
+    width: 5rem;
+    height: 7rem;
+    background: linear-gradient(180deg, var(--ink-faint), rgba(244, 235, 217, 0.08));
+    border-radius: 2rem 2rem 1rem 1rem;
+    position: relative;
+}
+
+/* Arms for standing */
+.human--standing .human__body::before {
+    content: '';
+    position: absolute;
+    top: 0.8rem;
+    left: -1.2rem;
+    width: 1.2rem;
+    height: 4.2rem;
+    background: var(--ink-faint);
+    border-radius: 0.8rem;
+    box-shadow: 6.2rem 0 0 var(--ink-faint);
+}
+
+/* Face details for standing (front-facing) */
+.human--standing .human__head::before {
+    content: '';
+    position: absolute;
+    top: 2.2rem;
+    left: 1.5rem;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    background: var(--bg);
+    box-shadow: 1.5rem 0 0 var(--bg);
+}
+
+.human--standing .human__head::after {
+    content: '';
+    position: absolute;
+    bottom: 1.3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1.4rem;
+    height: 0.7rem;
+    border-radius: 0 0 0.8rem 0.8rem;
+    border: 2px solid var(--bg);
+    border-top: none;
+}
+
+/* Seated variant (back of head) */
+.human--seated .human__head {
+    width: 3.6rem;
+    height: 3.6rem;
+    background: linear-gradient(180deg, #3a2c5a, var(--accent-violet));
+    box-shadow: 0 0 1rem rgba(167, 139, 250, 0.15);
+    margin: 0 auto;
+}
+
+.human--seated .human__head::after {
+    content: '';
+    position: absolute;
+    top: 0.2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3.2rem;
+    height: 2rem;
+    border-radius: 50% 50% 0 0;
+    background: rgba(30, 20, 50, 0.6);
+}
+
+/* Shoulders for seated */
+.human__shoulders {
+    width: 5.2rem;
+    height: 2rem;
+    background: var(--ink-faint);
+    border-radius: 1.6rem 1.6rem 0 0;
+    margin: 0 auto;
+}
+
+/* Size modifiers */
+.human--sm .human__head { width: 4rem; height: 4rem; }
+.human--sm .human__neck { width: 1rem; height: 0.6rem; }
+.human--sm .human__body { width: 3.5rem; height: 5rem; border-radius: 1.4rem 1.4rem 0.8rem 0.8rem; }
+.human--sm.human--standing .human__body::before { height: 3rem; width: 1rem; left: -1rem; box-shadow: 4.5rem 0 0 var(--ink-faint); }
+
+.human--lg .human__head { width: 8rem; height: 8rem; }
+.human--lg .human__neck { width: 1.8rem; height: 1rem; }
+.human--lg .human__body { width: 6.5rem; height: 9rem; border-radius: 2.5rem 2.5rem 1.2rem 1.2rem; }
+.human--lg.human--standing .human__body::before { height: 5.5rem; width: 1.4rem; left: -1.4rem; box-shadow: 8rem 0 0 var(--ink-faint); }
