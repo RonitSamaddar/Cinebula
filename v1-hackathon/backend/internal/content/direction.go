@@ -182,12 +182,12 @@ func QueryDirection(userX, userY float64, direction string, radius float64, topN
 		}
 	}
 
-	// Build human-readable summary: "thriller, war, emotional movies this way"
-	summaryTags := make([]string, 0, 3)
-	for i := 0; i < 3 && i < len(resultTags); i++ {
+	// Build summary: top 2 keywords only
+	summaryTags := make([]string, 0, 2)
+	for i := 0; i < 2 && i < len(resultTags); i++ {
 		summaryTags = append(summaryTags, resultTags[i].Tag)
 	}
-	summary := strings.Join(summaryTags, ", ") + " movies this way"
+	summary := strings.Join(summaryTags, ", ")
 
 	return &DirectionResult{
 		Direction: direction,
