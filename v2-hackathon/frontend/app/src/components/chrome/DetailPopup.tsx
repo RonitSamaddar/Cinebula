@@ -13,8 +13,8 @@ interface DetailPopupProps {
   onClose: () => void;
 }
 
-const POPUP_W = 270;
-const POPUP_H = 320;
+const POPUP_W = 200;
+const POPUP_H = 380;
 
 export default function DetailPopup({ show, screenX, screenY, onClose }: DetailPopupProps) {
   const isQueued = useQueueStore((s) => s.items.some((i) => i.id === show.id));
@@ -23,7 +23,7 @@ export default function DetailPopup({ show, screenX, screenY, onClose }: DetailP
 
   const cat = CATEGORIES.find((c) => c.key === show.category);
   const accent = cat?.accent || "#fff";
-  const cardH = (SHOW_SIZE_PX[show.size] || 50) * 1.4;
+  const cardH = (SHOW_SIZE_PX[show.size] ?? 50) * 1.4;
 
   // Smart edge avoidance: position popup so it stays on screen
   const vw = typeof window !== "undefined" ? window.innerWidth : 400;
@@ -80,71 +80,57 @@ export default function DetailPopup({ show, screenX, screenY, onClose }: DetailP
         onPointerMove={(e) => e.stopPropagation()}
         onPointerUp={(e) => e.stopPropagation()}
       >
-        {/* Poster gradient header */}
+        {/* Poster (top, scaled to fill width, 3:4 aspect) */}
         <div
-          className="relative flex items-end p-3 overflow-hidden"
+          className="relative w-full overflow-hidden"
           style={{
-            height: 120,
+            height: POPUP_W * 1.2,
             background: show.gradient || `linear-gradient(135deg, ${accent}40, ${accent}10)`,
           }}
         >
-          {/* Poster image */}
           {show.poster && (
             <img
               src={show.poster}
               alt=""
               className="absolute inset-0 h-full w-full object-cover"
-              style={{ opacity: 0.7 }}
             />
           )}
-          {/* Dark gradient overlay for readability */}
-          <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(14,12,24,0.9) 0%, transparent 60%)" }} />
           {/* Match badge */}
           <div
             className="absolute right-2 top-2 z-10 rounded-full px-2 py-0.5 font-mono text-[9px] font-bold text-white"
             style={{ background: `${accent}cc` }}
           >
-            {show.match}% Match
-          </div>
-          {/* Category badge */}
-          <div
-            className="relative rounded-full px-2 py-0.5 font-mono text-[8px] uppercase tracking-[0.12em]"
-            style={{ background: `${accent}30`, color: accent, border: `1px solid ${accent}50` }}
-          >
-            {show.category}
+            {show.match}%
           </div>
         </div>
 
-        {/* Content */}
-        <div className="flex flex-col gap-2 p-3">
-          {/* Title */}
-          <h3 className="text-[15px] font-semibold leading-tight text-white" style={{ fontFamily: "'Instrument Serif', serif" }}>
+        {/* Text content (below poster) */}
+        <div className="flex flex-col gap-1.5 p-3">
+          <h3 className="text-[14px] font-semibold leading-tight text-white" style={{ fontFamily: "'Instrument Serif', serif" }}>
             {show.title}
           </h3>
-          {/* Meta */}
-          <div className="flex items-center gap-2 font-mono text-[9px] text-white/50">
+          <div className="flex items-center gap-1.5 font-mono text-[8px] text-white/50">
             <span>{show.year}</span>
             <span>·</span>
             <span>{show.runtime}</span>
             <span>·</span>
             <span>{show.genres}</span>
           </div>
-          {/* Description */}
-          <p className="line-clamp-3 text-[11px] leading-relaxed text-white/60">
+          <div
+            className="overflow-y-auto text-[9px] leading-snug text-white/60"
+            style={{ maxHeight: "5.4em" }}
+          >
             {show.description}
-          </p>
-          {/* Tags */}
+          </div>
           {show.language && (
-            <div className="font-mono text-[8px] text-white/30 uppercase">
+            <div className="font-mono text-[7px] text-white/30 uppercase">
               {show.language}
             </div>
           )}
-        </div>
 
-        {/* Queue button */}
-        <div className="px-3 pb-3">
+          {/* Queue button */}
           <button
-            className="w-full rounded-lg py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-white transition-all active:scale-[0.97]"
+            className="mt-1 w-full rounded-lg py-2 font-mono text-[9px] font-bold uppercase tracking-[0.15em] text-white transition-all active:scale-[0.97]"
             style={{
               background: isQueued
                 ? "rgba(255,255,255,0.08)"
@@ -155,7 +141,7 @@ export default function DetailPopup({ show, screenX, screenY, onClose }: DetailP
             onPointerUp={(e) => e.stopPropagation()}
             onClick={(e) => { e.stopPropagation(); handleQueue(); }}
           >
-            {isQueued ? "✓ IN QUEUE — REMOVE" : "+ TAP TO QUEUE"}
+            {isQueued ? "✓ IN QUEUE" : "+ ADD TO QUEUE"}
           </button>
         </div>
       </div>

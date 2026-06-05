@@ -169,6 +169,59 @@ Movies the user has previously watched will have `"is_watched": true`.
 
 ---
 
+### `GET /api/movies/v2`
+
+Returns the full movie catalog without any filters.
+Proxies `tkacr-dev5.alphonso.tv:8080/api/movies` with no query parameters.
+Computes `priority` (IMDb-weighted rating, normalised 0–100) the same way as `/api/movies`.
+
+**No query parameters.**
+
+**Example requests:**
+```bash
+# Full unfiltered catalog
+curl 'http://localhost:8080/api/movies/v2'
+
+# With JWT for is_watched enrichment
+curl 'http://localhost:8080/api/movies/v2' \
+  -H 'Authorization: Bearer $TOKEN'
+```
+
+**Response `200`:** same structure as `/api/movies` — `count` + `movies[]` with all fields including `x`, `y`, `priority`, and `is_watched`.
+
+```json
+{
+  "count": 1907,
+  "movies": [
+    {
+      "movie_name": "Inception",
+      "image_link": "/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg",
+      "vote_average": 8.364,
+      "vote_count": 34495,
+      "revenue": 825532764,
+      "budget": 160000000,
+      "popularity": 83.952,
+      "genres": ["Action", "Science Fiction", "Adventure"],
+      "language": "en",
+      "imdb_rating": 0,
+      "synopsis": "Cobb, a skilled thief...",
+      "keywords": ["sci-fi", "dreams", "heist", "mind", "..."],
+      "casts": null,
+      "x": -1523730.2,
+      "y": -7.81998e-17,
+      "priority": 78.5,
+      "is_watched": false
+    }
+  ]
+}
+```
+
+> **`is_watched` enrichment:** send `Authorization: Bearer <JWT>` to get per-movie watch-history annotations. The endpoint remains public — omitting the token simply leaves every `is_watched` as `false`.
+
+**Errors:** `502` if the upstream data service is unreachable.
+
+---
+
 ### `GET /api/similar`
 
 Returns movies similar to a given title, with pre-computed **(x, y)** coordinates.

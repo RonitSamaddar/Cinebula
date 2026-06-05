@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+
 import { useQueueStore } from "@/stores/queue-store";
 import { CATEGORIES } from "@/data/categories";
 
@@ -12,16 +12,7 @@ export default function QueuePanel({ onClose }: QueuePanelProps) {
   const items = useQueueStore((s) => s.items);
   const remove = useQueueStore((s) => s.remove);
   const clear = useQueueStore((s) => s.clear);
-  const [sent, setSent] = useState(false);
 
-  const handleSend = () => {
-    setSent(true);
-    setTimeout(() => {
-      clear();
-      setSent(false);
-      onClose();
-    }, 2500);
-  };
 
   return (
     <div
@@ -140,32 +131,10 @@ export default function QueuePanel({ onClose }: QueuePanelProps) {
             Clear Queue
           </button>
         )}
-        {items.length > 0 && (
-          <button
-            className="flex-1 rounded-xl py-3 font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-white active:scale-[0.97] transition-transform"
-            style={{
-              background: "linear-gradient(135deg, #7c6bf0, #b56cff)",
-              boxShadow: "0 0 16px 2px rgba(124, 107, 240, 0.3)",
-            }}
-            onClick={handleSend}
-          >
-            📺 Send to TV
-          </button>
-        )}
+
       </div>
 
-      {/* Sent confirmation overlay */}
-      {sent && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3" style={{ background: "rgba(14, 12, 24, 0.97)", zIndex: 2 }}>
-          <span className="text-[48px]">✓</span>
-          <span className="font-mono text-[13px] uppercase tracking-[0.2em] text-white/80">
-            Sent to your TV
-          </span>
-          <span className="text-[12px] text-white/30">
-            {items.length} {items.length === 1 ? "show" : "shows"} queued up
-          </span>
-        </div>
-      )}
+
     </div>
   );
 }

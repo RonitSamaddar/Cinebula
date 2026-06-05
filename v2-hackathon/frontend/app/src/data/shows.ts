@@ -89,10 +89,7 @@ function seededRandom(seed: number): () => number {
 }
 
 function pickSize(rand: () => number): ShowSize {
-  const r = rand();
-  if (r < 0.15) return "l";
-  if (r < 0.45) return "m";
-  return "s";
+  return (Math.floor(rand() * 10) + 1) as ShowSize;
 }
 
 function generateShowsForCategory(

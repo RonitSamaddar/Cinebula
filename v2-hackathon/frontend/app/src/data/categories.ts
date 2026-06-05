@@ -5,15 +5,18 @@ import { Category, CategoryKey } from "@/types";
  * Each top genre from backend gets assigned one position in order.
  */
 export const CATEGORY_POSITIONS: { x: number; y: number; z: number }[] = [
-  { x: 0.50, y: 0.08, z: 0 },
-  { x: 0.16, y: 0.24, z: 0 },
-  { x: 0.84, y: 0.24, z: 0 },
-  { x: 0.50, y: 0.40, z: 0 },
-  { x: 0.18, y: 0.56, z: 0 },
-  { x: 0.82, y: 0.56, z: 0 },
-  { x: 0.38, y: 0.72, z: 0 },
-  { x: 0.68, y: 0.72, z: 0 },
-  { x: 0.50, y: 0.90, z: 0 },
+  // Row 1 (y=0.20)
+  { x: 0.20, y: 0.20, z: 0 },
+  { x: 0.50, y: 0.20, z: 0 },
+  { x: 0.80, y: 0.20, z: 0 },
+  // Row 2 (y=0.50, offset half-step)
+  { x: 0.35, y: 0.50, z: 0 },
+  { x: 0.65, y: 0.50, z: 0 },
+  { x: 0.95, y: 0.50, z: 0 },
+  // Row 3 (y=0.80)
+  { x: 0.20, y: 0.80, z: 0 },
+  { x: 0.50, y: 0.80, z: 0 },
+  { x: 0.80, y: 0.80, z: 0 },
 ];
 
 const ACCENT_COLORS = [

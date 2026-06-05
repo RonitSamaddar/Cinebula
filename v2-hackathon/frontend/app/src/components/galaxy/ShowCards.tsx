@@ -8,7 +8,8 @@
 
 import { useRef, useImperativeHandle, forwardRef, useState, useCallback, useEffect } from "react";
 import type { Show } from "@/types";
-import { WORLD_W, WORLD_H, MAX_SHOWS_ON_SCREEN, ICON_DIMS } from "@/config/galaxy";
+import type { DustParticle } from "@/services/backend";
+import { WORLD_W, WORLD_H, ICON_DIMS } from "@/config/galaxy";
 import ShowCard from "./ShowCard";
 
 function wrapOffset(cam: number, pos: number, size: number): number {
@@ -20,7 +21,7 @@ function wrapOffset(cam: number, pos: number, size: number): number {
 
 export interface ShowCardsHandle {
   update: (cx: number, cy: number, zoom?: number) => void;
-  setShows: (shows: Show[]) => void;
+  setShows: (shows: Show[], dust?: DustParticle[]) => void;
 }
 
 interface ShowCardsProps {
@@ -29,22 +30,19 @@ interface ShowCardsProps {
 
 const ShowCards = forwardRef<ShowCardsHandle, ShowCardsProps>(function ShowCards({ onShowTap }, ref) {
   const [shows, setShowsState] = useState<Show[]>([]);
+  const [dust, setDustState] = useState<DustParticle[]>([]);
   const elMapRef = useRef<Map<string, HTMLDivElement>>(new Map());
+  const dustMapRef = useRef<Map<string, HTMLDivElement>>(new Map());
   const lastCamRef = useRef({ x: WORLD_W / 2, y: WORLD_H / 2 });
   const lastZoomRef = useRef(1);
   const showsRef = useRef<Show[]>([]);
-  // Track which shows are currently visible — they stay visible until off-screen
-  const visibleSetRef = useRef<Set<string>>(new Set());
+  const dustRef = useRef<DustParticle[]>([]);
 
   // Keep showsRef in sync
   useEffect(() => {
     showsRef.current = shows;
-  }, [shows]);
-
-  // When show set changes, reset visible tracking
-  useEffect(() => {
-    visibleSetRef.current.clear();
-  }, [shows]);
+    dustRef.current = dust;
+  }, [shows, dust]);
 
   // After shows render, run an update with last known camera to position them
   useEffect(() => {
@@ -71,19 +69,11 @@ const ShowCards = forwardRef<ShowCardsHandle, ShowCardsProps>(function ShowCards
     const halfH = vh / 2;
     const margin = 60;
 
-    interface ScreenShow {
-      show: Show;
-      sx: number;
-      sy: number;
-      w: number;
-      h: number;
-      el: HTMLDivElement;
-    }
+    // Scale tiles proportional to zoom — gentle growth
+    // zoom 1 → 1.0×, zoom 3 → 1.1×, zoom 7 → 1.2×, zoom 14 → 1.35×, zoom 20 → 1.5×
+    const tileScale = Math.min(1.5, 1.0 + 0.115 * Math.log2(zoom));
 
-    const inViewport: ScreenShow[] = [];
-    const visibleSet = visibleSetRef.current;
-
-    // Step 1: Compute screen positions, partition into in-viewport vs off-screen
+    // Position show tiles
     for (const show of showsRef.current) {
       const el = elMapRef.current.get(show.id);
       if (!el) continue;
@@ -93,11 +83,10 @@ const ShowCards = forwardRef<ShowCardsHandle, ShowCardsProps>(function ShowCards
       const sx = halfW + dx;
       const sy = halfH + dy;
 
-      const dims = ICON_DIMS[show.size] || ICON_DIMS.s;
-      const cardW = dims.w;
-      const cardH = dims.h;
+      const dims = ICON_DIMS[show.size] || ICON_DIMS[1];
+      const cardW = dims.w * tileScale;
+      const cardH = dims.h * tileScale;
 
-      // Check if show is within viewport (with margin)
       const inBounds =
         sx + cardW / 2 > -margin &&
         sx - cardW / 2 < vw + margin &&
@@ -105,68 +94,32 @@ const ShowCards = forwardRef<ShowCardsHandle, ShowCardsProps>(function ShowCards
         sy - cardH / 2 < vh + margin;
 
       if (inBounds) {
-        inViewport.push({ show, sx, sy, w: cardW, h: cardH, el });
+        el.style.display = "block";
+        el.style.transform = `translate(${sx}px, ${sy}px) translate(-50%, -50%) scale(${tileScale})`;
       } else {
-        // Off-screen: hide and remove from visible set
         el.style.display = "none";
-        visibleSet.delete(show.id);
       }
     }
 
-    // Step 2: Separate shows already visible (they stay) from new entrants
-    const alreadyVisible: ScreenShow[] = [];
-    const newEntrants: ScreenShow[] = [];
+    // Position dust particles
+    for (const d of dustRef.current) {
+      const el = dustMapRef.current.get(d.id);
+      if (!el) continue;
 
-    for (const s of inViewport) {
-      if (visibleSet.has(s.show.id)) {
-        alreadyVisible.push(s);
+      const dx = wrapOffset(cx, d.worldX, WORLD_W) * zoom;
+      const dy = wrapOffset(cy, d.worldY, WORLD_H) * zoom;
+      const sx = halfW + dx;
+      const sy = halfH + dy;
+
+      const inBounds =
+        sx > -margin && sx < vw + margin &&
+        sy > -margin && sy < vh + margin;
+
+      if (inBounds) {
+        el.style.display = "block";
+        el.style.transform = `translate(${sx}px, ${sy}px) translate(-50%, -50%)`;
       } else {
-        newEntrants.push(s);
-      }
-    }
-
-    // Step 3: Position all already-visible shows (they never disappear while in viewport)
-    interface Placed { sx: number; sy: number; w: number; h: number }
-    const placed: Placed[] = [];
-
-    for (const s of alreadyVisible) {
-      s.el.style.display = "block";
-      s.el.style.transform = `translate(${s.sx}px, ${s.sy}px) translate(-50%, -50%)`;
-      s.el.style.opacity = "1";
-      placed.push({ sx: s.sx, sy: s.sy, w: s.w, h: s.h });
-    }
-
-    // Step 4: For new entrants, sort by priority desc, check overlap + max cap
-    newEntrants.sort((a, b) => b.show.match - a.show.match);
-
-    for (const s of newEntrants) {
-      // Don't exceed max shows on screen
-      if (placed.length >= MAX_SHOWS_ON_SCREEN) {
-        s.el.style.display = "none";
-        continue;
-      }
-
-      // Check >50% overlap with any currently placed show
-      let hasOverlap = false;
-      for (const p of placed) {
-        const overlapX = Math.max(0, Math.min(p.sx + p.w / 2, s.sx + s.w / 2) - Math.max(p.sx - p.w / 2, s.sx - s.w / 2));
-        const overlapY = Math.max(0, Math.min(p.sy + p.h / 2, s.sy + s.h / 2) - Math.max(p.sy - p.h / 2, s.sy - s.h / 2));
-        const intersectionArea = overlapX * overlapY;
-        const sArea = s.w * s.h;
-        if (intersectionArea > sArea * 0.5) {
-          hasOverlap = true;
-          break;
-        }
-      }
-
-      if (!hasOverlap) {
-        s.el.style.display = "block";
-        s.el.style.transform = `translate(${s.sx}px, ${s.sy}px) translate(-50%, -50%)`;
-        s.el.style.opacity = "1";
-        placed.push({ sx: s.sx, sy: s.sy, w: s.w, h: s.h });
-        visibleSet.add(s.show.id);
-      } else {
-        s.el.style.display = "none";
+        el.style.display = "none";
       }
     }
   }
@@ -177,14 +130,17 @@ const ShowCards = forwardRef<ShowCardsHandle, ShowCardsProps>(function ShowCards
       lastZoomRef.current = zoom;
       doUpdate(cx, cy, zoom);
     },
-    setShows(newShows: Show[]) {
+    setShows(newShows: Show[], newDust?: DustParticle[]) {
       setShowsState(newShows);
+      if (newDust) setDustState(newDust);
     },
   }));
 
   return (
     <>
-      {shows.map((show) => (
+      {shows.map((show) => {
+        const dims = ICON_DIMS[show.size] || ICON_DIMS[1];
+        return (
         <div
           key={show.id}
           ref={(el) => {
@@ -197,13 +153,59 @@ const ShowCards = forwardRef<ShowCardsHandle, ShowCardsProps>(function ShowCards
           className="pointer-events-auto absolute left-0 top-0"
           style={{
             display: "none",
-            zIndex: show.size === "l" ? 4 : show.size === "m" ? 3 : 2,
+            width: dims.w,
+            height: dims.h,
+            zIndex: Math.min(show.size + 1, 10),
             willChange: "transform, opacity",
           }}
         >
           <ShowCard show={show} onTap={handleTap} />
         </div>
-      ))}
+        );
+      })}
+      {/* Dust particles — textured circles, big ones show poster thumbnails */}
+      {dust.map((d, i) => {
+        // Random texture per particle based on index
+        const texType = i % 4;
+        const bg = d.poster
+          ? "transparent"
+          : texType === 0
+            ? `radial-gradient(circle at 35% 35%, ${d.color}, transparent 70%)`
+            : texType === 1
+              ? `radial-gradient(circle at 50% 50%, white 0%, ${d.color} 40%, transparent 75%)`
+              : texType === 2
+                ? `linear-gradient(135deg, ${d.color} 0%, transparent 60%), radial-gradient(circle, ${d.color} 30%, transparent 70%)`
+                : `radial-gradient(circle at 60% 40%, ${d.color}cc 0%, ${d.color}66 50%, transparent 80%)`;
+
+        return (
+          <div
+            key={d.id}
+            ref={(el) => {
+              if (el) dustMapRef.current.set(d.id, el);
+              else dustMapRef.current.delete(d.id);
+            }}
+            className="absolute left-0 top-0 rounded-full overflow-hidden"
+            style={{
+              display: "none",
+              width: d.size,
+              height: d.size,
+              background: bg,
+              opacity: d.opacity,
+              zIndex: 1,
+              willChange: "transform",
+            }}
+          >
+            {d.poster && (
+              <img
+                src={d.poster}
+                alt=""
+                className="w-full h-full object-cover rounded-full"
+                loading="lazy"
+              />
+            )}
+          </div>
+        );
+      })}
     </>
   );
 });
