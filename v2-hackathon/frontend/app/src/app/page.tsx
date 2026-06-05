@@ -109,6 +109,10 @@ export default function Home() {
         dustZ2Ref.current = data.dustZ2;
         dustZ3Ref.current = data.dustZ3;
         cardsRef.current?.setShows(data.z0, data.dustZ0);
+        // Pass coordinate bounds to compass labels for API calls
+        if (data.bounds) {
+          compassRef.current?.setBounds(data.bounds);
+        }
       }
 
       const elapsed = Date.now() - loadingStart;
@@ -130,7 +134,7 @@ export default function Home() {
     labelsRef.current?.update(wx, wy, z);
     cardsRef.current?.update(wx, wy, z);
     pillRef.current?.update(wx, wy);
-    compassRef.current?.update(wx, wy);
+    compassRef.current?.update(wx, wy, z);
   }, []);
 
   // Fly-to animation — 800ms cubic ease-out to target world coords
@@ -489,12 +493,15 @@ export default function Home() {
         )}
       </div>
 
+      {/* Direction compass labels — rendered at root to avoid overflow:hidden clipping */}
+      <CompassLabels ref={compassRef} visible={!isDragging} />
+
       {/* Overlays — rendered at root level for full-screen coverage */}
-      {queueOpen && <QueuePanel onClose={() => setQueueOpen(false)} />}
+      {queueOpen && <QueuePanel onClose={() => { setQueueOpen(false); compassRef.current?.refresh(); }} />}
 
       {menuOpen && (
         <MenuDrawer
-          onClose={() => setMenuOpen(false)}
+          onClose={() => { setMenuOpen(false); compassRef.current?.refresh(); }}
           onSearch={handleSearch}
           onReset={handleReset}
           hasActiveFilters={activeFilters}
@@ -587,6 +594,8 @@ export default function Home() {
             dustZ1Ref.current = data.dustZ1;
             dustZ2Ref.current = data.dustZ2;
             dustZ3Ref.current = data.dustZ3;
+            // Update compass bounds
+            if (data.bounds) compassRef.current?.setBounds(data.bounds);
             // Reset view with fresh data
             cardsRef.current?.setShows(data.z0);
             galaxyRef.current?.update(0, 0);
@@ -608,14 +617,14 @@ export default function Home() {
           show={selectedShow.show}
           screenX={selectedShow.sx}
           screenY={selectedShow.sy}
-          onClose={() => setSelectedShow(null)}
+          onClose={() => { setSelectedShow(null); compassRef.current?.refresh(); }}
         />
       )}
 
       {recOpen && (
         <RecDialog
           shows={allShowsRef.current}
-          onClose={() => setRecOpen(false)}
+          onClose={() => { setRecOpen(false); compassRef.current?.refresh(); }}
         />
       )}
 
