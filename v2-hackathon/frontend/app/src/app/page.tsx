@@ -490,11 +490,11 @@ export default function Home() {
       <CompassLabels ref={compassRef} visible={!isDragging} />
 
       {/* Overlays — rendered at root level for full-screen coverage */}
-      {queueOpen && <QueuePanel onClose={() => setQueueOpen(false)} />}
+      {queueOpen && <QueuePanel onClose={() => { setQueueOpen(false); compassRef.current?.refresh(); }} />}
 
       {menuOpen && (
         <MenuDrawer
-          onClose={() => setMenuOpen(false)}
+          onClose={() => { setMenuOpen(false); compassRef.current?.refresh(); }}
           onSearch={handleSearch}
           onReset={handleReset}
           hasActiveFilters={activeFilters}
@@ -595,14 +595,14 @@ export default function Home() {
           show={selectedShow.show}
           screenX={selectedShow.sx}
           screenY={selectedShow.sy}
-          onClose={() => setSelectedShow(null)}
+          onClose={() => { setSelectedShow(null); compassRef.current?.refresh(); }}
         />
       )}
 
       {recOpen && (
         <RecDialog
           shows={allShowsRef.current}
-          onClose={() => setRecOpen(false)}
+          onClose={() => { setRecOpen(false); compassRef.current?.refresh(); }}
         />
       )}
 

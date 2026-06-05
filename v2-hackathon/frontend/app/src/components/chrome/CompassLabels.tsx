@@ -12,6 +12,7 @@ import type { CoordBounds } from "@/services/backend";
 export interface CompassLabelsHandle {
   update: (cx: number, cy: number, zoom?: number) => void;
   setBounds: (bounds: CoordBounds) => void;
+  refresh: () => void;
 }
 
 interface CompassLabelsProps {
@@ -60,6 +61,7 @@ const CompassLabels = forwardRef<CompassLabelsHandle, CompassLabelsProps>(functi
     down: "",
     left: "",
     right: "",
+    center: "",
   });
 
   const fetchDirections = useCallback(async (cx: number, cy: number, zoom: number) => {
@@ -75,13 +77,17 @@ const CompassLabels = forwardRef<CompassLabelsHandle, CompassLabelsProps>(functi
     abortRef.current = controller;
 
     try {
+      // Fetch 4 directions + center (radius=0) in parallel
+      const allDirs = [...DIRECTIONS, "center" as const];
       const results = await Promise.all(
-        DIRECTIONS.map(async (dir) => {
-          const url = `/api/direction?x=${rawX.toFixed(2)}&y=${rawY.toFixed(2)}&dir=${dir}&radius=${radius}`;
+        allDirs.map(async (dir) => {
+          const r = dir === "center" ? 0 : radius;
+          const d = dir === "center" ? "right" : dir; // direction doesn't matter for radius=0
+          const url = `/api/direction?x=${rawX.toFixed(2)}&y=${rawY.toFixed(2)}&dir=${d}&radius=${r}`;
           const res = await fetch(url, { signal: controller.signal });
           if (!res.ok) return { direction: dir, summary: "" };
           const data: DirectionResponse = await res.json();
-          return data;
+          return { direction: dir, summary: data.summary || "" };
         }),
       );
 
@@ -122,6 +128,16 @@ const CompassLabels = forwardRef<CompassLabelsHandle, CompassLabelsProps>(functi
       lastFetchRef.current = { x: -Infinity, y: -Infinity, zoom: -1 }; // reset so next update also fires
       fetchDirections(x, y, zoom);
     },
+    refresh() {
+      // Re-fetch directions at the current camera position (e.g. after closing an overlay)
+      // Reset lastFetchRef so the next update() call also triggers a fetch as backup
+      lastFetchRef.current = { x: -Infinity, y: -Infinity, zoom: -1 };
+      // Delay slightly to let React finish re-renders (avoids abort race with pushCamera→update)
+      setTimeout(() => {
+        const { x, y, zoom } = lastCameraRef.current;
+        fetchDirections(x, y, zoom);
+      }, 100);
+    },
   }), [fetchDirections]);
 
   const baseStyle: React.CSSProperties = {
@@ -148,6 +164,22 @@ const CompassLabels = forwardRef<CompassLabelsHandle, CompassLabelsProps>(functi
 
   return (
     <>
+      {/* Center — current space name */}
+      {labels.center && (
+        <div style={{
+          ...baseStyle,
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          opacity: visible ? 0.15 : 0,
+          fontSize: "18px",
+          fontWeight: 600,
+          letterSpacing: "0.2em",
+          maxWidth: "280px",
+        }}>
+          {labels.center}
+        </div>
+      )}
       {/* Top center — up */}
       {labels.up && (
         <div style={{ ...baseStyle, top: 18, left: "50%", transform: "translateX(-50%)" }}>
