@@ -193,6 +193,11 @@
             font-weight: 500;
         }
 
+        [data-slide="8"] .paradox-text {
+            font-size: 2.6rem;
+            max-width: 70rem;
+        }
+
         .slide-paradox.active .headline {
             animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
         }
@@ -479,6 +484,41 @@
             line-height: 1.6;
         }
 
+        [data-slide="12"] {
+            padding-top: 6rem !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+        }
+
+        [data-slide="12"] .headline {
+            margin-bottom: 0;
+        }
+
+        [data-slide="12"] .direction-grid {
+            flex: 1;
+            display: grid;
+            align-content: center;
+            width: 75%;
+            max-width: none;
+            margin: 0 auto;
+            gap: 2.5rem;
+        }
+
+        [data-slide="12"] .direction-card {
+            padding: 3rem 2.5rem;
+        }
+
+        [data-slide="12"] .direction-card h3 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
+
+        [data-slide="12"] .direction-card p {
+            font-size: 1.3rem;
+            line-height: 1.7;
+        }
+
         /* Navigation */
         .nav {
             position: fixed;
@@ -642,206 +682,234 @@
             margin-top: 4px;
         }
 
-        /* SLIDE 1 — Animated Story */
-        .story-scene {
+        /* SLIDE 2 — Caricature SVG Scenes */
+        .caricature-container {
             position: relative;
             width: 100%;
             height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
         }
 
-        /* Phase 1: User character */
-        .user-character {
-            position: absolute;
-            opacity: 0;
-        }
-
-        .slide.active .user-character {
-            animation: scene1-appear 1.2s ease 0.5s forwards, scene1-fade-out 1s ease 5s forwards;
-        }
-
-        /* Speech bubble positioning for Phase 1 — anchored at top-right of head */
-        .user-character .bubble {
-            top: -1.5rem;
-            left: 7.5rem;
-        }
-
-        .slide.active .user-character .bubble-hello {
-            animation: bubbleIn 0.8s ease 2s forwards, bubbleOut 0.6s ease 4.5s forwards;
-        }
-
-        /* Phase 2: Living room — TV+sofa in top 70%, title in bottom 30% */
-        .living-room {
+        .caricature-scene {
             position: absolute;
             width: 100%;
             height: 100%;
             display: flex;
+            align-items: center;
+            justify-content: center;
             flex-direction: column;
             opacity: 0;
         }
 
-        .slide.active .living-room {
-            animation: scene2-appear 1.5s ease 6s forwards;
+        .caricature-scene .scene-svg {
+            width: 85%;
+            max-width: 1400px;
+            height: auto;
         }
 
-        .living-room-scene {
-            position: relative;
-            width: 100%;
-            height: 60%;
-        }
-
-        /* Sofa — facing AWAY, close to TV */
-        .sofa {
+        .caricature-scene .time-badge {
             position: absolute;
-            bottom: 15%;
+            top: 4%;
+            right: 6%;
+            font-family: 'Instrument Serif', serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: -0.02em;
+            opacity: 0.85;
+        }
+
+        .caricature-scene .time-badge.danger {
+            color: var(--accent-red);
+            animation: pulseBadge 1.2s infinite;
+        }
+
+        .caricature-scene .scene-caption {
+            position: absolute;
+            bottom: 5%;
             left: 50%;
             transform: translateX(-50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.4rem;
+            font-weight: 400;
+            color: rgba(244, 235, 217, 0.55);
+            white-space: nowrap;
         }
 
-        .sofa-back {
-            width: 20rem;
-            height: 7.5rem;
-            background: linear-gradient(180deg, rgba(167, 139, 250, 0.18), rgba(167, 139, 250, 0.06));
-            border: 1px solid var(--glass-border);
-            border-radius: 2rem 2rem 0.3rem 0.3rem;
-            position: relative;
+        .caricature-scene .scene-caption.danger-text {
+            color: var(--accent-red);
+            font-weight: 500;
         }
 
-        .sofa-back::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 1px;
-            height: 4rem;
-            background: var(--glass-border);
-            box-shadow: -5rem 0 0 var(--glass-border), 5rem 0 0 var(--glass-border);
+        .caricature-scene .scene-caption.gave-up-text {
+            font-family: 'Instrument Serif', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--accent-red);
         }
 
-        .sofa-seat {
-            width: 22rem;
-            height: 2.5rem;
-            background: rgba(167, 139, 250, 0.1);
-            border: 1px solid var(--glass-border);
-            border-top: none;
-            border-radius: 0 0 0.6rem 0.6rem;
-            margin: 0 auto;
+        /* Scene timing: 1→2→3→4 sequenced on slide activation */
+        .slide.active .caricature-scene-1 {
+            animation: sceneIn 0.6s ease 0.3s forwards, sceneOut 0.6s ease 5s forwards;
+        }
+        .slide.active .caricature-scene-2 {
+            animation: sceneIn 0.6s ease 5.5s forwards, sceneOut 0.6s ease 11s forwards;
+        }
+        .slide.active .caricature-scene-3 {
+            animation: sceneIn 0.6s ease 11.5s forwards, sceneOut 0.6s ease 15.5s forwards;
+        }
+        .slide.active .caricature-scene-4 {
+            animation: sceneIn 0.6s ease 16s forwards;
         }
 
-        .sofa-arm-left, .sofa-arm-right {
-            position: absolute;
-            top: 0.8rem;
-            width: 1.6rem;
-            height: 6.5rem;
-            background: rgba(167, 139, 250, 0.12);
-            border: 1px solid var(--glass-border);
+        @keyframes sceneIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes sceneOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        @keyframes pulseBadge {
+            0%,100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
-        .sofa-arm-left {
-            left: -1.6rem;
-            border-radius: 1rem 0 0 1rem;
-            border-right: none;
+        /* Caricature animations */
+        .slide.active .person-walk {
+            animation: walkAcross 4s ease-out forwards;
+        }
+        @keyframes walkAcross {
+            0%   { transform: translateX(160px); opacity: 0; }
+            10%  { transform: translateX(160px); opacity: 1; }
+            100% { transform: translateX(440px); opacity: 1; }
         }
 
-        .sofa-arm-right {
-            right: -1.6rem;
-            border-radius: 0 1rem 1rem 0;
-            border-left: none;
+        .slide.active .walk-leg-l {
+            animation: legSwing 0.5s ease-in-out infinite alternate;
+            transform-origin: center 460px;
+        }
+        .slide.active .walk-leg-r {
+            animation: legSwing 0.5s ease-in-out infinite alternate-reverse;
+            transform-origin: center 460px;
+        }
+        @keyframes legSwing {
+            from { transform: rotate(-8deg); }
+            to   { transform: rotate(8deg); }
         }
 
-        .sofa-user {
-            position: absolute;
-            top: -4.2rem;
-            left: 50%;
-            transform: translateX(-50%);
+        .slide.active .briefcase-toss {
+            animation: bagToss 3.5s ease-out forwards;
+        }
+        @keyframes bagToss {
+            0%,15% { transform: translateX(200px) translateY(0); opacity: 1; }
+            35%    { transform: translateX(200px) translateY(0); opacity: 1; }
+            55%    { transform: translateX(360px) translateY(-60px) rotate(-10deg); opacity: 1; }
+            75%    { transform: translateX(380px) translateY(-20px) rotate(5deg); opacity: 1; }
+            100%   { transform: translateX(380px) translateY(-5px) rotate(2deg); opacity: 0.8; }
         }
 
-        /* Frustration bubble — removed */
-
-        /* TV in living room scene — positioned higher with more gap */
-        .scene-tv {
-            position: absolute;
-            top: 8%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 30rem;
-            height: 18rem;
-            border: 2px solid var(--ink-faint);
-            border-radius: 0.5rem;
-            overflow: hidden;
-            background: rgba(7, 7, 12, 0.95);
-            box-shadow: 0 0 5rem rgba(96, 165, 250, 0.1);
+        /* Steam */
+        .steam {
+            animation: steamUp 2s ease-out infinite;
+            opacity: 0;
+        }
+        .steam.st1 { animation-delay: 0s; }
+        .steam.st2 { animation-delay: 0.6s; }
+        .steam.st3 { animation-delay: 1.2s; }
+        @keyframes steamUp {
+            0%   { opacity: 0; transform: translateY(0); }
+            30%  { opacity: 0.6; }
+            100% { opacity: 0; transform: translateY(-18px); }
         }
 
-        .scene-tv-stand {
-            position: absolute;
-            top: calc(8% + 18rem);
-            left: 50%;
-            transform: translateX(-50%);
-            width: 7rem;
-            height: 0.8rem;
-            background: var(--ink-faint);
-            border-radius: 0 0 0.3rem 0.3rem;
+        /* TV scroll */
+        .tv-ui-scroll {
+            animation: scrollContent 6s linear infinite;
+        }
+        @keyframes scrollContent {
+            0%   { transform: translateY(0); }
+            100% { transform: translateY(-30px); }
         }
 
-        /* OTT scrolling grid inside TV */
-        .ott-tile {
-            flex: 1;
-            min-width: 4rem;
-            height: 3.6rem;
-            border-radius: 0.3rem;
-            flex-shrink: 0;
-            opacity: 0.7;
+        .tv-cursor {
+            animation: cursorMove 3s ease-in-out infinite;
+        }
+        @keyframes cursorMove {
+            0%,20%   { transform: translateX(0); }
+            25%,45%  { transform: translateX(46px); }
+            50%,70%  { transform: translateX(92px); }
+            75%,95%  { transform: translateX(138px); }
+            100%     { transform: translateX(0); }
         }
 
-        .ott-tiles-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            animation: ott-scroll-vertical 5s linear infinite;
-            padding: 2.2rem 0.5rem 0.5rem;
-            width: 100%;
+        /* Tick tick */
+        .tick-tick .tick1 { animation: tickFade 1.2s infinite; }
+        .tick-tick .tick2 { animation: tickFade 1.2s infinite 0.4s; }
+        .tick-tick .tick3 { animation: tickFade 1.2s infinite 0.8s; }
+        @keyframes tickFade {
+            0%,100% { opacity: 0.1; }
+            50%     { opacity: 0.6; }
         }
 
-        .ott-tiles-row {
-            display: flex;
-            gap: 0.5rem;
-            width: 100%;
+        .tick-tick-loud .tick1 { animation: tickLoud 0.8s infinite; }
+        .tick-tick-loud .tick2 { animation: tickLoud 0.8s infinite 0.27s; }
+        .tick-tick-loud .tick3 { animation: tickLoud 0.8s infinite 0.54s; }
+        @keyframes tickLoud {
+            0%,100% { opacity: 0.2; transform: scale(1); }
+            50%     { opacity: 1; transform: scale(1.1); }
         }
 
-        @keyframes ott-scroll-vertical {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-8rem); }
+        .ir-signal {
+            animation: irPulse 2s infinite;
+        }
+        @keyframes irPulse {
+            0%,100% { opacity: 0; }
+            30%,70% { opacity: 1; }
         }
 
-        .scene-tv-header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2rem;
-            background: rgba(7, 7, 12, 0.9);
-            display: flex;
-            align-items: center;
-            padding: 0 0.8rem;
-            gap: 0.5rem;
-            z-index: 2;
+        /* Frustrated shake */
+        .person-frustrated {
+            animation: shake 0.3s infinite;
+        }
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            25%     { transform: translateX(-2px); }
+            75%     { transform: translateX(2px); }
         }
 
-        .scene-tv-header-dot {
-            width: 0.4rem;
-            height: 0.4rem;
-            border-radius: 50%;
-            background: var(--accent-red);
+        .clock-pulse {
+            animation: clockGlow 1s infinite;
+        }
+        @keyframes clockGlow {
+            0%,100% { filter: drop-shadow(0 0 0px transparent); }
+            50%     { filter: drop-shadow(0 0 12px rgba(248,113,113,0.4)); }
         }
 
-        .scene-tv-header-dot:nth-child(2) { background: var(--accent-amber); }
-        .scene-tv-header-dot:nth-child(3) { background: var(--accent-teal); }
+        /* Scene 4: gave up */
+        .person-gaveup {
+            animation: gaveUpBounce 0.8s ease-out;
+        }
+        @keyframes gaveUpBounce {
+            0%   { transform: translateY(40px); opacity: 0; }
+            60%  { transform: translateY(-5px); opacity: 1; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
 
-        /* Clock — positioned top-right with more spacing from TV */
+        .crt-line {
+            animation: crtOff 2.5s ease-out forwards;
+        }
+        @keyframes crtOff {
+            0%   { width: 292px; height: 177px; y: 254; x: 834; opacity: 1; }
+            40%  { width: 292px; height: 3px; y: 342; x: 834; opacity: 1; }
+            70%  { width: 120px; height: 3px; x: 920; y: 342; opacity: 1; }
+            100% { width: 0px; height: 0px; x: 980; y: 342; opacity: 0; }
+        }
+
+        /* Wall Clock (shared by slide 4) */
         .wall-clock {
             position: absolute;
             top: 6%;
@@ -855,7 +923,6 @@
             justify-content: center;
         }
 
-        /* Clock hour markers */
         .wall-clock::before {
             content: '';
             position: absolute;
@@ -892,11 +959,6 @@
             z-index: 2;
         }
 
-        /* Minute hand: rotates 180deg (30 min) over 8 seconds, then stops */
-        .slide.active .clock-hand-min {
-            animation: clock-spin-30min 8s linear 6.5s forwards;
-        }
-
         .clock-hand-hour {
             position: absolute;
             bottom: 50%;
@@ -905,7 +967,7 @@
             height: 18px;
             background: var(--accent-red);
             transform-origin: bottom center;
-            transform: rotate(240deg);
+            transform: rotate(0deg);
             border-radius: 1px;
             z-index: 1;
         }
@@ -924,60 +986,249 @@
             text-align: center;
         }
 
-        .slide.active .clock-label {
-            animation: clockLabelIn 0.8s ease 15s forwards;
-        }
-
         @keyframes clockLabelIn {
             from { opacity: 0; transform: translateX(-50%) translateY(0.5rem); }
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
 
-        /* 30 min = 180 degrees rotation */
-        @keyframes clock-spin-30min {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(180deg); }
-        }
-
-        /* Title in bottom 40% region */
-        .story-title {
-            height: 40%;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-        }
-
-        .slide.active .story-title {
-            animation: bubbleIn 1s ease 7.5s forwards;
-        }
-
-        .story-title h1 {
-            font-family: 'Instrument Serif', serif;
-            font-size: 4.5rem;
-            line-height: 1.25;
-            text-align: center;
-        }
-
-        .story-title h1 em {
-            font-style: italic;
-            color: var(--accent-violet);
-            display: block;
-        }
-
-        @keyframes scene1-appear {
-            from { opacity: 0; transform: scale(0.7) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        @keyframes scene1-fade-out {
-            to { opacity: 0; transform: scale(0.6) translateY(30px); }
-        }
-
         @keyframes scene2-appear {
             from { opacity: 0; }
             to { opacity: 1; }
+        }
+
+        @keyframes bubbleIn {
+            from { opacity: 0; transform: scale(0.8) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* === Paradox bullet list === */
+        .paradox-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            max-width: 55rem;
+        }
+
+        .paradox-list li {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3rem;
+            font-weight: 400;
+            line-height: 1.6;
+            color: rgba(244, 235, 217, 0.55);
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .paradox-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--accent-violet);
+        }
+
+        /* === Iceberg (ACR + Cinebula) === */
+        .iceberg {
+            width: 100%;
+            max-width: 57rem;
+        }
+
+        .ice-top {
+            padding: 2.7rem 3rem;
+            background: rgba(255,255,255,0.02);
+            border: 2px solid rgba(255,255,255,0.08);
+            border-radius: 1.2rem 1.2rem 0 0;
+            text-align: center;
+        }
+
+        .ice-line {
+            height: 4px;
+            background: linear-gradient(90deg, transparent, rgba(167,139,250,0.4), transparent);
+        }
+
+        .ice-bottom {
+            padding: 2.7rem 3rem;
+            background: rgba(167,139,250,0.05);
+            border: 2px solid var(--accent-violet);
+            border-radius: 0 0 1.2rem 1.2rem;
+            text-align: center;
+        }
+
+        .ice-head {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(244, 235, 217, 0.55);
+            margin: 0 0 0.9rem;
+        }
+
+        .ice-bottom .ice-head {
+            color: var(--accent-violet);
+        }
+
+        .ice-top p, .ice-bottom p {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.95rem;
+            margin: 0.75rem 0;
+            color: var(--ink);
+        }
+
+        .iceberg-punch {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.95rem;
+            color: rgba(244, 235, 217, 0.55);
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .iceberg-punch em {
+            font-style: italic;
+            color: var(--accent-violet);
+        }
+
+        /* === ROI 2x2 Grid === */
+        .roi-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            max-width: 56rem;
+            width: 100%;
+        }
+
+        .roi-grid .stat-card {
+            padding: 3rem 2.5rem;
+        }
+
+        .roi-grid .stat-value {
+            font-size: 3.5rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .roi-grid .stat-label {
+            font-size: 1.65rem;
+        }
+
+        [data-slide="11"] {
+            padding-top: 6rem !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+        }
+
+        [data-slide="11"] .headline {
+            margin-bottom: 0;
+        }
+
+        [data-slide="11"] .roi-grid {
+            flex: 1;
+            display: grid;
+            align-content: center;
+            margin: 0 auto;
+        }
+
+        /* === SLIDE: THE COST (loss bars) === */
+        .slide-cost {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 !important;
+        }
+
+        .cost-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .loss-bars {
+            width: 100%;
+            max-width: 50rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .loss-row {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            opacity: 0;
+            transform: translateY(1rem);
+        }
+
+        .slide-cost.active .loss-row:nth-child(1) {
+            animation: fadeUp 0.6s ease 0.5s forwards;
+        }
+        .slide-cost.active .loss-row:nth-child(2) {
+            animation: fadeUp 0.6s ease 1.2s forwards;
+        }
+        .slide-cost.active .loss-row:nth-child(3) {
+            animation: fadeUp 0.6s ease 1.9s forwards;
+        }
+
+        .loss-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.4rem;
+            font-weight: 500;
+            min-width: 14rem;
+            text-align: left;
+            color: var(--ink);
+        }
+
+        .bar-track {
+            flex: 1;
+            height: 1rem;
+            background: rgba(255,255,255,0.04);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, var(--accent-red), #ff7b7b);
+            border-radius: 0.5rem;
+        }
+
+        .slide-cost.active .bar-fill {
+            animation: growBar 1.5s ease-out 0.8s forwards;
+        }
+        .slide-cost.active .loss-row:nth-child(2) .bar-fill {
+            animation-delay: 1.5s;
+        }
+        .slide-cost.active .loss-row:nth-child(3) .bar-fill {
+            animation-delay: 2.2s;
+        }
+
+        @keyframes growBar { to { width: var(--w); } }
+
+        .loss-val {
+            font-family: 'Instrument Serif', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            min-width: 4rem;
+            text-align: right;
+            color: var(--accent-red);
+        }
+
+        .big-note {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: rgba(244, 235, 217, 0.55);
+            margin-top: 2rem;
+            opacity: 0;
+        }
+
+        .slide-cost.active .big-note {
+            animation: fadeUp 0.6s ease 3s forwards;
         }
 
         /* === SLIDE 3: 24-Hour Story === */
@@ -1174,175 +1425,426 @@
 
         <!-- SLIDE 2: WHY (Animated Story) -->
         <div class="slide" data-slide="2">
-            <div class="story-scene">
-                <!-- Phase 1: User appears -->
-                <div class="user-character">
-                    <div class="human human--standing">
-                        <div class="human__head"></div>
-                        <div class="human__neck"></div>
-                        <div class="human__body"></div>
-                    </div>
-                    <div class="bubble bubble-hello" data-direction="right">Hi, I'm Ron 👋</div>
-                </div>
+            <div class="caricature-container">
 
-                <!-- Phase 2: Living room scene -->
-                <div class="living-room">
-                    <div class="living-room-scene">
+                <!-- SCENE 1: Walking in tired from work -->
+                <div class="caricature-scene caricature-scene-1">
+                    <svg class="scene-svg" viewBox="0 0 1200 650" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Room -->
+                        <rect x="0" y="490" width="1200" height="160" fill="#24202c"/>
+                        <rect x="0" y="490" width="1200" height="4" fill="#332a3a"/>
+                        <rect x="0" y="0" width="1200" height="490" fill="#1a1828"/>
+                        <rect x="0" y="470" width="1200" height="20" fill="#221e30"/>
+                        <ellipse cx="600" cy="510" rx="160" ry="28" fill="#251a40" opacity="0.5"/>
+                        <!-- Window -->
+                        <rect x="140" y="60" width="200" height="250" rx="6" fill="#060818" stroke="#2a2a44" stroke-width="2"/>
+                        <circle cx="180" cy="100" r="1.5" fill="white" opacity="0.6"/>
+                        <circle cx="220" cy="130" r="2" fill="white" opacity="0.5"/>
+                        <circle cx="260" cy="85" r="1.5" fill="white" opacity="0.4"/>
+                        <circle cx="290" cy="110" r="20" fill="#f0e68c" opacity="0.7"/>
+                        <circle cx="297" cy="105" r="18" fill="#060818"/>
+                        <path d="M 135 55 Q 150 160 145 315" fill="#2a1a3a"/>
+                        <path d="M 345 55 Q 330 160 335 315" fill="#2a1a3a"/>
+                        <line x1="125" y1="55" x2="355" y2="55" stroke="#4a4a6a" stroke-width="3" stroke-linecap="round"/>
+                        <!-- Wall art -->
+                        <rect x="500" y="90" width="100" height="130" rx="3" fill="#181525" stroke="#3a3855" stroke-width="2"/>
+                        <!-- Bookshelf -->
+                        <rect x="680" y="80" width="100" height="200" fill="#1a1528" stroke="#2a2838" stroke-width="1.5" rx="3"/>
+                        <line x1="680" y1="130" x2="780" y2="130" stroke="#2a2838" stroke-width="1"/>
+                        <line x1="680" y1="180" x2="780" y2="180" stroke="#2a2838" stroke-width="1"/>
+                        <rect x="688" y="85" width="8" height="42" rx="1" fill="#4a2a3a"/>
+                        <rect x="698" y="90" width="7" height="37" rx="1" fill="#2a4a3a"/>
+                        <rect x="708" y="87" width="9" height="40" rx="1" fill="#3a3a5a"/>
+                        <!-- Floor lamp -->
+                        <line x1="1100" y1="490" x2="1100" y2="280" stroke="#3a3a55" stroke-width="3"/>
+                        <ellipse cx="1100" cy="275" rx="25" ry="15" fill="#2a2040" stroke="#4a4a6a" stroke-width="1.5"/>
+                        <!-- Sofa -->
+                        <rect x="250" y="400" width="250" height="90" rx="25" fill="#2d2548"/>
+                        <rect x="250" y="380" width="250" height="35" rx="15" fill="#352d52"/>
+                        <rect x="245" y="375" width="40" height="115" rx="15" fill="#352d52"/>
+                        <rect x="505" y="375" width="40" height="115" rx="15" fill="#352d52"/>
+                        <!-- Coffee Table with hot food -->
+                        <rect x="580" y="445" width="160" height="10" rx="5" fill="#4a3520"/>
+                        <line x1="600" y1="455" x2="595" y2="490" stroke="#4a3520" stroke-width="4" stroke-linecap="round"/>
+                        <line x1="720" y1="455" x2="725" y2="490" stroke="#4a3520" stroke-width="4" stroke-linecap="round"/>
+                        <ellipse cx="660" cy="440" rx="30" ry="8" fill="#e8e8e8" opacity="0.9"/>
+                        <ellipse cx="652" cy="435" rx="10" ry="5" fill="#d4722a" opacity="0.9"/>
+                        <ellipse cx="668" cy="433" rx="7" ry="4" fill="#5a9a4a" opacity="0.85"/>
+                        <rect x="673" y="432" width="10" height="5" rx="2" fill="#f0d060" opacity="0.8"/>
+                        <!-- Steam -->
+                        <g class="steam-group">
+                            <path class="steam st1" d="M 648 415 Q 646 400 650 385" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/>
+                            <path class="steam st2" d="M 660 413 Q 662 395 658 380" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round"/>
+                            <path class="steam st3" d="M 672 415 Q 674 398 670 383" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" stroke-linecap="round"/>
+                        </g>
+                        <!-- LG TV (off) -->
+                        <rect x="830" y="440" width="200" height="50" rx="4" fill="#1a1828"/>
+                        <rect x="830" y="250" width="300" height="185" rx="3" fill="#050508" stroke="#222" stroke-width="2"/>
+                        <rect x="834" y="254" width="292" height="177" rx="2" fill="#08080f"/>
+                        <rect x="970" y="435" width="24" height="8" rx="2" fill="#1a1a28"/>
+                        <text x="980" y="462" text-anchor="middle" fill="white" font-size="10" font-weight="700" letter-spacing="2">LG</text>
                         <!-- Clock -->
-                        <div class="wall-clock">
-                            <div class="clock-center"></div>
-                            <div class="clock-hand-hour"></div>
-                            <div class="clock-hand-min"></div>
-                        </div>
-
-                        <!-- TV -->
-                        <div class="scene-tv">
-                            <div class="scene-tv-header">
-                                <div class="scene-tv-header-dot"></div>
-                                <div class="scene-tv-header-dot"></div>
-                                <div class="scene-tv-header-dot"></div>
-                            </div>
-                            <div class="ott-tiles-wrapper">
-                                <div class="ott-tiles-row">
-                                    <div class="ott-tile" style="background: rgba(167,139,250,0.3)"></div>
-                                    <div class="ott-tile" style="background: rgba(96,165,250,0.3)"></div>
-                                    <div class="ott-tile" style="background: rgba(251,191,36,0.2)"></div>
-                                    <div class="ott-tile" style="background: rgba(45,212,191,0.2)"></div>
-                                </div>
-                                <div class="ott-tiles-row">
-                                    <div class="ott-tile" style="background: rgba(248,113,113,0.25)"></div>
-                                    <div class="ott-tile" style="background: rgba(167,139,250,0.2)"></div>
-                                    <div class="ott-tile" style="background: rgba(45,212,191,0.3)"></div>
-                                    <div class="ott-tile" style="background: rgba(96,165,250,0.2)"></div>
-                                </div>
-                                <div class="ott-tiles-row">
-                                    <div class="ott-tile" style="background: rgba(251,191,36,0.25)"></div>
-                                    <div class="ott-tile" style="background: rgba(248,113,113,0.2)"></div>
-                                    <div class="ott-tile" style="background: rgba(167,139,250,0.25)"></div>
-                                    <div class="ott-tile" style="background: rgba(96,165,250,0.25)"></div>
-                                </div>
-                                <div class="ott-tiles-row">
-                                    <div class="ott-tile" style="background: rgba(45,212,191,0.25)"></div>
-                                    <div class="ott-tile" style="background: rgba(251,191,36,0.3)"></div>
-                                    <div class="ott-tile" style="background: rgba(248,113,113,0.3)"></div>
-                                    <div class="ott-tile" style="background: rgba(167,139,250,0.2)"></div>
-                                </div>
-                                <div class="ott-tiles-row">
-                                    <div class="ott-tile" style="background: rgba(96,165,250,0.3)"></div>
-                                    <div class="ott-tile" style="background: rgba(167,139,250,0.3)"></div>
-                                    <div class="ott-tile" style="background: rgba(45,212,191,0.2)"></div>
-                                    <div class="ott-tile" style="background: rgba(251,191,36,0.2)"></div>
-                                </div>
-                                <div class="ott-tiles-row">
-                                    <div class="ott-tile" style="background: rgba(167,139,250,0.2)"></div>
-                                    <div class="ott-tile" style="background: rgba(248,113,113,0.25)"></div>
-                                    <div class="ott-tile" style="background: rgba(96,165,250,0.3)"></div>
-                                    <div class="ott-tile" style="background: rgba(45,212,191,0.25)"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="scene-tv-stand"></div>
-
-                        <!-- Sofa (facing away from viewer, toward TV) -->
-                        <div class="sofa">
-                            <div class="sofa-user">
-                                <div class="human human--seated">
-                                    <div class="human__head"></div>
-                                    <div class="human__shoulders"></div>
-                                </div>
-                            </div>
-                            <div class="sofa-back">
-                                <div class="sofa-arm-left"></div>
-                                <div class="sofa-arm-right"></div>
-                            </div>
-                            <div class="sofa-seat"></div>
-                        </div>
-                    </div>
-
-                    <!-- Title in bottom 30% -->
-                    <div class="story-title">
-                        <h1>Recommendations have<em>stopped recommending.</em></h1>
-                    </div>
+                        <circle cx="440" cy="130" r="40" fill="#14121f" stroke="#3a3855" stroke-width="2"/>
+                        <line x1="440" y1="130" x2="440" y2="107" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="440" y1="130" x2="458" y2="130" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+                        <circle cx="440" cy="130" r="3" fill="white"/>
+                        <!-- Caricature: Walking in -->
+                        <g class="person-walk">
+                            <ellipse cx="0" cy="492" rx="22" ry="6" fill="rgba(0,0,0,0.2)"/>
+                            <circle cx="0" cy="362" r="26" fill="#f0c8a0"/>
+                            <ellipse cx="0" cy="340" rx="20" ry="10" fill="#3a2a20"/>
+                            <path d="M -15 342 Q -10 332 -3 340 Q 3 330 10 340 Q 16 332 18 342" fill="#3a2a20"/>
+                            <ellipse cx="-9" cy="360" rx="5" ry="3" fill="white"/>
+                            <ellipse cx="9" cy="360" rx="5" ry="3" fill="white"/>
+                            <circle cx="-8" cy="361" r="2.5" fill="#333"/>
+                            <circle cx="10" cy="361" r="2.5" fill="#333"/>
+                            <path d="M -14 357 Q -9 354 -4 357" fill="#f0c8a0" stroke="#c09870" stroke-width="0.8"/>
+                            <path d="M 4 357 Q 9 354 14 357" fill="#f0c8a0" stroke="#c09870" stroke-width="0.8"/>
+                            <path d="M -6 374 Q 0 371 6 374" fill="none" stroke="#8a6040" stroke-width="1.5" stroke-linecap="round"/>
+                            <ellipse cx="-24" cy="365" rx="5" ry="7" fill="#e8b888"/>
+                            <path d="M -18 388 L -22 440 L 22 440 L 18 388 Z" fill="#3a5a7a"/>
+                            <path d="M -3 388 L -4 420 L 0 425 L 4 420 L 3 388 Z" fill="#c03030" opacity="0.8"/>
+                            <path d="M -10 387 L 0 393 L 10 387" fill="none" stroke="white" stroke-width="1.2"/>
+                            <path d="M -18 400 Q -28 420 -22 445" fill="none" stroke="#3a5a7a" stroke-width="8" stroke-linecap="round"/>
+                            <path d="M 18 400 Q 28 420 22 445" fill="none" stroke="#3a5a7a" stroke-width="8" stroke-linecap="round"/>
+                            <circle cx="-22" cy="447" r="5" fill="#f0c8a0"/>
+                            <circle cx="22" cy="447" r="5" fill="#f0c8a0"/>
+                            <path d="M -18 440 L -20 490 L -8 490 L -5 445 Z" fill="#2a2a40"/>
+                            <path d="M 18 440 L 20 490 L 8 490 L 5 445 Z" fill="#2a2a40"/>
+                            <ellipse cx="-16" cy="492" rx="8" ry="4" fill="#1a1a28"/>
+                            <ellipse cx="16" cy="492" rx="8" ry="4" fill="#1a1a28"/>
+                        </g>
+                        <!-- Briefcase -->
+                        <g class="briefcase-toss">
+                            <rect x="-18" y="0" width="36" height="26" rx="4" fill="#4a3520" stroke="#6a5530" stroke-width="1.5"/>
+                            <line x1="-6" y1="0" x2="6" y2="0" stroke="#8a7540" stroke-width="2.5" stroke-linecap="round"/>
+                            <rect x="-3" y="-3" width="6" height="6" rx="2" fill="#8a7540"/>
+                        </g>
+                        <!-- Door -->
+                        <rect x="40" y="140" width="110" height="350" rx="4" fill="#14121f" stroke="#2a2a44" stroke-width="2"/>
+                        <circle cx="130" cy="330" r="5" fill="#6a6a8a"/>
+                        <path d="M 40 140 L 10 165 L 10 465 L 40 490" fill="#1a182a" stroke="#2a2844" stroke-width="1.5"/>
+                    </svg>
+                    <div class="time-badge">8:00 PM</div>
+                    <div class="scene-caption">Home. Tired. Dinner's ready.</div>
                 </div>
+
+                <!-- SCENE 2: Seated, scrolling TV -->
+                <div class="caricature-scene caricature-scene-2">
+                    <svg class="scene-svg" viewBox="0 0 1200 650" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Room -->
+                        <rect x="0" y="490" width="1200" height="160" fill="#24202c"/>
+                        <rect x="0" y="490" width="1200" height="4" fill="#332a3a"/>
+                        <rect x="0" y="0" width="1200" height="490" fill="#1a1828"/>
+                        <rect x="0" y="470" width="1200" height="20" fill="#221e30"/>
+                        <ellipse cx="600" cy="510" rx="180" ry="35" fill="#1f1535" opacity="0.7"/>
+                        <!-- Window -->
+                        <rect x="140" y="60" width="200" height="250" rx="6" fill="#060818" stroke="#2a2a44" stroke-width="2"/>
+                        <circle cx="180" cy="100" r="1.5" fill="white" opacity="0.6"/>
+                        <circle cx="220" cy="130" r="2" fill="white" opacity="0.5"/>
+                        <circle cx="290" cy="110" r="20" fill="#f0e68c" opacity="0.6"/>
+                        <circle cx="297" cy="105" r="18" fill="#060818"/>
+                        <path d="M 135 55 Q 150 160 145 315" fill="#2a1a3a"/>
+                        <path d="M 345 55 Q 330 160 335 315" fill="#2a1a3a"/>
+                        <line x1="125" y1="55" x2="355" y2="55" stroke="#4a4a6a" stroke-width="3" stroke-linecap="round"/>
+                        <!-- Bookshelf -->
+                        <rect x="680" y="80" width="100" height="200" fill="#1a1528" stroke="#2a2838" stroke-width="1.5" rx="3"/>
+                        <line x1="680" y1="130" x2="780" y2="130" stroke="#2a2838" stroke-width="1"/>
+                        <line x1="680" y1="180" x2="780" y2="180" stroke="#2a2838" stroke-width="1"/>
+                        <rect x="688" y="85" width="8" height="42" rx="1" fill="#4a2a3a"/>
+                        <rect x="698" y="90" width="7" height="37" rx="1" fill="#2a4a3a"/>
+                        <rect x="708" y="87" width="9" height="40" rx="1" fill="#3a3a5a"/>
+                        <!-- Floor lamp -->
+                        <line x1="1100" y1="490" x2="1100" y2="280" stroke="#3a3a55" stroke-width="3"/>
+                        <ellipse cx="1100" cy="275" rx="25" ry="15" fill="#2a2040" stroke="#4a4a6a" stroke-width="1.5"/>
+                        <ellipse cx="1100" cy="268" rx="22" ry="12" fill="#ffa94d" opacity="0.25"/>
+                        <!-- Clock -->
+                        <circle cx="440" cy="130" r="40" fill="#14121f" stroke="#3a3855" stroke-width="2"/>
+                        <line x1="440" y1="130" x2="440" y2="107" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="440" y1="130" x2="460" y2="133" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+                        <circle cx="440" cy="130" r="3" fill="white"/>
+                        <!-- Sofa -->
+                        <rect x="250" y="400" width="250" height="90" rx="25" fill="#2d2548"/>
+                        <rect x="250" y="380" width="250" height="35" rx="15" fill="#352d52"/>
+                        <rect x="245" y="375" width="40" height="115" rx="15" fill="#352d52"/>
+                        <rect x="505" y="375" width="40" height="115" rx="15" fill="#352d52"/>
+                        <!-- Bag on sofa -->
+                        <rect x="290" y="382" width="36" height="26" rx="4" fill="#4a3520" stroke="#6a5530" stroke-width="1.5" transform="rotate(-8 308 395)"/>
+                        <!-- Coffee Table with food -->
+                        <rect x="580" y="445" width="160" height="10" rx="5" fill="#4a3520"/>
+                        <line x1="600" y1="455" x2="595" y2="490" stroke="#4a3520" stroke-width="4" stroke-linecap="round"/>
+                        <line x1="720" y1="455" x2="725" y2="490" stroke="#4a3520" stroke-width="4" stroke-linecap="round"/>
+                        <ellipse cx="660" cy="440" rx="30" ry="8" fill="#e8e8e8" opacity="0.9"/>
+                        <ellipse cx="652" cy="435" rx="10" ry="5" fill="#d4722a" opacity="0.9"/>
+                        <ellipse cx="668" cy="433" rx="7" ry="4" fill="#5a9a4a" opacity="0.85"/>
+                        <!-- Steam -->
+                        <g class="steam-group">
+                            <path class="steam st1" d="M 648 415 Q 646 400 650 385" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/>
+                            <path class="steam st2" d="M 660 413 Q 662 395 658 380" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round"/>
+                            <path class="steam st3" d="M 672 415 Q 674 398 670 383" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" stroke-linecap="round"/>
+                        </g>
+                        <!-- Caricature: Seated with remote -->
+                        <g class="person-seated">
+                            <ellipse cx="390" cy="470" rx="25" ry="6" fill="rgba(0,0,0,0.15)"/>
+                            <path d="M 375 445 Q 370 470 365 488" fill="none" stroke="#2a2a40" stroke-width="12" stroke-linecap="round"/>
+                            <path d="M 405 445 Q 410 470 415 488" fill="none" stroke="#2a2a40" stroke-width="12" stroke-linecap="round"/>
+                            <ellipse cx="365" cy="490" rx="9" ry="4" fill="#1a1a28"/>
+                            <ellipse cx="415" cy="490" rx="9" ry="4" fill="#1a1a28"/>
+                            <path d="M 372 388 L 368 445 L 412 445 L 408 388 Z" fill="#3a5a7a"/>
+                            <path d="M 387 388 L 386 405 L 390 408 L 394 405 L 393 388 Z" fill="#c03030" opacity="0.6"/>
+                            <path d="M 372 400 Q 355 415 350 430" fill="none" stroke="#3a5a7a" stroke-width="9" stroke-linecap="round"/>
+                            <path d="M 408 400 Q 430 395 450 388" fill="none" stroke="#3a5a7a" stroke-width="9" stroke-linecap="round"/>
+                            <circle cx="450" cy="386" r="5" fill="#f0c8a0"/>
+                            <rect x="448" y="378" width="6" height="16" rx="2" fill="#333"/>
+                            <circle cx="350" cy="432" r="5" fill="#f0c8a0"/>
+                            <circle cx="390" cy="358" r="26" fill="#f0c8a0"/>
+                            <ellipse cx="381" cy="356" rx="5" ry="4" fill="white"/>
+                            <ellipse cx="399" cy="356" rx="5" ry="4" fill="white"/>
+                            <circle cx="383" cy="357" r="2.5" fill="#333"/>
+                            <circle cx="401" cy="357" r="2.5" fill="#333"/>
+                            <line x1="384" y1="370" x2="396" y2="370" stroke="#8a6040" stroke-width="1.5" stroke-linecap="round"/>
+                            <ellipse cx="390" cy="335" rx="22" ry="8" fill="#3a2a20"/>
+                        </g>
+                        <!-- Tick tick -->
+                        <g class="tick-tick">
+                            <text x="430" y="185" fill="rgba(244,235,217,0.55)" font-size="13" font-weight="300" class="tick1">tick</text>
+                            <text x="435" y="205" fill="rgba(244,235,217,0.55)" font-size="13" font-weight="300" class="tick2">tick</text>
+                        </g>
+                        <!-- LG TV ON -->
+                        <rect x="830" y="440" width="200" height="50" rx="4" fill="#1a1828"/>
+                        <rect x="970" y="430" width="24" height="12" rx="2" fill="#1a1a28"/>
+                        <rect x="830" y="250" width="300" height="185" rx="3" fill="#0a0a0a" stroke="#333" stroke-width="2"/>
+                        <rect x="834" y="254" width="292" height="177" rx="2" fill="#0a0e18"/>
+                        <text x="980" y="446" text-anchor="middle" fill="white" font-size="10" font-weight="700" letter-spacing="2">LG</text>
+                        <ellipse cx="980" cy="340" rx="200" ry="130" fill="rgba(60,80,200,0.03)"/>
+                        <rect x="834" y="254" width="292" height="16" fill="rgba(0,0,0,0.7)"/>
+                        <text x="845" y="265" fill="#aaa" font-size="6">8:03 PM</text>
+                        <defs><clipPath id="tv-clip-2"><rect x="834" y="270" width="292" height="161"/></clipPath></defs>
+                        <g clip-path="url(#tv-clip-2)">
+                            <g class="tv-ui-scroll">
+                                <text x="845" y="282" fill="#888" font-size="6" font-weight="600">Continue Watching</text>
+                                <rect x="845" y="286" width="40" height="26" rx="2" fill="#1a3a5a"/>
+                                <rect x="889" y="286" width="40" height="26" rx="2" fill="#3a1a2a"/>
+                                <rect x="933" y="286" width="40" height="26" rx="2" fill="#1a2a1a"/>
+                                <rect x="977" y="286" width="40" height="26" rx="2" fill="#2a2a4a"/>
+                                <rect x="1021" y="286" width="40" height="26" rx="2" fill="#4a2a1a"/>
+                                <text x="845" y="324" fill="#888" font-size="6" font-weight="600">Trending Now</text>
+                                <rect x="845" y="328" width="40" height="26" rx="2" fill="#4a1a3a"/>
+                                <rect x="889" y="328" width="40" height="26" rx="2" fill="#1a4a3a"/>
+                                <rect x="933" y="328" width="40" height="26" rx="2" fill="#3a3a1a"/>
+                                <rect x="977" y="328" width="40" height="26" rx="2" fill="#1a1a4a"/>
+                                <rect x="1021" y="328" width="40" height="26" rx="2" fill="#3a1a1a"/>
+                                <text x="845" y="366" fill="#888" font-size="6" font-weight="600">Top Picks For You</text>
+                                <rect x="845" y="370" width="40" height="26" rx="2" fill="#2a1a4a"/>
+                                <rect x="889" y="370" width="40" height="26" rx="2" fill="#4a3a1a"/>
+                                <rect x="933" y="370" width="40" height="26" rx="2" fill="#1a4a4a"/>
+                                <rect x="977" y="370" width="40" height="26" rx="2" fill="#3a2a3a"/>
+                                <rect x="1021" y="370" width="40" height="26" rx="2" fill="#1a2a4a"/>
+                                <text x="845" y="408" fill="#888" font-size="6" font-weight="600">New Releases</text>
+                                <rect x="845" y="412" width="40" height="26" rx="2" fill="#3a3a3a"/>
+                                <rect x="889" y="412" width="40" height="26" rx="2" fill="#1a3a2a"/>
+                                <rect x="933" y="412" width="40" height="26" rx="2" fill="#4a2a3a"/>
+                                <rect x="977" y="412" width="40" height="26" rx="2" fill="#2a4a1a"/>
+                                <rect x="1021" y="412" width="40" height="26" rx="2" fill="#3a1a4a"/>
+                            </g>
+                        </g>
+                        <rect x="843" y="284" width="44" height="30" rx="3" fill="none" stroke="white" stroke-width="1.5" class="tv-cursor"/>
+                    </svg>
+                    <div class="time-badge">8:03 PM</div>
+                    <div class="scene-caption">Scrolling... scrolling... scrolling...</div>
+                </div>
+
+                <!-- SCENE 3: 27 min later — Frustrated -->
+                <div class="caricature-scene caricature-scene-3">
+                    <svg class="scene-svg" viewBox="0 0 1200 650" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Room (darker) -->
+                        <rect x="0" y="490" width="1200" height="160" fill="#211c28"/>
+                        <rect x="0" y="490" width="1200" height="4" fill="#302838"/>
+                        <rect x="0" y="0" width="1200" height="490" fill="#181525"/>
+                        <rect x="0" y="470" width="1200" height="20" fill="#201c2c"/>
+                        <ellipse cx="600" cy="510" rx="180" ry="35" fill="#1f1535" opacity="0.5"/>
+                        <!-- Clock RED -->
+                        <circle cx="440" cy="130" r="40" fill="#14121f" stroke="var(--accent-red)" stroke-width="2.5" class="clock-pulse"/>
+                        <line x1="440" y1="130" x2="438" y2="104" stroke="var(--accent-red)" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="440" y1="130" x2="418" y2="137" stroke="var(--accent-red)" stroke-width="1.2" stroke-linecap="round"/>
+                        <circle cx="440" cy="130" r="3" fill="var(--accent-red)"/>
+                        <!-- Sofa -->
+                        <rect x="250" y="400" width="250" height="90" rx="25" fill="#2d2548"/>
+                        <rect x="250" y="380" width="250" height="35" rx="15" fill="#352d52"/>
+                        <rect x="245" y="375" width="40" height="115" rx="15" fill="#352d52"/>
+                        <rect x="505" y="375" width="40" height="115" rx="15" fill="#352d52"/>
+                        <!-- Coffee Table with COLD food -->
+                        <rect x="580" y="445" width="160" height="10" rx="5" fill="#4a3520" opacity="0.7"/>
+                        <line x1="600" y1="455" x2="595" y2="490" stroke="#4a3520" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
+                        <line x1="720" y1="455" x2="725" y2="490" stroke="#4a3520" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
+                        <ellipse cx="660" cy="440" rx="30" ry="8" fill="#bbb" opacity="0.8"/>
+                        <ellipse cx="660" cy="438" rx="24" ry="6" fill="#999" opacity="0.7"/>
+                        <ellipse cx="650" cy="435" rx="10" ry="5" fill="#8a5535" opacity="0.9"/>
+                        <ellipse cx="665" cy="433" rx="7" ry="4" fill="#4a7a40" opacity="0.85"/>
+                        <rect x="673" y="432" width="11" height="6" rx="2" fill="#b09050" opacity="0.8"/>
+                        <!-- Frost crystals -->
+                        <circle cx="648" cy="431" r="2.5" fill="rgba(150,210,255,0.7)"/>
+                        <circle cx="662" cy="429" r="2" fill="rgba(150,210,255,0.6)"/>
+                        <circle cx="675" cy="432" r="2.2" fill="rgba(150,210,255,0.65)"/>
+                        <line x1="635" y1="440" x2="685" y2="430" stroke="var(--accent-red)" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+                        <text x="660" y="418" text-anchor="middle" fill="var(--accent-red)" font-size="12" font-weight="700" opacity="0.85">🥶 COLD</text>
+                        <!-- Caricature: Frustrated -->
+                        <g class="person-frustrated">
+                            <ellipse cx="390" cy="470" rx="25" ry="6" fill="rgba(0,0,0,0.15)"/>
+                            <path d="M 375 445 Q 370 470 365 488" fill="none" stroke="#2a2a40" stroke-width="12" stroke-linecap="round"/>
+                            <path d="M 405 445 Q 410 470 415 488" fill="none" stroke="#2a2a40" stroke-width="12" stroke-linecap="round"/>
+                            <ellipse cx="365" cy="490" rx="9" ry="4" fill="#1a1a28"/>
+                            <ellipse cx="415" cy="490" rx="9" ry="4" fill="#1a1a28"/>
+                            <path d="M 372 388 L 368 445 L 412 445 L 408 388 Z" fill="#3a5a7a"/>
+                            <path d="M 372 400 Q 350 410 345 420" fill="none" stroke="#3a5a7a" stroke-width="9" stroke-linecap="round"/>
+                            <path d="M 408 400 Q 435 395 450 385" fill="none" stroke="#3a5a7a" stroke-width="9" stroke-linecap="round"/>
+                            <circle cx="450" cy="383" r="5" fill="#f0c8a0"/>
+                            <rect x="448" y="375" width="6" height="16" rx="2" fill="#333"/>
+                            <circle cx="345" cy="422" r="5" fill="#f0c8a0"/>
+                            <circle cx="390" cy="358" r="26" fill="#f0c8a0"/>
+                            <line x1="375" y1="345" x2="383" y2="350" stroke="#5a3020" stroke-width="2.5" stroke-linecap="round"/>
+                            <line x1="405" y1="345" x2="397" y2="350" stroke="#5a3020" stroke-width="2.5" stroke-linecap="round"/>
+                            <ellipse cx="381" cy="357" rx="4" ry="2.5" fill="white"/>
+                            <ellipse cx="399" cy="357" rx="4" ry="2.5" fill="white"/>
+                            <circle cx="382" cy="357" r="2" fill="#333"/>
+                            <circle cx="400" cy="357" r="2" fill="#333"/>
+                            <path d="M 382 372 Q 390 368 398 372" fill="none" stroke="#8a4030" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M 405 340 L 408 336 L 412 340 L 415 336" fill="none" stroke="var(--accent-red)" stroke-width="1.5"/>
+                            <ellipse cx="390" cy="335" rx="22" ry="8" fill="#3a2a20"/>
+                            <path d="M 375 335 Q 380 328 385 335" fill="#3a2a20"/>
+                        </g>
+                        <!-- TICK TICK LOUD -->
+                        <g class="tick-tick-loud">
+                            <text x="420" y="185" fill="var(--accent-red)" font-size="16" font-weight="700" class="tick1">TICK</text>
+                            <text x="430" y="210" fill="var(--accent-red)" font-size="16" font-weight="700" class="tick2">TICK</text>
+                            <text x="418" y="235" fill="var(--accent-red)" font-size="16" font-weight="700" class="tick3">TICK</text>
+                        </g>
+                        <!-- LG TV still scrolling -->
+                        <rect x="830" y="440" width="200" height="50" rx="4" fill="#1a1828"/>
+                        <rect x="970" y="430" width="24" height="12" rx="2" fill="#1a1a28"/>
+                        <rect x="830" y="250" width="300" height="185" rx="3" fill="#0a0a0a" stroke="#333" stroke-width="2"/>
+                        <rect x="834" y="254" width="292" height="177" rx="2" fill="#0a0e18"/>
+                        <text x="980" y="446" text-anchor="middle" fill="white" font-size="10" font-weight="700" letter-spacing="2">LG</text>
+                        <rect x="834" y="254" width="292" height="16" fill="rgba(0,0,0,0.7)"/>
+                        <text x="845" y="265" fill="var(--accent-red)" font-size="6" font-weight="600">8:27 PM</text>
+                        <defs><clipPath id="tv-clip-3"><rect x="834" y="270" width="292" height="161"/></clipPath></defs>
+                        <g clip-path="url(#tv-clip-3)">
+                            <g class="tv-ui-scroll">
+                                <text x="845" y="282" fill="#888" font-size="6" font-weight="600">Continue Watching</text>
+                                <rect x="845" y="286" width="40" height="26" rx="2" fill="#1a3a5a"/>
+                                <rect x="889" y="286" width="40" height="26" rx="2" fill="#3a1a2a"/>
+                                <rect x="933" y="286" width="40" height="26" rx="2" fill="#1a2a1a"/>
+                                <rect x="977" y="286" width="40" height="26" rx="2" fill="#2a2a4a"/>
+                                <text x="845" y="324" fill="#888" font-size="6" font-weight="600">Trending Now</text>
+                                <rect x="845" y="328" width="40" height="26" rx="2" fill="#4a1a3a"/>
+                                <rect x="889" y="328" width="40" height="26" rx="2" fill="#1a4a3a"/>
+                                <rect x="933" y="328" width="40" height="26" rx="2" fill="#3a3a1a"/>
+                                <rect x="977" y="328" width="40" height="26" rx="2" fill="#1a1a4a"/>
+                                <text x="845" y="366" fill="#888" font-size="6" font-weight="600">Top Picks For You</text>
+                                <rect x="845" y="370" width="40" height="26" rx="2" fill="#2a1a4a"/>
+                                <rect x="889" y="370" width="40" height="26" rx="2" fill="#4a3a1a"/>
+                                <rect x="933" y="370" width="40" height="26" rx="2" fill="#1a4a4a"/>
+                                <rect x="977" y="370" width="40" height="26" rx="2" fill="#3a2a3a"/>
+                            </g>
+                        </g>
+                        <rect x="843" y="326" width="44" height="30" rx="3" fill="none" stroke="white" stroke-width="1.5" class="tv-cursor"/>
+                    </svg>
+                    <div class="time-badge danger">8:27 PM</div>
+                    <div class="scene-caption danger-text">27 minutes. Dinner cold. Still nothing.</div>
+                </div>
+
+                <!-- SCENE 4: Gives up — TV off -->
+                <div class="caricature-scene caricature-scene-4">
+                    <svg class="scene-svg" viewBox="0 0 1200 650" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Room (darkest) -->
+                        <rect x="0" y="490" width="1200" height="160" fill="#141018"/>
+                        <rect x="0" y="0" width="1200" height="490" fill="#0a0814"/>
+                        <rect x="0" y="470" width="1200" height="20" fill="#14121f"/>
+                        <ellipse cx="600" cy="510" rx="180" ry="35" fill="#1a1230" opacity="0.4"/>
+                        <!-- Clock RED -->
+                        <circle cx="440" cy="130" r="40" fill="#14121f" stroke="var(--accent-red)" stroke-width="2"/>
+                        <line x1="440" y1="130" x2="437" y2="104" stroke="var(--accent-red)" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="440" y1="130" x2="415" y2="135" stroke="var(--accent-red)" stroke-width="1.2" stroke-linecap="round"/>
+                        <circle cx="440" cy="130" r="3" fill="var(--accent-red)"/>
+                        <!-- Sofa (dim) -->
+                        <rect x="250" y="400" width="250" height="90" rx="25" fill="#2d2548" opacity="0.7"/>
+                        <rect x="250" y="380" width="250" height="35" rx="15" fill="#352d52" opacity="0.7"/>
+                        <rect x="245" y="375" width="40" height="115" rx="15" fill="#352d52" opacity="0.7"/>
+                        <rect x="505" y="375" width="40" height="115" rx="15" fill="#352d52" opacity="0.7"/>
+                        <!-- Coffee Table dim -->
+                        <rect x="580" y="445" width="160" height="10" rx="5" fill="#4a3520" opacity="0.3"/>
+                        <!-- Caricature: Standing, furious -->
+                        <g class="person-gaveup">
+                            <ellipse cx="390" cy="492" rx="22" ry="5" fill="rgba(0,0,0,0.15)"/>
+                            <path d="M 380 435 L 375 490" fill="none" stroke="#2a2a40" stroke-width="12" stroke-linecap="round"/>
+                            <path d="M 400 435 L 405 490" fill="none" stroke="#2a2a40" stroke-width="12" stroke-linecap="round"/>
+                            <ellipse cx="375" cy="492" rx="9" ry="4" fill="#1a1a28"/>
+                            <ellipse cx="405" cy="492" rx="9" ry="4" fill="#1a1a28"/>
+                            <path d="M 375 370 L 372 435 L 408 435 L 405 370 Z" fill="#3a5a7a"/>
+                            <path d="M 375 380 Q 350 360 340 340" fill="none" stroke="#3a5a7a" stroke-width="9" stroke-linecap="round"/>
+                            <path d="M 405 380 Q 430 360 440 340" fill="none" stroke="#3a5a7a" stroke-width="9" stroke-linecap="round"/>
+                            <circle cx="338" cy="338" r="6" fill="#f0c8a0"/>
+                            <circle cx="442" cy="338" r="6" fill="#f0c8a0"/>
+                            <circle cx="390" cy="340" r="28" fill="#f0b898"/>
+                            <line x1="378" y1="334" x2="384" y2="340" stroke="var(--accent-red)" stroke-width="2.5" stroke-linecap="round"/>
+                            <line x1="384" y1="334" x2="378" y2="340" stroke="var(--accent-red)" stroke-width="2.5" stroke-linecap="round"/>
+                            <line x1="396" y1="334" x2="402" y2="340" stroke="var(--accent-red)" stroke-width="2.5" stroke-linecap="round"/>
+                            <line x1="402" y1="334" x2="396" y2="340" stroke="var(--accent-red)" stroke-width="2.5" stroke-linecap="round"/>
+                            <ellipse cx="390" cy="355" rx="8" ry="5" fill="#3a1a1a"/>
+                            <path d="M 383 353 L 397 353" stroke="white" stroke-width="1.5"/>
+                            <path d="M 410 320 L 413 316 L 417 320 L 420 316" fill="none" stroke="var(--accent-red)" stroke-width="2"/>
+                            <path d="M 365 320 L 362 316 L 358 320" fill="none" stroke="var(--accent-red)" stroke-width="1.5"/>
+                            <path d="M 368 318 Q 375 308 382 315 Q 390 305 398 315 Q 405 308 412 318" fill="#3a2a20"/>
+                        </g>
+                        <!-- LG TV shutting off -->
+                        <rect x="830" y="440" width="200" height="50" rx="4" fill="#1a1828" opacity="0.5"/>
+                        <rect x="830" y="250" width="300" height="185" rx="3" fill="#030306" stroke="#1a1a1a" stroke-width="2"/>
+                        <rect x="834" y="254" width="292" height="177" rx="2" fill="#000"/>
+                        <text x="980" y="462" text-anchor="middle" fill="white" font-size="12" font-weight="900" letter-spacing="2">LG</text>
+                        <rect x="834" y="342" width="292" height="2" fill="white" class="crt-line"/>
+                        <text x="980" y="350" text-anchor="middle" fill="var(--accent-red)" font-size="28" font-weight="900" letter-spacing="4" opacity="0.9">SHUT DOWN</text>
+                        <!-- Remote tossed -->
+                        <rect x="550" y="485" width="6" height="16" rx="2" fill="#555" transform="rotate(40 553 493)"/>
+                    </svg>
+                    <div class="time-badge danger">8:28 PM</div>
+                    <div class="scene-caption gave-up-text">Gave up.</div>
+                </div>
+
             </div>
         </div>
 
-        <!-- SLIDE 2: THE PARADOX -->
-        <div class="slide slide-paradox" data-slide="3">
+        <!-- SLIDE 3: THE COST -->
+        <div class="slide slide-cost" data-slide="3">
+            <div class="cost-content">
+                <div class="loss-bars">
+                    <div class="loss-row">
+                        <span class="loss-label">📺 Viewership</span>
+                        <div class="bar-track"><div class="bar-fill" style="--w:80%"></div></div>
+                        <span class="loss-val">lost</span>
+                    </div>
+                    <div class="loss-row">
+                        <span class="loss-label">💰 Ad Revenue</span>
+                        <div class="bar-track"><div class="bar-fill" style="--w:65%"></div></div>
+                        <span class="loss-val">gone</span>
+                    </div>
+                    <div class="loss-row">
+                        <span class="loss-label">😤 User Experience</span>
+                        <div class="bar-track"><div class="bar-fill" style="--w:92%"></div></div>
+                        <span class="loss-val">ruined</span>
+                    </div>
+                </div>
+                <p class="big-note">Millions of homes. Every. Single. Night.</p>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: THE PARADOX -->
+        <div class="slide slide-paradox" data-slide="4">
             <div class="paradox-grid">
                 <div class="paradox-section"></div>
-                <div class="paradox-section paradox-title-section">
-                    <h1 class="headline">Recommendations have<br><em>stopped recommending.</em></h1>
-                </div>
-                <div class="paradox-section paradox-body-section">
-                    <p class="paradox-text">Every streaming service has a sophisticated recommendation algorithm. And yet many this week, have spent thirty minutes scrolling Netflix at 8 PM and settled for something we've already seen because there is <em>nothing to watch.</em> The algorithms got better. The experience got worse.</p>
+                <div class="paradox-section paradox-title-section" style="grid-row: 2 / 4;">
+                    <h1 class="headline">We've never had <em>more choice</em>.<br> We've never been worse at <em>choosing</em>.</h1>
                 </div>
                 <div class="paradox-section"></div>
-            </div>
-        </div>
-
-        <!-- SLIDE 3: 24-HOUR STORY -->
-        <div class="slide slide-24h" data-slide="4">
-            <div class="scene-24h">
-                <div class="scene-24h-room">
-                    <!-- Clock -->
-                    <div class="wall-clock clock-24h">
-                        <div class="clock-center"></div>
-                        <div class="clock-hand-hour clock-24h-hour"></div>
-                        <div class="clock-hand-min clock-24h-min"></div>
-                        <span class="clock-label clock-24h-label">24 hours of user`s day</span>
-                    </div>
-
-                    <!-- TV (off most of the day, on at 6-8 PM) -->
-                    <div class="scene-tv tv-24h">
-                        <div class="scene-tv-header">
-                            <div class="scene-tv-header-dot"></div>
-                            <div class="scene-tv-header-dot"></div>
-                            <div class="scene-tv-header-dot"></div>
-                        </div>
-                        <div class="ott-tiles-wrapper">
-                            <div class="ott-tiles-row">
-                                <div class="ott-tile" style="background: rgba(167,139,250,0.3)"></div>
-                                <div class="ott-tile" style="background: rgba(96,165,250,0.3)"></div>
-                                <div class="ott-tile" style="background: rgba(251,191,36,0.2)"></div>
-                                <div class="ott-tile" style="background: rgba(45,212,191,0.2)"></div>
-                            </div>
-                            <div class="ott-tiles-row">
-                                <div class="ott-tile" style="background: rgba(248,113,113,0.25)"></div>
-                                <div class="ott-tile" style="background: rgba(167,139,250,0.2)"></div>
-                                <div class="ott-tile" style="background: rgba(96,165,250,0.2)"></div>
-                                <div class="ott-tile" style="background: rgba(251,191,36,0.2)"></div>
-                            </div>
-                            <div class="ott-tiles-row">
-                                <div class="ott-tile" style="background: rgba(167,139,250,0.2)"></div>
-                                <div class="ott-tile" style="background: rgba(248,113,113,0.25)"></div>
-                                <div class="ott-tile" style="background: rgba(96,165,250,0.3)"></div>
-                                <div class="ott-tile" style="background: rgba(45,212,191,0.25)"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="scene-tv-stand"></div>
-
-                    <!-- Sofa with user (appears only during 6-8 PM window) -->
-                    <div class="sofa sofa-24h">
-                        <div class="sofa-user sofa-24h-user">
-                            <div class="human human--seated">
-                                <div class="human__head"></div>
-                                <div class="human__shoulders"></div>
-                            </div>
-                        </div>
-                        <div class="sofa-back">
-                            <div class="sofa-arm-left"></div>
-                            <div class="sofa-arm-right"></div>
-                        </div>
-                        <div class="sofa-seat"></div>
-                    </div>
-                </div>
-
-                <!-- Title in bottom 40% -->
-                <div class="story-title story-24h-title">
-                    <h1>We were solving the right problem<br><em>on the wrong surface.</em></h1>
-                </div>
             </div>
         </div>
 
@@ -1353,8 +1855,45 @@
                 <div class="paradox-section paradox-title-section">
                     <h1 class="headline">We were solving the right problem<br>on the <em>wrong surface.</em></h1>
                 </div>
-                <div class="paradox-section paradox-body-section">
-                    <p class="paradox-text">The TV is a constrained surface for this job. Users sit in front of it for a few hours — tired, unwilling to spend 20 minutes on research.<br><br>We're asking them to do their highest-effort task — picking from thousands of options — on the lowest interaction media surface in their home.<br><br>The TV is for watching, <em>not choosing.</em></p>
+                <div class="paradox-section" style="display:flex;align-items:center;justify-content:center;">
+                    <svg viewBox="0 0 520 340" xmlns="http://www.w3.org/2000/svg" style="width:36rem;height:auto;display:block;margin:0 auto;">
+                        <!-- TV Frame -->
+                        <rect x="20" y="10" width="480" height="270" rx="8" fill="#08080f" stroke="rgba(244,235,217,0.15)" stroke-width="3"/>
+                        <!-- Screen -->
+                        <rect x="30" y="20" width="460" height="250" rx="4" fill="#0a0e18"/>
+                        <!-- webOS-style scrolling UI -->
+                        <rect x="30" y="20" width="460" height="20" fill="rgba(0,0,0,0.7)"/>
+                        <text x="44" y="34" fill="#aaa" font-size="8" font-family="monospace">8:00 PM</text>
+                        <text x="44" y="58" fill="#666" font-size="8" font-weight="600">Continue Watching</text>
+                        <rect x="44" y="63" width="62" height="42" rx="3" fill="#1a3a5a"/>
+                        <rect x="112" y="63" width="62" height="42" rx="3" fill="#3a1a2a"/>
+                        <rect x="180" y="63" width="62" height="42" rx="3" fill="#1a2a1a"/>
+                        <rect x="248" y="63" width="62" height="42" rx="3" fill="#2a2a4a"/>
+                        <rect x="316" y="63" width="62" height="42" rx="3" fill="#4a2a1a"/>
+                        <rect x="384" y="63" width="62" height="42" rx="3" fill="#1a3a3a"/>
+                        <text x="44" y="123" fill="#666" font-size="8" font-weight="600">Trending Now</text>
+                        <rect x="44" y="128" width="62" height="42" rx="3" fill="#4a1a3a"/>
+                        <rect x="112" y="128" width="62" height="42" rx="3" fill="#1a4a3a"/>
+                        <rect x="180" y="128" width="62" height="42" rx="3" fill="#3a3a1a"/>
+                        <rect x="248" y="128" width="62" height="42" rx="3" fill="#1a1a4a"/>
+                        <rect x="316" y="128" width="62" height="42" rx="3" fill="#3a1a1a"/>
+                        <rect x="384" y="128" width="62" height="42" rx="3" fill="#2a3a2a"/>
+                        <text x="44" y="188" fill="#666" font-size="8" font-weight="600">Top Picks For You</text>
+                        <rect x="44" y="193" width="62" height="42" rx="3" fill="#2a1a4a"/>
+                        <rect x="112" y="193" width="62" height="42" rx="3" fill="#4a3a1a"/>
+                        <rect x="180" y="193" width="62" height="42" rx="3" fill="#1a4a4a"/>
+                        <rect x="248" y="193" width="62" height="42" rx="3" fill="#3a2a3a"/>
+                        <rect x="316" y="193" width="62" height="42" rx="3" fill="#1a2a4a"/>
+                        <rect x="384" y="193" width="62" height="42" rx="3" fill="#4a1a2a"/>
+                        <!-- Cursor highlight -->
+                        <rect x="42" y="61" width="66" height="46" rx="4" fill="none" stroke="white" stroke-width="2"/>
+                        <!-- Stand neck -->
+                        <rect x="245" y="280" width="30" height="22" rx="3" fill="rgba(244,235,217,0.1)"/>
+                        <!-- Stand base -->
+                        <rect x="190" y="302" width="140" height="8" rx="4" fill="rgba(244,235,217,0.12)"/>
+                        <!-- LG Logo -->
+                        <text x="260" y="328" text-anchor="middle" fill="rgba(244,235,217,0.3)" font-size="11" font-weight="700" letter-spacing="2">LG</text>
+                    </svg>
                 </div>
                 <div class="paradox-section"></div>
             </div>
@@ -1377,28 +1916,23 @@
             </div>
         </div>
 
-        <!-- SLIDE 7: PRODUCT INTRO -->
-        <div class="slide slide-paradox" data-slide="7">
-            <div class="paradox-grid">
+        <!-- SLIDE 7: THE PRODUCT -->
+        <div class="slide" data-slide="7">
+            <h1 class="headline">The phone decides. <em>The TV plays.</em></h1>
+        </div>
+
+        <!-- SLIDE 8: PRODUCT INTRO -->
+        <div class="slide slide-paradox" data-slide="8">
+            <div class="paradox-grid" style="grid-template-rows: 20% 20% 40% 20%;">
                 <div class="paradox-section"></div>
                 <div class="paradox-section paradox-title-section">
                     <h1 class="headline"><em>Cinebula</em></h1>
                 </div>
                 <div class="paradox-section paradox-body-section">
-                    <p class="paradox-text">A phone-native discovery experience that turns choosing what to watch into something you do during downtime — the commute, the coffee break, ten minutes before bed.<br><br>By the time you sit on the couch, <em>the decision is already made.</em></p>
+                    <p class="paradox-text">Cinebula is an intelligent <em>spatial discovery experience</em> for streaming — a <em>phone-native</em> companion to the TV that turns content browsing into <em>exploration</em>, and turns that exploration into a new layer of <em>first-party signal</em> for LG</p>
                 </div>
                 <div class="paradox-section"></div>
             </div>
-        </div>
-
-        <!-- SLIDE 8: THE PRODUCT -->
-        <div class="slide" data-slide="8">
-            <div class="eyebrow">The Solution</div>
-            <h1 class="headline">The phone decides. <em>The TV plays.</em></h1>
-            <p class="subtext">
-                We use the time the user actually has — the commute, the coffee break, ten minutes before bed. Hours of cognitive bandwidth no TV product is using today.<br><br>
-                Cinebula is a phone-native experience that turns choosing what to watch into something pleasant. The user does the choosing during their downtime, on their phone. By the time they sit down on the couch, the decision is already made.
-            </p>
         </div>
 
         <!-- SLIDE 9: DEMO -->
@@ -1408,73 +1942,70 @@
             <div class="demo-cta">▶ &nbsp; SHOW THE DEMO</div>
         </div>
 
-        <!-- SLIDE 10: DATA VALUE -->
+        <!-- SLIDE 10: DATA - ACR + CINEBULA -->
         <div class="slide" data-slide="10">
-            <div class="eyebrow">The Data Play</div>
-            <h1 class="headline">Discovery wins the first click. <em>Data wins the long game.</em></h1>
-            <p class="subtext">
-                Today, ACR tells us what users watched. Powerful — nobody else has it.<br>But it's one signal.
-            </p>
-            <ul class="signal-list">
-                <li><span class="signal-dot" style="background: var(--accent-violet)"></span>What users almost watched</li>
-                <li><span class="signal-dot" style="background: var(--accent-blue)"></span>Which genres they explored vs. avoided</li>
-                <li><span class="signal-dot" style="background: var(--accent-teal)"></span>What they queued and then skipped</li>
-                <li><span class="signal-dot" style="background: var(--accent-amber)"></span>Mood at Sunday 3 PM vs. Tuesday 8 PM</li>
-                <li><span class="signal-dot" style="background: var(--accent-red)"></span>Entirely new categories of first-party data</li>
-                <li><span class="signal-dot" style="background: var(--ink-dim)"></span>Premium targeting — defensible — on an asset LG already owns</li>
-            </ul>
+            <div class="iceberg">
+                <div class="ice-top">
+                    <p class="ice-head">ACR Today</p>
+                    <p>What they watched</p>
+                </div>
+                <div class="ice-line"></div>
+                <div class="ice-bottom">
+                    <p class="ice-head">+ Cinebula</p>
+                    <p>What they <strong>almost</strong> watched</p>
+                    <p>Genres explored vs avoided</p>
+                    <p>Mood · Time · Context</p>
+                </div>
+            </div>
+            <p class="iceberg-punch"><em>Only LG</em> can collect this.</p>
         </div>
 
         <!-- SLIDE 11: ROI -->
         <div class="slide" data-slide="11">
-            <div class="eyebrow">Return on Investment</div>
-            <h1 class="headline">The discovery experience is the front door. <em>The data behind it is the moat.</em></h1>
-            <div class="stat-grid">
+            <h1 class="headline">The discovery experience creates the engagement.<br><em>The data captures the value.</em></h1>
+            <div class="roi-grid">
                 <div class="stat-card">
-                    <div class="stat-value">+3.2×</div>
-                    <div class="stat-label">Home screen<br>dwell time</div>
+                    <div class="stat-value">Value 1</div>
+                    <div class="stat-label">Label 1</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value">6</div>
-                    <div class="stat-label">New first-party<br>data axes</div>
+                    <div class="stat-value">Value 2</div>
+                    <div class="stat-label">Label 2</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value">+40%</div>
-                    <div class="stat-label">Premium CPM<br>uplift potential</div>
+                    <div class="stat-value">Value 3</div>
+                    <div class="stat-label">Label 3</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value">200M</div>
-                    <div class="stat-label">LG TVs with<br>ACR globally</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">0</div>
-                    <div class="stat-label">Competitors with<br>cross-app data</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">OS</div>
-                    <div class="stat-label">Layer advantage<br>not app layer</div>
+                    <div class="stat-value">Value 4</div>
+                    <div class="stat-label">Label 4</div>
                 </div>
             </div>
         </div>
 
         <!-- SLIDE 12: FUTURE -->
         <div class="slide" data-slide="12">
-            <div class="eyebrow">What's Next</div>
-            <h1 class="headline">This is the first 90 seconds of <em>something bigger.</em></h1>
+            <h1 class="headline">Taking off into <em>something bigger.</em></h1>
             <div class="direction-grid">
                 <div class="direction-card">
-                    <h3 style="color: var(--accent-violet)">Deeper Personalization</h3>
-                    <p>The galaxy learns from every interaction. Mood regions evolve with the user. The map becomes uniquely theirs.</p>
+                    <h3 style="color: var(--accent-violet)">Galaxy that grows with you</h3>
+                    <p>The galaxy learns from every user interaction. The spatial distribution evolves with the user and gradually becomes uniquely personal.</p>
                 </div>
                 <div class="direction-card">
-                    <h3 style="color: var(--accent-blue)">webOS Integration</h3>
-                    <p>Not a mock — a real TV-native experience. The home screen becomes a destination, not a launcher.</p>
+                    <h3 style="color: var(--accent-blue)">Smarter Curator</h3>
+                    <p>The alien remembers across sessions and learns from what you actually act on. Recommendations get more personal over time.</p>
                 </div>
                 <div class="direction-card">
-                    <h3 style="color: var(--accent-teal)">Targeting Layer</h3>
-                    <p>Turn entirely new behavioral data into ad value. The product is the front door. The strategy is everything behind it.</p>
+                    <h3 style="color: var(--accent-teal)">Chained Discoveries</h3>
+                    <p>Every show is a door
+Open it and find more — from the lead, from the director, from the same world. Discovery never ends in one place.</p>
                 </div>
             </div>
+        </div>
+
+        <!-- SLIDE 13: THANK YOU -->
+        <div class="slide slide-title" data-slide="13">
+            <div class="title-name">Thank You</div>
         </div>
 
     </div>
@@ -1493,6 +2024,7 @@
         <div class="nav-dot" data-target="10"></div>
         <div class="nav-dot" data-target="11"></div>
         <div class="nav-dot" data-target="12"></div>
+        <div class="nav-dot" data-target="13"></div>
         <span class="nav-hint">↑↓ or ← → to navigate</span>
     </nav>
 
@@ -1570,15 +2102,16 @@
                 1: ['var(--accent-violet)', 'var(--accent-blue)'],
                 2: ['var(--accent-red)', 'var(--accent-amber)'],
                 3: ['var(--accent-red)', 'var(--accent-amber)'],
-                4: ['var(--accent-amber)', 'var(--accent-red)'],
+                4: ['var(--accent-red)', 'var(--accent-amber)'],
                 5: ['var(--accent-amber)', 'var(--accent-red)'],
-                6: ['var(--accent-blue)', 'var(--accent-violet)'],
-                7: ['var(--accent-violet)', 'var(--accent-blue)'],
+                6: ['var(--accent-amber)', 'var(--accent-red)'],
+                7: ['var(--accent-blue)', 'var(--accent-violet)'],
                 8: ['var(--accent-violet)', 'var(--accent-blue)'],
                 9: ['var(--accent-violet)', 'var(--accent-teal)'],
                 10: ['var(--accent-blue)', 'var(--accent-violet)'],
-                11: ['var(--accent-teal)', 'var(--accent-violet)'],
-                12: ['var(--accent-violet)', 'var(--accent-teal)'],
+                11: ['var(--accent-blue)', 'var(--accent-violet)'],
+                12: ['var(--accent-teal)', 'var(--accent-violet)'],
+                13: ['var(--accent-violet)', 'var(--accent-teal)'],
             };
             const [c1, c2] = colorMap[slide] || colorMap[1];
             glow1.style.background = c1;
