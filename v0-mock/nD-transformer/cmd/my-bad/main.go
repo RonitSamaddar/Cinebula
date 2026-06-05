@@ -18,8 +18,8 @@ func main() {
 	cluster.Port = 9042
 	cluster.Keyspace = "cinebula"
 	cluster.Consistency = gocql.Quorum
-	cluster.Timeout = 30 * time.Second
-	cluster.ConnectTimeout = 30 * time.Second
+	cluster.Timeout = 60 * time.Second
+	cluster.ConnectTimeout = 60 * time.Second
 
 	session, err := cluster.CreateSession()
 	if err != nil {
