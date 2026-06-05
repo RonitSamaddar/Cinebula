@@ -40,7 +40,7 @@ func QueryDirection(userX, userY float64, direction string, radius float64, topN
 		return nil
 	}
 	if radius <= 0 {
-		radius = 1.0
+		radius = 5000.0
 	}
 	if topN <= 0 {
 		topN = 8
