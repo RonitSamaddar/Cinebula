@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cinebula</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/black.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap');
+    :root {
+      --bg: #0c0c14;
+      --text: #eaeaf2;
+      --muted: #7a7a94;
+      --accent: #7b68ee;
+      --accent-glow: rgba(123,104,238,0.25);
+      --red: #f44;
+      --green: #4dd9c0;
+      --warm: #ffa94d;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
+    .reveal { font-family: var(--font-body); color:var(--text); font-size: 22px; }
+    .reveal h1,.reveal h2,.reveal h3 { font-family: var(--font-display); text-transform:none; letter-spacing:-0.03em; }
+    .reveal .slides section { padding:0; }
+  </style>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- ═══════════════════════════════════════════
+           SCENE 1: COMES HOME (Caricature enters)
+           ═══════════════════════════════════════════ -->
+      <section data-background-color="#0c0c14" data-autoslide="2000">
+        <div class="scene-container">
+          <svg class="scene-svg" viewBox="0 0 1200 650" xmlns="http://www.w3.org/2000/svg">
+            <!-- ── ROOM: Elegant Living Room ── -->
+            <!-- Floor with wood pattern -->
+            <rect x="0" y="490" width="1200" height="160" fill="#24202c"/>
+            <rect x="0" y="490" width="1200" height="4" fill="#332a3a"/>
+            <!-- Floor boards (subtle) -->
+            <line x1="0" y1="520" x2="1200" y2="520" stroke="#2d2635" stroke-width="0.5"/>
+            <line x1="0" y1="560" x2="1200" y2="560" stroke="#2d2635" stroke-width="0.5"/>
+            <line x1="0" y1="600" x2="1200" y2="600" stroke="#2d2635" stroke-width="0.5"/>
+            <!-- Wall -->
+            <rect x="0" y="0" width="1200" height="490" fill="#1a1828"/>
+            <!-- Wainscoting / baseboard -->
+            <rect x="0" y="470" width="1200" height="20" fill="#221e30"/>
+            <line x1="0" y1="470" x2="1200" y2="470" stroke="#2a2838" stroke-width="1.5"/>
+
+            <!-- Rug under coffee table -->
+            <ellipse cx="600" cy="510" rx="180" ry="35" fill="#1f1535" opacity="0.7"/>
+            <ellipse cx="600" cy="510" rx="160" ry="28" fill="#251a40" opacity="0.5"/>
+
+            <!-- Window with curtains & night sky -->
+            <rect x="140" y="60" width="200" height="250" rx="6" fill="#060818" stroke="#2a2a44" stroke-width="2"/>
+            <!-- Stars -->
+            <circle cx="180" cy="100" r="1.5" fill="white" opacity="0.6"/>
+            <circle cx="220" cy="130" r="2" fill="white" opacity="0.5"/>
+            <circle cx="260" cy="85" r="1.5" fill="white" opacity="0.4"/>
+            <circle cx="300" cy="150" r="1.8" fill="white" opacity="0.5"/>
+            <circle cx="190" cy="180" r="1.2" fill="white" opacity="0.3"/>
+            <!-- Moon -->
+            <circle cx="290" cy="110" r="20" fill="#f0e68c" opacity="0.7"/>
+            <circle cx="297" cy="105" r="18" fill="#060818"/>
+            <!-- Curtains -->
+            <path d="M 135 55 Q 150 160 145 315" fill="#2a1a3a" stroke="#3a2a4a" stroke-width="1"/>
+            <path d="M 345 55 Q 330 160 335 315" fill="#2a1a3a" stroke="#3a2a4a" stroke-width="1"/>
+            <!-- Curtain rod -->
+            <line x1="125" y1="55" x2="355" y2="55" stroke="#4a4a6a" stroke-width="3" stroke-linecap="round"/>
+
+            <!-- Wall art / Frame -->
+            <rect x="500" y="90" width="100" height="130" rx="3" fill="#181525" stroke="#3a3855" stroke-width="2"/>
+            <rect x="510" y="100" width="80" height="110" rx="2" fill="#0d0a18"/>
+            <!-- Abstract art inside -->
+            <circle cx="540" cy="145" r="20" fill="rgba(123,104,238,0.15)"/>
+            <circle cx="560" cy="160" r="15" fill="rgba(255,106,106,0.1)"/>
+
+            <!-- Floor lamp (right side) -->
+            <line x1="1100" y1="490" x2="1100" y2="280" stroke="#3a3a55" stroke-width="3"/>
+            <ellipse cx="1100" cy="275" rx="25" ry="15" fill="#2a2040" stroke="#4a4a6a" stroke-width="1.5"/>
+            <ellipse cx="1100" cy="272" rx="20" ry="10" fill="#ffa94d" opacity="0.15"/>
+
+            <!-- Bookshelf -->
+            <rect x="680" y="80" width="100" height="200" fill="#1a1528" stroke="#2a2838" stroke-width="1.5" rx="3"/>
+            <line x1="680" y1="130" x2="780" y2="130" stroke="#2a2838" stroke-width="1"/>
+            <line x1="680" y1="180" x2="780" y2="180" stroke="#2a2838" stroke-width="1"/>
+            <line x1="680" y1="230" x2="780" y2="230" stroke="#2a2838" stroke-width="1"/>
+            <!-- Books -->
+            <rect x="688" y="85" width="8" height="42" rx="1" fill="#4a2a3a"/>
+            <rect x="698" y="90" width="7" height="37" rx="1" fill="#2a4a3a"/>
+            <rect x="708" y="87" width="9" height="40" rx="1" fill="#3a3a5a"/>
+            <rect x="720" y="92" width="6" height="35" rx="1" fill="#5a3a2a"/>
+            <rect x="688" y="135" width="10" height="42" rx="1" fill="#3a2a5a"/>
+            <rect x="700" y="138" width="8" height="39" rx="1" fill="#2a5a4a"/>
+            <rect x="712" y="133" width="7" height="44" rx="1" fill="#5a4a2a"/>
+
+            <!-- ── FURNITURE ── -->
+
+            <!-- Sofa (plush, rounded) -->
+            <rect x="250" y="400" width="250" height="90" rx="25" fill="#2d2548"/>
+            <rect x="250" y="380" width="250" height="35" rx="15" fill="#352d52"/>
+            <!-- Sofa cushions -->
+            <ellipse cx="320" cy="410" rx="40" ry="12" fill="#3a3060"/>
+            <ellipse cx="430" cy="410" rx="40" ry="12" fill="#3a3060"/>
+            <!-- Sofa armrests -->
+            <rect x="245" y="375" width="40" height="115" rx="15" fill="#352d52"/>
+            <rect x="505" y="375" width="40" height="115" rx="15" fill="#352d52"/>
+            <!-- Throw pillow -->
+            <rect x="465" y="380" width="30" height="30" rx="8" fill="#5a3a6a" transform="rotate(-10 480 395)"/>
+
+            <!-- Coffee Table (mid-century style) -->
+            <rect x="580" y="445" width="160" height="10" rx="5" fill="#4a3520" stroke="#5a4530" stroke-width="1"/>
+            <!-- Tapered legs -->
+            <line x1="600" y1="455" x2="595" y2="490" stroke="#4a3520" stroke-width="4" stroke-linecap="round"/>
+            <line x1="720" y1="455" x2="725" y2="490" stroke="#4a3520" stroke-width="4" stroke-linecap="round"/>
+
+            <!-- Plate with food on coffee table -->
+            <ellipse cx="660" cy="440" rx="30" ry="8" fill="#e8e8e8" opacity="0.9"/>
+            <ellipse cx="660" cy="438" rx="24" ry="6" fill="#f5f5f5"/>
+            <!-- Food: Pasta/curry + veggies + bread -->
+            <ellipse cx="652" cy="435" rx="10" ry="5" fill="#d4722a" opacity="0.9"/>
+            <ellipse cx="668" cy="433" rx="7" ry="4" fill="#5a9a4a" opacity="0.85"/>
+            <rect x="673" y="432" width="10" height="5" rx="2" fill="#f0d060" opacity="0.8"/>
+            <!-- Glass of water -->
+            <rect x="610" y="430" width="10" height="15" rx="2" fill="rgba(100,180,255,0.2)" stroke="rgba(150,200,255,0.4)" stroke-width="0.8"/>
+
+            <!-- Steam (animated) -->
+            <g class="steam-group">
+              <path class="steam st1" d="M 648 415 Q 646 400 650 385" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/>
+              <path class="steam st2" d="M 660 413 Q 662 395 658 380" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round"/>
+              <path class="steam st3" d="M 672 415 Q 674 398 670 383" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" stroke-linecap="round"/>
+            </g>
+
+            <!-- LG TV (off) on media console -->
+            <rect x="830" y="440" width="200" height="50" rx="4" fill="#1a1828" stroke="#2a2838" stroke-width="1"/>
+            <!-- TV Stand legs -->
+            <rect x="860" y="430" width="4" height="12" fill="#2a2838"/>
+            <rect x="1000" y="430" width="4" height="12" fill="#2a2838"/>
+            <!-- TV Screen -->
+            <rect x="830" y="250" width="300" height="185" rx="3" fill="#050508" stroke="#222" stroke-width="2"/>
+            <rect x="834" y="254" width="292" height="177" rx="2" fill="#08080f"/>
+            <!-- Thin stand/neck -->
+            <rect x="970" y="435" width="24" height="8" rx="2" fill="#1a1a28"/>
+            <!-- LG Logo (below stand) -->
+            <text x="980" y="462" text-anchor="middle" fill="white" font-size="10" font-weight="700" letter-spacing="2">LG</text>
+
+            <!-- Clock on wall (elegant) -->
+            <g class="wall-clock">
+              <circle cx="440" cy="130" r="40" fill="#14121f" stroke="#3a3855" stroke-width="2"/>
+              <circle cx="440" cy="130" r="35" fill="none" stroke="#2a2844" stroke-width="0.5"/>
+              <!-- Hour markers -->
+              <line x1="440" y1="96" x2="440" y2="101" stroke="#5a5a7a" stroke-width="1.5"/>
+              <line x1="440" y1="159" x2="440" y2="164" stroke="#5a5a7a" stroke-width="1.5"/>
+              <line x1="406" y1="130" x2="411" y2="130" stroke="#5a5a7a" stroke-width="1.5"/>
+              <line x1="469" y1="130" x2="474" y2="130" stroke="#5a5a7a" stroke-width="1.5"/>
+              <!-- Hands: 8:00 -->
+              <line x1="440" y1="130" x2="440" y2="107" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <line x1="440" y1="130" x2="458" y2="130" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+              <circle cx="440" cy="130" r="3" fill="white"/>
+            </g>
+
+            <!-- ── CARICATURE: Walking in (tired office worker) ── -->
+            <g class="person-walk">
+              <!-- Shadow -->
+              <ellipse cx="0" cy="492" rx="22" ry="6" fill="rgba(0,0,0,0.2)"/>
+
+              <!-- CARICATURE: Oversized head, small body, expressive -->
+              <!-- Head (big, round - caricature style) -->
+              <circle cx="0" cy="362" r="26" fill="#f0c8a0"/>
+              <!-- Hair (on top of head) -->
+              <ellipse cx="0" cy="340" rx="20" ry="10" fill="#3a2a20"/>
+              <path d="M -15 342 Q -10 332 -3 340 Q 3 330 10 340 Q 16 332 18 342" fill="#3a2a20"/>
+              <!-- Tired droopy eyes -->
+              <ellipse cx="-9" cy="360" rx="5" ry="3" fill="white"/>
+              <ellipse cx="9" cy="360" rx="5" ry="3" fill="white"/>
+              <circle cx="-8" cy="361" r="2.5" fill="#333"/>
+              <circle cx="10" cy="361" r="2.5" fill="#333"/>
+              <!-- Heavy eyelids (tired) -->
+              <path d="M -14 357 Q -9 354 -4 357" fill="#f0c8a0" stroke="#c09870" stroke-width="0.8"/>
+              <path d="M 4 357 Q 9 354 14 357" fill="#f0c8a0" stroke="#c09870" stroke-width="0.8"/>
+              <!-- Mouth (slight frown) -->
+              <path d="M -6 374 Q 0 371 6 374" fill="none" stroke="#8a6040" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- 5 o clock shadow -->
+              <ellipse cx="0" cy="376" rx="10" ry="5" fill="rgba(60,50,40,0.1)"/>
+              <!-- Ear -->
+              <ellipse cx="-24" cy="365" rx="5" ry="7" fill="#e8b888"/>
+
+              <!-- Body (small relative to head - caricature) -->
+              <!-- Shirt (office wear, slightly rumpled) -->
+              <path d="M -18 388 L -22 440 L 22 440 L 18 388 Z" fill="#3a5a7a" stroke="#2a4a6a" stroke-width="1"/>
+              <!-- Tie (loosened) -->
+              <path d="M -3 388 L -4 420 L 0 425 L 4 420 L 3 388 Z" fill="#c03030" opacity="0.8"/>
+              <!-- Collar -->
+              <path d="M -10 387 L 0 393 L 10 387" fill="none" stroke="white" stroke-width="1.2"/>
+
+              <!-- Arms (drooping, tired) -->
+              <path d="M -18 400 Q -28 420 -22 445" fill="none" stroke="#3a5a7a" stroke-width="8" stroke-linecap="round"/>
+              <path d="M 18 400 Q 28 420 22 445" fill="none" stroke="#3a5a7a" stroke-width="8" stroke-linecap="round"/>
+              <!-- Hands -->
+              <circle cx="-22" cy="447" r="5" fill="#f0c8a0"/>
+              <circle cx="22" cy="447" r="5" fill="#f0c8a0"/>
+
+              <!-- Pants -->
+              <path d="M -18 440 L -20 490 L -8 490 L -5 445 Z" fill="#2a2a40" stroke="#1a1a30" stroke-width="0.5"/>
+              <path d="M 18 440 L 20 490 L 8 490 L 5 445 Z" fill="#2a2a40" stroke="#1a1a30" stroke-width="0.5"/>
+              <!-- Shoes -->
+              <ellipse cx="-16" cy="492" rx="8" ry="4" fill="#1a1a28"/>
+              <ellipse cx="16" cy="492" rx="8" ry="4" fill="#1a1a28"/>
+            </g>
+
+            <!-- Briefcase (tossed onto sofa) -->
+            <g class="briefcase-toss">
+              <rect x="-18" y="0" width="36" height="26" rx="4" fill="#4a3520" stroke="#6a5530" stroke-width="1.5"/>
+              <line x1="-6" y1="0" x2="6" y2="0" stroke="#8a7540" stroke-width="2.5" stroke-linecap="round"/>
+              <rect x="-3" y="-3" width="6" height="6" rx="2" fill="#8a7540"/>
+            </g>
+
+            <!-- Door (open, showing hallway) -->
+            <rect x="40" y="140" width="110" height="350" rx="4" fill="#14121f" stroke="#2a2a44" stroke-width="2"/>
+            <circle cx="130" cy="330" r="5" fill="#6a6a8a"/>
+            <!-- Open door perspective -->
+            <path d="M 40 140 L 10 165 L 10 465 L 40 490" fill="#1a182a" stroke="#2a2844" stroke-width="1.5"/>
+            <!-- Light from hallway -->
+            <rect x="45" y="145" width="100" height="340" rx="2" fill="rgba(255,200,100,0.03)"/>
+
+            <!-- Small label: CARICATURE -->
+            <text x="60" y="640" fill="var(--muted)" font-size="9" font-style="italic" opacity="0.5">* caricature</text>
+          </svg>
+
+          <div class="time-badge">8:00 PM</div>
+          <div class="scene-caption">Home. Tired. Dinner's ready.</div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════
+           SCENE 2: SITS, TURNS ON TV, SCROLLING
+           ═══════════════════════════════════════════ -->
+      <section data-background-color="#0c0c14" data-autoslide="2000">
+        <div class="scene-container">
+          <svg class="scene-svg" viewBox="0 0 1200 650" xmlns="http://www.w3.org/2000/svg">
+            <!-- ── ROOM (same decor) ── -->
+            <rect x="0" y="490" width="1200" height="160" fill="#24202c"/>
+            <rect x="0" y="490" width="1200" height="4" fill="#332a3a"/>
+            <rect x="0" y="0" width="1200" height="490" fill="#1a1828"/>
+            <rect x="0" y="470" width="1200" height="20" fill="#221e30"/>
+            <line x1="0" y1="470" x2="1200" y2="470" stroke="#332a3a" stroke-width="1.5"/>
+            <!-- Rug -->
+            <ellipse cx="600" cy="510" rx="180" ry="35" fill="#1f1535" opacity="0.7"/>
+            <!-- Window -->
+            <rect x="140" y="60" width="200" height="250" rx="6" fill="#060818" stroke="#2a2a44" stroke-width="2"/>
+            <!-- Stars -->
+            <circle cx="180" cy="100" r="1.5" fill="white" opacity="0.6"/>
+            <circle cx="220" cy="130" r="2" fill="white" opacity="0.5"/>
+            <circle cx="260" cy="85" r="1.5" fill="white" opacity="0.4"/>
+            <circle cx="300" cy="150" r="1.8" fill="white" opacity="0.5"/>
+            <circle cx="190" cy="180" r="1.2" fill="white" opacity="0.3"/>
+            <!-- Moon -->
+            <circle cx="290" cy="110" r="20" fill="#f0e68c" opacity="0.6"/>
+            <circle cx="297" cy="105" r="18" fill="#060818"/>
+            <!-- Curtains -->
+            <path d="M 135 55 Q 150 160 145 315" fill="#2a1a3a"/>
+            <path d="M 345 55 Q 330 160 335 315" fill="#2a1a3a"/>
+            <line x1="125" y1="55" x2="355" y2="55" stroke="#4a4a6a" stroke-width="3" stroke-linecap="round"/>
+            <!-- Wall art -->
+            <rect x="500" y="90" width="100" height="130" rx="3" fill="#181525" stroke="#3a3855" stroke-width="2"/>
+            <!-- Bookshelf -->
+            <rect x="680" y="80" width="100" height="200" fill="#1a1528" stroke="#2a2838" stroke-width="1.5" rx="3"/>
+            <line x1="680" y1="130" x2="780" y2="130" stroke="#2a2838" stroke-width="1"/>
+            <line x1="680" y1="180" x2="780" y2="180" stroke="#2a2838" stroke-width="1"/>
+            <line x1="680" y1="230" x2="780" y2="230" stroke="#2a2838" stroke-width="1"/>
+            <!-- Books -->
+            <rect x="688" y="85" width="8" height="42" rx="1" fill="#4a2a3a"/>
+            <rect x="698" y="90" width="7" height="37" rx="1" fill="#2a4a3a"/>
+            <rect x="708" y="87" width="9" height="40" rx="1" fill="#3a3a5a"/>
+            <rect x="720" y="92" width="6" height="35" rx="1" fill="#5a3a2a"/>
+            <rect x="688" y="135" width="10" height="42" rx="1" fill="#3a2a5a"/>
+            <rect x="700" y="138" width="8" height="39" rx="1" fill="#2a5a4a"/>
+            <rect x="712" y="133" width="7" height="44" rx="1" fill="#5a4a2a"/>
+            <!-- Floor lamp (glowing now) -->
+            <line x1="1100" y1="490" x2="1100" y2="280" stroke="#3a3a55" stroke-width="3"/>
+            <ellipse cx="1100" cy="275" rx="25" ry="15" fill="#2a2040" stroke="#4a4a6a" stroke-width="1.5"/>
+            <ellipse cx="1100" cy="268" rx="22" ry="12" fill="#ffa94d" opacity="0.25"/>
+            <!-- Clock -->
+            <circle cx="440" cy="130" r="40" fill="#14121f" stroke="#3a3855" stroke-width="2"/>
+            <line x1="440" y1="130" x2="440" y2="107" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="440" y1="130" x2="460" y2="133" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="440" cy="130" r="3" fill="white"/>
+
+            <!-- ── FURNITURE ── -->
+            <!-- Sofa -->
+            <rect x="250" y="400" width="250" height="90" rx="25" fill="#2d2548"/>
+            <rect x="250" y="380" width="250" height="35" rx="15" fill="#352d52"/>
+            <ellipse cx="320" cy="410" rx="40" ry="12" fill="#3a3060"/>
+            <ellipse cx="430" cy="410" rx="40" ry="12" fill="#3a3060"/>
+            <rect x="245" y="375" width="40" height="115" rx="15" fill="#352d52"/>
+            <rect x="505" y="375" width="40" height="115" rx="15" fill="#352d52"/>
+
+            <!-- Bag on sofa -->
+            <rect x="290" y="382" width="36" height="26" rx="4" fill="#4a3520" stroke="#6a5530" stroke-width="1.5" transform="rotate(-8 308 395)"/>
+
+            <!-- Coffee Table -->
+            <rect x="580" y="445" width="160" height="10" rx="5" fill="#4a3520" stroke="#5a4530" stroke-width="1"/>
+            <line x1="600" y1="455" x2="595" y2="490" stroke="#4a3520" stroke-width="4" stroke-linecap="round"/>
+            <line x1="720" y1="455" x2="725" y2="490" stroke="#4a3520" stroke-width="4" stroke-linecap="round"/>
+            <!-- Food (still hot) -->
+            <ellipse cx="660" cy="440" rx="30" ry="8" fill="#e8e8e8" opacity="0.9"/>
+            <ellipse cx="652" cy="435" rx="10" ry="5" fill="#d4722a" opacity="0.9"/>
+            <ellipse cx="668" cy="433" rx="7" ry="4" fill="#5a9a4a" opacity="0.85"/>
+            <rect x="673" y="432" width="10" height="5" rx="2" fill="#f0d060" opacity="0.8"/>
+            <!-- Steam -->
+            <g class="steam-group">
+              <path class="steam st1" d="M 648 415 Q 646 400 650 385" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/>
+              <path class="steam st2" d="M 660 413 Q 662 395 658 380" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round"/>
+              <path class="steam st3" d="M 672 415 Q 674 398 670 383" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" stroke-linecap="round"/>
+            </g>
+
+            <!-- ── CARICATURE: Seated on couch with remote ── -->
+            <g class="person-seated">
+              <!-- Shadow on couch -->
+              <ellipse cx="390" cy="470" rx="25" ry="6" fill="rgba(0,0,0,0.15)"/>
+              <!-- Legs (bent, seated) -->
+              <path d="M 375 445 Q 370 470 365 488" fill="none" stroke="#2a2a40" stroke-width="12" stroke-linecap="round"/>
+              <path d="M 405 445 Q 410 470 415 488" fill="none" stroke="#2a2a40" stroke-width="12" stroke-linecap="round"/>
+              <!-- Shoes -->
+              <ellipse cx="365" cy="490" rx="9" ry="4" fill="#1a1a28"/>
+              <ellipse cx="415" cy="490" rx="9" ry="4" fill="#1a1a28"/>
+              <!-- Body/Shirt -->
+              <path d="M 372 388 L 368 445 L 412 445 L 408 388 Z" fill="#3a5a7a"/>
+              <!-- Tie (loosened even more) -->
+              <path d="M 387 388 L 386 405 L 390 408 L 394 405 L 393 388 Z" fill="#c03030" opacity="0.6"/>
+              <!-- Arms -->
+              <path d="M 372 400 Q 355 415 350 430" fill="none" stroke="#3a5a7a" stroke-width="9" stroke-linecap="round"/>
+              <!-- Arm with remote (pointing at TV) -->
+              <path d="M 408 400 Q 430 395 450 388" fill="none" stroke="#3a5a7a" stroke-width="9" stroke-linecap="round"/>
+              <!-- Hand + Remote -->
+              <circle cx="450" cy="386" r="5" fill="#f0c8a0"/>
+              <rect x="448" y="378" width="6" height="16" rx="2" fill="#333" stroke="#555" stroke-width="0.5"/>
+              <!-- IR beam from remote -->
+              <circle cx="455" cy="377" r="2" fill="#f44" opacity="0.6"/>
+              <!-- Other hand -->
+              <circle cx="350" cy="432" r="5" fill="#f0c8a0"/>
+              <!-- Head (big) -->
+              <ellipse cx="390" cy="347" rx="6" ry="3" fill="#3a2a20"/>
+              <circle cx="390" cy="358" r="26" fill="#f0c8a0"/>
+              <!-- Eyes (looking at TV, bored) -->
+              <ellipse cx="381" cy="356" rx="5" ry="4" fill="white"/>
+              <ellipse cx="399" cy="356" rx="5" ry="4" fill="white"/>
+              <circle cx="383" cy="357" r="2.5" fill="#333"/>
+              <circle cx="401" cy="357" r="2.5" fill="#333"/>
+              <!-- Neutral/bored mouth -->
+              <line x1="384" y1="370" x2="396" y2="370" stroke="#8a6040" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- Ear -->
+              <ellipse cx="365" cy="360" rx="5" ry="7" fill="#e8b888"/>
+              <!-- Hair -->
+              <ellipse cx="390" cy="335" rx="22" ry="8" fill="#3a2a20"/>
+            </g>
+
+            <!-- Tick tick (subtle) -->
+            <g class="tick-tick">
+              <text x="430" y="185" fill="var(--muted)" font-size="13" font-weight="300" class="tick1">tick</text>
+              <text x="435" y="205" fill="var(--muted)" font-size="13" font-weight="300" class="tick2">tick</text>
+            </g>
+
+            <!-- LG TV ON - webOS scrolling UI -->
+            <rect x="830" y="440" width="200" height="50" rx="4" fill="#1a1828" stroke="#2a2838" stroke-width="1"/>
+            <rect x="970" y="430" width="24" height="12" rx="2" fill="#1a1a28"/>
+            <rect x="830" y="250" width="300" height="185" rx="3" fill="#0a0a0a" stroke="#333" stroke-width="2"/>
+            <rect x="834" y="254" width="292" height="177" rx="2" fill="#0a0e18"/>
+            <text x="980" y="446" text-anchor="middle" fill="white" font-size="10" font-weight="700" letter-spacing="2">LG</text>
+            <!-- TV glow on wall -->
+            <ellipse cx="980" cy="340" rx="200" ry="130" fill="rgba(60,80,200,0.03)"/>
+            <!-- webOS bar -->
+            <rect x="834" y="254" width="292" height="16" fill="rgba(0,0,0,0.7)"/>
+            <text x="845" y="265" fill="#aaa" font-size="6">8:03 PM</text>
+            <!-- Scrolling content (clipped to screen) -->
+            <defs><clipPath id="tv-clip-2"><rect x="834" y="270" width="292" height="161"/></clipPath></defs>
+            <g clip-path="url(#tv-clip-2)">
+            <g class="tv-ui-scroll">
+              <text x="845" y="282" fill="#888" font-size="6" font-weight="600">Continue Watching</text>
+              <rect x="845" y="286" width="40" height="26" rx="2" fill="#1a3a5a"/>
+              <rect x="889" y="286" width="40" height="26" rx="2" fill="#3a1a2a"/>
+              <rect x="933" y="286" width="40" height="26" rx="2" fill="#1a2a1a"/>
+              <rect x="977" y="286" width="40" height="26" rx="2" fill="#2a2a4a"/>
+              <rect x="1021" y="286" width="40" height="26" rx="2" fill="#4a2a1a"/>
+              <rect x="1065" y="286" width="40" height="26" rx="2" fill="#1a3a3a"/>
+              <text x="845" y="324" fill="#888" font-size="6" font-weight="600">Trending Now</text>
+              <rect x="845" y="328" width="40" height="26" rx="2" fill="#4a1a3a"/>
+              <rect x="889" y="328" width="40" height="26" rx="2" fill="#1a4a3a"/>
+              <rect x="933" y="328" width="40" height="26" rx="2" fill="#3a3a1a"/>
+              <rect x="977" y="328" width="40" height="26" rx="2" fill="#1a1a4a"/>
+              <rect x="1021" y="328" width="40" height="26" rx="2" fill="#3a1a1a"/>
+              <rect x="1065" y="328" width="40" height="26" rx="2" fill="#2a3a2a"/>
+              <text x="845" y="366" fill="#888" font-size="6" font-weight="600">Top Picks For You</text>
+              <rect x="845" y="370" width="40" height="26" rx="2" fill="#2a1a4a"/>
+              <rect x="889" y="370" width="40" height="26" rx="2" fill="#4a3a1a"/>
+              <rect x="933" y="370" width="40" height="26" rx="2" fill="#1a4a4a"/>
+              <rect x="977" y="370" width="40" height="26" rx="2" fill="#3a2a3a"/>
+              <rect x="1021" y="370" width="40" height="26" rx="2" fill="#1a2a4a"/>
+              <rect x="1065" y="370" width="40" height="26" rx="2" fill="#4a1a2a"/>
+              <text x="845" y="408" fill="#888" font-size="6" font-weight="600">New Releases</text>
+              <rect x="845" y="412" width="40" height="26" rx="2" fill="#3a3a3a"/>
+              <rect x="889" y="412" width="40" height="26" rx="2" fill="#1a3a2a"/>
+              <rect x="933" y="412" width="40" height="26" rx="2" fill="#4a2a3a"/>
+              <rect x="977" y="412" width="40" height="26" rx="2" fill="#2a4a1a"/>
+              <rect x="1021" y="412" width="40" height="26" rx="2" fill="#3a1a4a"/>
+              <rect x="1065" y="412" width="40" height="26" rx="2" fill="#1a2a2a"/>
+            </g>
+            </g>
+            <!-- Cursor highlight -->
+            <rect x="843" y="284" width="44" height="30" rx="3" fill="none" stroke="white" stroke-width="1.5" class="tv-cursor"/>
+
+            <text x="60" y="640" fill="var(--muted)" font-size="9" font-style="italic" opacity="0.5">* caricature</text>
+          </svg>
+
+          <div class="time-badge">8:03 PM</div>
+          <div class="scene-caption">Scrolling... scrolling... scrolling...</div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════
+           SCENE 3: 27 MIN LATER - FRUSTRATED
+           ═══════════════════════════════════════════ -->
+      <section data-background-color="#0c0c14" data-autoslide="2000">
+        <div class="scene-container">
+          <svg class="scene-svg" viewBox="0 0 1200 650" xmlns="http://www.w3.org/2000/svg">
+            <!-- ── ROOM (same, darker mood) ── -->
+            <rect x="0" y="490" width="1200" height="160" fill="#211c28"/>
+            <rect x="0" y="490" width="1200" height="4" fill="#302838"/>
+            <rect x="0" y="0" width="1200" height="490" fill="#181525"/>
+            <rect x="0" y="470" width="1200" height="20" fill="#201c2c"/>
+            <ellipse cx="600" cy="510" rx="180" ry="35" fill="#1f1535" opacity="0.5"/>
+            <!-- Clock RED -->
+            <circle cx="440" cy="130" r="40" fill="#14121f" stroke="var(--red)" stroke-width="2.5" class="clock-pulse"/>
+            <line x1="440" y1="130" x2="438" y2="104" stroke="var(--red)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="440" y1="130" x2="418" y2="137" stroke="var(--red)" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="440" cy="130" r="3" fill="var(--red)"/>
+
+            <!-- Sofa -->
+            <rect x="250" y="400" width="250" height="90" rx="25" fill="#2d2548"/>
+            <rect x="250" y="380" width="250" height="35" rx="15" fill="#352d52"/>
+            <rect x="245" y="375" width="40" height="115" rx="15" fill="#352d52"/>
+            <rect x="505" y="375" width="40" height="115" rx="15" fill="#352d52"/>
+
+            <!-- Coffee Table with COLD food -->
+            <rect x="580" y="445" width="160" height="10" rx="5" fill="#4a3520" opacity="0.7"/>
+            <line x1="600" y1="455" x2="595" y2="490" stroke="#4a3520" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
+            <line x1="720" y1="455" x2="725" y2="490" stroke="#4a3520" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
+            <!-- Plate (greyed out, cold) -->
+            <ellipse cx="660" cy="440" rx="30" ry="8" fill="#bbb" opacity="0.8"/>
+            <ellipse cx="660" cy="438" rx="24" ry="6" fill="#999" opacity="0.7"/>
+            <!-- Cold food (clearly visible, desaturated) -->
+            <ellipse cx="650" cy="435" rx="10" ry="5" fill="#8a5535" opacity="0.9"/>
+            <ellipse cx="665" cy="433" rx="7" ry="4" fill="#4a7a40" opacity="0.85"/>
+            <rect x="673" y="432" width="11" height="6" rx="2" fill="#b09050" opacity="0.8"/>
+            <!-- Frost/ice crystals on food -->
+            <circle cx="648" cy="431" r="2.5" fill="rgba(150,210,255,0.7)"/>
+            <circle cx="662" cy="429" r="2" fill="rgba(150,210,255,0.6)"/>
+            <circle cx="675" cy="432" r="2.2" fill="rgba(150,210,255,0.65)"/>
+            <circle cx="655" cy="427" r="1.8" fill="rgba(180,220,255,0.5)"/>
+            <!-- Red crossed-out indicator -->
+            <line x1="635" y1="440" x2="685" y2="430" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+            <!-- NO STEAM - cold label -->
+            <text x="660" y="418" text-anchor="middle" fill="var(--red)" font-size="12" font-weight="700" opacity="0.85">🥶 COLD</text>
+
+            <!-- ── CARICATURE: Frustrated, shaking ── -->
+            <g class="person-frustrated">
+              <ellipse cx="390" cy="470" rx="25" ry="6" fill="rgba(0,0,0,0.15)"/>
+              <!-- Legs -->
+              <path d="M 375 445 Q 370 470 365 488" fill="none" stroke="#2a2a40" stroke-width="12" stroke-linecap="round"/>
+              <path d="M 405 445 Q 410 470 415 488" fill="none" stroke="#2a2a40" stroke-width="12" stroke-linecap="round"/>
+              <ellipse cx="365" cy="490" rx="9" ry="4" fill="#1a1a28"/>
+              <ellipse cx="415" cy="490" rx="9" ry="4" fill="#1a1a28"/>
+              <!-- Body -->
+              <path d="M 372 388 L 368 445 L 412 445 L 408 388 Z" fill="#3a5a7a"/>
+              <!-- Arms tense -->
+              <path d="M 372 400 Q 350 410 345 420" fill="none" stroke="#3a5a7a" stroke-width="9" stroke-linecap="round"/>
+              <path d="M 408 400 Q 435 395 450 385" fill="none" stroke="#3a5a7a" stroke-width="9" stroke-linecap="round"/>
+              <circle cx="450" cy="383" r="5" fill="#f0c8a0"/>
+              <rect x="448" y="375" width="6" height="16" rx="2" fill="#333"/>
+              <circle cx="345" cy="422" r="5" fill="#f0c8a0"/>
+              <!-- Head -->
+              <circle cx="390" cy="358" r="26" fill="#f0c8a0"/>
+              <!-- ANGRY eyebrows (V-shaped) -->
+              <line x1="375" y1="345" x2="383" y2="350" stroke="#5a3020" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="405" y1="345" x2="397" y2="350" stroke="#5a3020" stroke-width="2.5" stroke-linecap="round"/>
+              <!-- Squinting angry eyes -->
+              <ellipse cx="381" cy="357" rx="4" ry="2.5" fill="white"/>
+              <ellipse cx="399" cy="357" rx="4" ry="2.5" fill="white"/>
+              <circle cx="382" cy="357" r="2" fill="#333"/>
+              <circle cx="400" cy="357" r="2" fill="#333"/>
+              <!-- Angry frown / gritting teeth -->
+              <path d="M 382 372 Q 390 368 398 372" fill="none" stroke="#8a4030" stroke-width="2" stroke-linecap="round"/>
+              <!-- Anger vein -->
+              <path d="M 405 340 L 408 336 L 412 340 L 415 336" fill="none" stroke="var(--red)" stroke-width="1.5"/>
+              <!-- Hair messed up -->
+              <ellipse cx="390" cy="335" rx="22" ry="8" fill="#3a2a20"/>
+              <path d="M 375 335 Q 380 328 385 335" fill="#3a2a20"/>
+            </g>
+
+            <!-- TICK TICK LOUD -->
+            <g class="tick-tick-loud">
+              <text x="420" y="185" fill="var(--red)" font-size="16" font-weight="700" class="tick1">TICK</text>
+              <text x="430" y="210" fill="var(--red)" font-size="16" font-weight="700" class="tick2">TICK</text>
+              <text x="418" y="235" fill="var(--red)" font-size="16" font-weight="700" class="tick3">TICK</text>
+            </g>
+
+            <!-- LG TV still scrolling -->
+            <rect x="830" y="440" width="200" height="50" rx="4" fill="#1a1828"/>
+            <rect x="970" y="430" width="24" height="12" rx="2" fill="#1a1a28"/>
+            <rect x="830" y="250" width="300" height="185" rx="3" fill="#0a0a0a" stroke="#333" stroke-width="2"/>
+            <rect x="834" y="254" width="292" height="177" rx="2" fill="#0a0e18"/>
+            <text x="980" y="446" text-anchor="middle" fill="white" font-size="10" font-weight="700" letter-spacing="2">LG</text>
+            <rect x="834" y="254" width="292" height="16" fill="rgba(0,0,0,0.7)"/>
+            <text x="845" y="265" fill="var(--red)" font-size="6" font-weight="600">8:27 PM</text>
+            <defs><clipPath id="tv-clip-3"><rect x="834" y="270" width="292" height="161"/></clipPath></defs>
+            <g clip-path="url(#tv-clip-3)">
+            <g class="tv-ui-scroll">
+              <text x="845" y="282" fill="#888" font-size="6" font-weight="600">Continue Watching</text>
+              <rect x="845" y="286" width="40" height="26" rx="2" fill="#1a3a5a"/>
+              <rect x="889" y="286" width="40" height="26" rx="2" fill="#3a1a2a"/>
+              <rect x="933" y="286" width="40" height="26" rx="2" fill="#1a2a1a"/>
+              <rect x="977" y="286" width="40" height="26" rx="2" fill="#2a2a4a"/>
+              <rect x="1021" y="286" width="40" height="26" rx="2" fill="#4a2a1a"/>
+              <text x="845" y="324" fill="#888" font-size="6" font-weight="600">Trending Now</text>
+              <rect x="845" y="328" width="40" height="26" rx="2" fill="#4a1a3a"/>
+              <rect x="889" y="328" width="40" height="26" rx="2" fill="#1a4a3a"/>
+              <rect x="933" y="328" width="40" height="26" rx="2" fill="#3a3a1a"/>
+              <rect x="977" y="328" width="40" height="26" rx="2" fill="#1a1a4a"/>
+              <rect x="1021" y="328" width="40" height="26" rx="2" fill="#3a1a1a"/>
+              <text x="845" y="366" fill="#888" font-size="6" font-weight="600">Top Picks For You</text>
+              <rect x="845" y="370" width="40" height="26" rx="2" fill="#2a1a4a"/>
+              <rect x="889" y="370" width="40" height="26" rx="2" fill="#4a3a1a"/>
+              <rect x="933" y="370" width="40" height="26" rx="2" fill="#1a4a4a"/>
+              <rect x="977" y="370" width="40" height="26" rx="2" fill="#3a2a3a"/>
+              <rect x="1021" y="370" width="40" height="26" rx="2" fill="#1a2a4a"/>
+              <text x="845" y="408" fill="#888" font-size="6" font-weight="600">New Releases</text>
+              <rect x="845" y="412" width="40" height="26" rx="2" fill="#3a3a3a"/>
+              <rect x="889" y="412" width="40" height="26" rx="2" fill="#1a3a2a"/>
+              <rect x="933" y="412" width="40" height="26" rx="2" fill="#4a2a3a"/>
+              <rect x="977" y="412" width="40" height="26" rx="2" fill="#2a4a1a"/>
+              <rect x="1021" y="412" width="40" height="26" rx="2" fill="#3a1a4a"/>
+            </g>
+            </g>
+            <rect x="843" y="326" width="44" height="30" rx="3" fill="none" stroke="white" stroke-width="1.5" class="tv-cursor"/>
+
+            <text x="60" y="640" fill="var(--muted)" font-size="9" font-style="italic" opacity="0.5">* caricature</text>
+          </svg>
+
+          <div class="time-badge danger">8:27 PM</div>
+          <div class="scene-caption danger-text">27 minutes. Dinner cold. Still nothing.</div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════
+           SCENE 4: GIVES UP - TV OFF
+           ═══════════════════════════════════════════ -->
+      <section data-background-color="#0c0c14" data-autoslide="2000">
+        <div class="scene-container">
+          <svg class="scene-svg" viewBox="0 0 1200 650" xmlns="http://www.w3.org/2000/svg">
+            <!-- ── ROOM (darkest) ── -->
+            <rect x="0" y="490" width="1200" height="160" fill="#141018"/>
+            <rect x="0" y="0" width="1200" height="490" fill="#0a0814"/>
+            <rect x="0" y="470" width="1200" height="20" fill="#14121f"/>
+            <ellipse cx="600" cy="510" rx="180" ry="35" fill="#1a1230" opacity="0.4"/>
+            <!-- Clock RED -->
+            <circle cx="440" cy="130" r="40" fill="#14121f" stroke="var(--red)" stroke-width="2"/>
+            <line x1="440" y1="130" x2="437" y2="104" stroke="var(--red)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="440" y1="130" x2="415" y2="135" stroke="var(--red)" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="440" cy="130" r="3" fill="var(--red)"/>
+
+            <!-- Sofa -->
+            <rect x="250" y="400" width="250" height="90" rx="25" fill="#2d2548" opacity="0.7"/>
+            <rect x="250" y="380" width="250" height="35" rx="15" fill="#352d52" opacity="0.7"/>
+            <rect x="245" y="375" width="40" height="115" rx="15" fill="#352d52" opacity="0.7"/>
+            <rect x="505" y="375" width="40" height="115" rx="15" fill="#352d52" opacity="0.7"/>
+
+            <!-- Coffee Table dim -->
+            <rect x="580" y="445" width="160" height="10" rx="5" fill="#4a3520" opacity="0.3"/>
+
+            <!-- ── CARICATURE: Standing up, arms thrown, furious ── -->
+            <g class="person-gaveup">
+              <ellipse cx="390" cy="492" rx="22" ry="5" fill="rgba(0,0,0,0.15)"/>
+              <!-- Legs (standing) -->
+              <path d="M 380 435 L 375 490" fill="none" stroke="#2a2a40" stroke-width="12" stroke-linecap="round"/>
+              <path d="M 400 435 L 405 490" fill="none" stroke="#2a2a40" stroke-width="12" stroke-linecap="round"/>
+              <ellipse cx="375" cy="492" rx="9" ry="4" fill="#1a1a28"/>
+              <ellipse cx="405" cy="492" rx="9" ry="4" fill="#1a1a28"/>
+              <!-- Body -->
+              <path d="M 375 370 L 372 435 L 408 435 L 405 370 Z" fill="#3a5a7a"/>
+              <!-- ARMS UP (frustration!) -->
+              <path d="M 375 380 Q 350 360 340 340" fill="none" stroke="#3a5a7a" stroke-width="9" stroke-linecap="round"/>
+              <path d="M 405 380 Q 430 360 440 340" fill="none" stroke="#3a5a7a" stroke-width="9" stroke-linecap="round"/>
+              <!-- Hands (clenched) -->
+              <circle cx="338" cy="338" r="6" fill="#f0c8a0"/>
+              <circle cx="442" cy="338" r="6" fill="#f0c8a0"/>
+
+              <!-- Head (RED tinted with fury) -->
+              <circle cx="390" cy="340" r="28" fill="#f0b898"/>
+              <!-- X X eyes -->
+              <line x1="378" y1="334" x2="384" y2="340" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="384" y1="334" x2="378" y2="340" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="396" y1="334" x2="402" y2="340" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="402" y1="334" x2="396" y2="340" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round"/>
+              <!-- Open angry mouth -->
+              <ellipse cx="390" cy="355" rx="8" ry="5" fill="#3a1a1a"/>
+              <path d="M 383 353 L 397 353" stroke="white" stroke-width="1.5"/>
+              <!-- Anger veins -->
+              <path d="M 410 320 L 413 316 L 417 320 L 420 316" fill="none" stroke="var(--red)" stroke-width="2"/>
+              <path d="M 365 320 L 362 316 L 358 320" fill="none" stroke="var(--red)" stroke-width="1.5"/>
+              <!-- Hair messed -->
+              <path d="M 368 318 Q 375 308 382 315 Q 390 305 398 315 Q 405 308 412 318" fill="#3a2a20"/>
+            </g>
+
+            <!-- LG TV - SHUTTING OFF -->
+            <rect x="830" y="440" width="200" height="50" rx="4" fill="#1a1828" opacity="0.5"/>
+            <rect x="970" y="430" width="24" height="12" rx="2" fill="#1a1a28" opacity="0.5"/>
+            <rect x="830" y="250" width="300" height="185" rx="3" fill="#030306" stroke="#1a1a1a" stroke-width="2"/>
+            <rect x="834" y="254" width="292" height="177" rx="2" fill="#000"/>
+            <!-- LG Logo highlighted -->
+            <text x="980" y="462" text-anchor="middle" fill="white" font-size="12" font-weight="900" letter-spacing="2">LG</text>
+            <!-- CRT shutoff line -->
+            <rect x="834" y="342" width="292" height="2" fill="white" class="crt-line"/>
+
+            <!-- SHUT DOWN text -->
+            <text x="980" y="350" text-anchor="middle" fill="var(--red)" font-size="28" font-weight="900" letter-spacing="4" opacity="0.9">SHUT DOWN</text>
+
+            <!-- Remote tossed on floor -->
+            <rect x="550" y="485" width="6" height="16" rx="2" fill="#555" transform="rotate(40 553 493)"/>
+
+            <text x="60" y="640" fill="var(--muted)" font-size="9" font-style="italic" opacity="0.5">* caricature</text>
+          </svg>
+
+          <div class="time-badge danger">8:28 PM</div>
+          <div class="scene-caption gave-up-text">Gave up.</div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════
+           SLIDE: THE COST
+           ═══════════════════════════════════════════ -->
+      <section data-background-color="#0c0c14" data-autoslide="2000">
+        <div class="content-slide">
+          <div class="loss-bars">
+            <div class="loss-row fragment fade-up">
+              <span class="loss-label">📺 Viewership</span>
+              <div class="bar-track"><div class="bar-fill" style="--w:80%"></div></div>
+              <span class="loss-val red">lost</span>
+            </div>
+            <div class="loss-row fragment fade-up">
+              <span class="loss-label">💰 Ad Revenue</span>
+              <div class="bar-track"><div class="bar-fill" style="--w:65%"></div></div>
+              <span class="loss-val red">gone</span>
+            </div>
+            <div class="loss-row fragment fade-up">
+              <span class="loss-label">😤 User Experience</span>
+              <div class="bar-track"><div class="bar-fill" style="--w:92%"></div></div>
+              <span class="loss-val red">ruined</span>
+            </div>
+          </div>
+          <p class="big-note fragment fade-in">Millions of homes. Every. Single. Night.</p>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════
+           REMAINING SLIDES (TEXT-BASED)
+           ═══════════════════════════════════════════ -->
+
+      <section data-background-color="#0c0c14">
+        <div class="content-slide">
+          <p class="label">THE PROBLEM</p>
+          <h2 class="headline">Recommendations have<br><span class="accent">stopped recommending.</span></h2>
+          <div class="two-cards fragment fade-up">
+            <div class="stat-card green-card">
+              <span class="card-arrow">↑</span>
+              <span>Algorithm Quality</span>
+            </div>
+            <div class="stat-card red-card">
+              <span class="card-arrow">↓</span>
+              <span>User Experience</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section data-background-color="#0c0c14">
+        <div class="content-slide">
+          <p class="label">THE INSIGHT</p>
+          <h2 class="headline">Right problem. <span class="accent">Wrong surface.</span></h2>
+          <div class="two-cards fragment fade-up">
+            <div class="insight-card">
+              <span class="card-icon">🧠</span>
+              <p class="card-title">Highest-effort task</p>
+              <p class="card-sub">Pick 1 from 10,000+</p>
+            </div>
+            <span class="card-x">×</span>
+            <div class="insight-card">
+              <span class="card-icon">📺</span>
+              <p class="card-title">Lowest-bandwidth surface</p>
+              <p class="card-sub">Tired, D-pad, 10ft away</p>
+            </div>
+          </div>
+          <p class="punchline fragment fade-in">The TV is for watching. Not choosing.</p>
+        </div>
+      </section>
+
+      <section data-background-color="#0c0c14">
+        <div class="content-slide">
+          <p class="label">THE SOLUTION</p>
+          <div class="phone-tv-flow fragment fade-up">
+            <div class="flow-device">
+              <div class="flow-phone">
+                <div class="mini-galaxy">
+                  <span></span><span></span><span></span><span></span><span></span>
+                </div>
+              </div>
+              <p>Decides</p>
+            </div>
+            <span class="flow-arrow-big">→</span>
+            <div class="flow-device">
+              <div class="flow-tv"><span class="play-triangle">▶</span></div>
+              <p>Plays</p>
+            </div>
+          </div>
+          <h2 class="headline" style="margin-top:1em">The phone decides.<br><span class="accent">The TV plays.</span></h2>
+        </div>
+      </section>
+
+      <section data-background-color="#0c0c14">
+        <div class="content-slide">
+          <div class="when-row">
+            <div class="when-item fragment fade-up"><span>🚇</span><p>Commute</p></div>
+            <div class="when-item fragment fade-up"><span>☕</span><p>Coffee break</p></div>
+            <div class="when-item fragment fade-up"><span>🌙</span><p>Before bed</p></div>
+          </div>
+          <p class="punchline fragment fade-in">Hours of bandwidth. No TV product uses them.</p>
+        </div>
+      </section>
+
+      <section data-background-color="#0c0c14">
+        <div class="content-slide brand-slide">
+          <p class="brand-word">Cinebula</p>
+          <p class="brand-line fragment fade-in">Choose on the phone. Sit down. Press play.</p>
+        </div>
+      </section>
+
+      <section data-background-color="#0c0c14">
+        <div class="content-slide">
+          <p class="demo-word">DEMO</p>
+        </div>
+      </section>
+
+      <section data-background-color="#0c0c14">
+        <div class="content-slide">
+          <p class="label">THE MOAT</p>
+          <h2 class="headline">Discovery → first click.<br><span class="accent">Data → long game.</span></h2>
+        </div>
+      </section>
+
+      <section data-background-color="#0c0c14">
+        <div class="content-slide">
+          <div class="iceberg">
+            <div class="ice-top">
+              <p class="ice-head">ACR Today</p>
+              <p>What they watched</p>
+            </div>
+            <div class="ice-line"></div>
+            <div class="ice-bottom fragment fade-up">
+              <p class="ice-head accent">+ Cinebula</p>
+              <p>What they <strong>almost</strong> watched</p>
+              <p>Genres explored vs avoided</p>
+              <p>Mood · Time · Context</p>
+            </div>
+          </div>
+          <p class="punchline fragment fade-in"><span class="accent">Only LG</span> can collect this.</p>
+        </div>
+      </section>
+
+      <section data-background-color="#0c0c14">
+        <div class="content-slide">
+          <p class="label">ROI</p>
+          <div class="roi-list">
+            <div class="roi-item fragment fade-up"><span class="roi-up">↑</span> Viewership</div>
+            <div class="roi-item fragment fade-up"><span class="roi-up">↑</span> Ad Revenue</div>
+            <div class="roi-item fragment fade-up"><span class="roi-up">↑</span> Engagement</div>
+            <div class="roi-item fragment fade-up"><span class="roi-up">↑</span> Differentiation</div>
+          </div>
+        </div>
+      </section>
+
+      <section data-background-color="#0c0c14">
+        <div class="content-slide">
+          <p class="label">WHAT'S NEXT</p>
+          <h2 class="headline">First 90 seconds<br><span class="accent">of something bigger.</span></h2>
+          <div class="pill-row fragment fade-up">
+            <span class="pill">Deeper personalization</span>
+            <span class="pill">webOS integration</span>
+            <span class="pill">Ad targeting layer</span>
+          </div>
+        </div>
+      </section>
+
+      <section data-background-color="#0c0c14">
+        <div class="content-slide brand-slide">
+          <p class="brand-word">Cinebula</p>
+          <p class="brand-line">The phone decides. The TV plays.</p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      transition: 'fade',
+      transitionSpeed: 'default',
+      controls: true,
+      progress: true,
+      center: true,
+      keyboard: true,
+      touch: true,
+      width: 1920,
+      height: 1080,
+    });
+  </script>
+</body>
+</html>
