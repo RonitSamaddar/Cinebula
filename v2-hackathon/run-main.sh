@@ -29,6 +29,15 @@ echo "Cleaning up existing processes..."
 lsof -ti:$BACKEND_PORT | xargs kill 2>/dev/null || true
 lsof -ti:$FRONTEND_PORT | xargs kill 2>/dev/null || true
 lsof -ti:7700 | xargs kill 2>/dev/null || true
+
+# Clear backend queue cache
+echo "Clearing queue cache..."
+rm -f "$BACKEND_DIR/data-dirs/queue.json"
+
+# Clear frontend localStorage (injected on next page load)
+echo "Clearing frontend local caches..."
+rm -rf "$FRONTEND_DIR/.next/cache"
+
 sleep 1
 
 # --- Backend (port 8080) ---

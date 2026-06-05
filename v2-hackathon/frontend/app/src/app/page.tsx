@@ -69,8 +69,8 @@ export default function Home() {
   const dustZ3Ref = useRef<import("@/services/backend").DustParticle[]>([]);
 
   // Connection flow states
-  const [connected, setConnected] = useState(true); // skip QR — go straight to galaxy
-  const [loading, setLoading] = useState(true);     // start loading immediately
+  const [connected, setConnected] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [scannerOpen, setScannerOpen] = useState(false);
 
   // Init audio context on first render
@@ -78,15 +78,12 @@ export default function Home() {
     initAudio();
   }, []);
 
-  // Auto-load galaxy data on mount (bypasses QR flow)
+  // Load galaxy immediately with anonymous device, then QR upgrades later
   useEffect(() => {
     (async () => {
-      const deviceId = "direct-access"; // skip QR
+      const deviceId = "anonymous-" + Date.now();
       const session = await loginAndFetchGenres(deviceId);
-      if (!session) {
-        setLoading(false);
-        return;
-      }
+      if (!session) { setLoading(false); return; }
 
       const { token } = session;
       tokenRef.current = token;
@@ -94,7 +91,6 @@ export default function Home() {
       const loadingStart = Date.now();
       const LOADING_DURATION = 15000;
 
-      // Single call to get all movies
       const allMovies = await fetchAllMovies(token);
       if (allMovies?.movies?.length) {
         const data = backendMoviesToShowsV2(allMovies);
@@ -115,6 +111,7 @@ export default function Home() {
       if (elapsed < LOADING_DURATION) {
         await new Promise((r) => setTimeout(r, LOADING_DURATION - elapsed));
       }
+      setConnected(true);
       setLoading(false);
     })();
   }, []);
@@ -600,13 +597,12 @@ export default function Home() {
         />
       )}
 
-      {/* Initial connect dialog — COMMENTED OUT (QR bypassed)
+      {/* Connect dialog */}
       {!connected && !loading && !scannerOpen && (
         <ConnectDialog onConnect={() => setScannerOpen(true)} />
       )}
-      */}
 
-      {/* QR Scanner — COMMENTED OUT (direct load)
+      {/* QR Scanner — scans device ID, calls v2 API */}
       {!connected && scannerOpen && (
         <QRScanner
           onScan={(deviceId) => {
@@ -616,63 +612,30 @@ export default function Home() {
             (async () => {
               try {
                 const session = await loginAndFetchGenres(deviceId);
-                if (!session || !session.topGenres || session.topGenres.length === 0) {
-                  return;
-                }
+                if (!session) { setLoading(false); return; }
 
-                const { topGenres, token } = session;
-                const categories = buildCategories(topGenres.map(g => g.genre));
-                categoriesRef.current = categories;
+                const { token } = session;
+                tokenRef.current = token;
 
-                const moviesByGenre: Record<string, import("@/services/backend").MoviesResponse> = {};
+                const loadingStart = Date.now();
+                const LOADING_DURATION = 15000;
 
-                // Helper: rebuild shows from whatever we have so far
-                const rebuildShows = () => {
-                  const data = backendMoviesToShows(topGenres, moviesByGenre, categories);
+                const allMovies = await fetchAllMovies(token);
+                if (allMovies?.movies?.length) {
+                  const data = backendMoviesToShowsV2(allMovies);
                   z0ShowsRef.current = data.z0;
                   z1ShowsRef.current = data.z1;
                   z2ShowsRef.current = data.z2;
                   z3ShowsRef.current = data.z3;
                   allShowsRef.current = [...data.z0, ...data.z1, ...data.z2, ...data.z3];
-                  cardsRef.current?.setShows(data.z0);
-                };
-
-                // Start 10s loading timer — loading screen stays for exactly 10s
-                const loadingStart = Date.now();
-                const LOADING_DURATION = 15000;
-
-                // Phase 1: Load center genre (position index 3)
-                const centerIdx = Math.min(LOAD_ORDER_CENTER, topGenres.length - 1);
-                const centerGenre = topGenres[centerIdx];
-                if (centerGenre) {
-                  const result = await fetchGenreMovies(centerGenre.genre, token);
-                  if (result?.movies?.length) moviesByGenre[centerGenre.genre] = result;
-                }
-                rebuildShows();
-
-                // Phase 2: Load 4 side genres one by one
-                for (const idx of LOAD_ORDER_SIDES) {
-                  if (idx >= topGenres.length) continue;
-                  const g = topGenres[idx];
-                  const result = await fetchGenreMovies(g.genre, token);
-                  if (result?.movies?.length) {
-                    moviesByGenre[g.genre] = result;
-                    rebuildShows();
-                  }
+                  dustRef.current = data.dustZ0;
+                  dustZ0Ref.current = data.dustZ0;
+                  dustZ1Ref.current = data.dustZ1;
+                  dustZ2Ref.current = data.dustZ2;
+                  dustZ3Ref.current = data.dustZ3;
+                  cardsRef.current?.setShows(data.z0, data.dustZ0);
                 }
 
-                // Phase 3: Load remaining genres
-                for (const idx of LOAD_ORDER_REMAINING) {
-                  if (idx >= topGenres.length) continue;
-                  const g = topGenres[idx];
-                  const result = await fetchGenreMovies(g.genre, token);
-                  if (result?.movies?.length) {
-                    moviesByGenre[g.genre] = result;
-                    rebuildShows();
-                  }
-                }
-
-                // Wait until 10s have passed since loading started
                 const elapsed = Date.now() - loadingStart;
                 if (elapsed < LOADING_DURATION) {
                   await new Promise((r) => setTimeout(r, LOADING_DURATION - elapsed));
@@ -682,51 +645,11 @@ export default function Home() {
               } finally {
                 setLoading(false);
               }
-              const { topGenres, token } = session;
-              const categories = buildCategories(topGenres.map(g => g.genre));
-              categoriesRef.current = categories;
-              const moviesByGenre: Record<string, import("@/services/backend").MoviesResponse> = {};
-              const rebuildShows = () => {
-                const data = backendMoviesToShows(topGenres, moviesByGenre, categories);
-                z0ShowsRef.current = data.z0;
-                z1ShowsRef.current = data.z1;
-                z2ShowsRef.current = data.z2;
-                z3ShowsRef.current = data.z3;
-                allShowsRef.current = [...data.z0, ...data.z1, ...data.z2, ...data.z3];
-                cardsRef.current?.setShows(data.z0);
-              };
-              const loadingStart = Date.now();
-              const LOADING_DURATION = 15000;
-              const centerIdx = Math.min(LOAD_ORDER_CENTER, topGenres.length - 1);
-              const centerGenre = topGenres[centerIdx];
-              if (centerGenre) {
-                const result = await fetchGenreMovies(centerGenre.genre, token);
-                if (result?.movies?.length) moviesByGenre[centerGenre.genre] = result;
-              }
-              rebuildShows();
-              for (const idx of LOAD_ORDER_SIDES) {
-                if (idx >= topGenres.length) continue;
-                const g = topGenres[idx];
-                const result = await fetchGenreMovies(g.genre, token);
-                if (result?.movies?.length) { moviesByGenre[g.genre] = result; rebuildShows(); }
-              }
-              for (const idx of LOAD_ORDER_REMAINING) {
-                if (idx >= topGenres.length) continue;
-                const g = topGenres[idx];
-                const result = await fetchGenreMovies(g.genre, token);
-                if (result?.movies?.length) { moviesByGenre[g.genre] = result; rebuildShows(); }
-              }
-              const elapsed = Date.now() - loadingStart;
-              if (elapsed < LOADING_DURATION) {
-                await new Promise((r) => setTimeout(r, LOADING_DURATION - elapsed));
-              }
-              setLoading(false);
             })();
           }}
           onClose={() => setScannerOpen(false)}
         />
       )}
-      */}
 
       {/* Loading screen — while fetching genres/shows */}
       {loading && <LoadingScreen />}

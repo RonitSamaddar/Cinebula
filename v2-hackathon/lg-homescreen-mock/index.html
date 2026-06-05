@@ -1326,23 +1326,7 @@ TOP_PICKS.forEach((pick, i) => {
 // Shows queued from Cinebula phone and sent to TV
 // Row only visible when queue has items
 // ═══════════════════════════════════════════
-const CINEBULA_QUEUE_STATIC = [
-  { title: 'Severance S2', match: 92, gradient: 'linear-gradient(135deg, #0a1628, #1a3a5c, #0a1628)',
-    image: 'https://image.tmdb.org/t/p/w500/i9Ek5cSAduHLYD3ndgxmOWBQWt9.jpg',
-    desc: 'Mark scouts the mysterious Revolving Door between his work and personal lives.',
-    genre: 'Sci-Fi', subgenre: 'Thriller', year: 2025, seasons: 2, episodes: 19, rating: 'TV-MA',
-    creator: 'Dan Erickson', cast: 'Adam Scott, Zach Cherry, Britt Lower', runtime: '45 min' },
-  { title: 'Dark', match: 88, gradient: 'linear-gradient(135deg, #0a0a1a, #1a1a3a, #0a0a1a)',
-    image: 'https://image.tmdb.org/t/p/w500/zleUYDMDiaOcUdKKg6e2mVTn6wo.jpg',
-    desc: 'A missing child sets four families on a frantic hunt for answers as they unearth a mind-bending mystery.',
-    genre: 'Mystery', subgenre: 'Sci-Fi', year: 2017, seasons: 3, episodes: 26, rating: 'TV-MA',
-    creator: 'Baran bo Odar', cast: 'Louis Hofmann, Lisa Vicari, Oliver Masucci', runtime: '52 min' },
-  { title: 'The Bear S3', match: 85, gradient: 'linear-gradient(135deg, #1a0a0a, #5c2a1a, #1a0a0a)',
-    image: 'https://image.tmdb.org/t/p/w500/iZuZjmEeWR0D8ak67FNKJuGr7gL.jpg',
-    desc: 'Carmy pushes himself and his crew to transform their restaurant while battling his own demons.',
-    genre: 'Drama', subgenre: 'Comedy', year: 2024, seasons: 3, episodes: 28, rating: 'TV-MA',
-    creator: 'Christopher Storer', cast: 'Jeremy Allen White, Ayo Edebiri, Ebon Moss-Bachrach', runtime: '32 min' }
-];
+const CINEBULA_QUEUE_STATIC = [];
 
 // Read queue from localStorage (written by the phone frontend)
 const LS_KEY = 'cinebula-queue';

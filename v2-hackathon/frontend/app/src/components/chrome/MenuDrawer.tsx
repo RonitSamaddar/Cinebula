@@ -9,8 +9,7 @@ import { useRef, useState, useCallback, useEffect } from "react";
 import type { SearchFilters } from "@/lib/search";
 import { useQueueStore } from "@/stores/queue-store";
 import { useTVStore } from "@/stores/tv-store";
-import { initializeBackend, backendMoviesToShows } from "@/services/backend";
-import { buildCategories } from "@/data/categories";
+import { loginAndFetchGenres, fetchAllMovies, backendMoviesToShowsV2 } from "@/services/backend";
 import type { Show, Category } from "@/types";
 import QRScanner from "./QRScanner";
 
@@ -542,13 +541,15 @@ export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilter
           onScan={(id) => {
             setDeviceId(id);
             setScannerOpen(false);
-            initializeBackend(id).then((result) => {
-              if (result && onBackendShows) {
-                const categories = buildCategories(result.topGenres.map(g => g.genre));
-                const data = backendMoviesToShows(result.topGenres, result.moviesByGenre, categories);
-                onBackendShows(data, categories);
+            (async () => {
+              const session = await loginAndFetchGenres(id);
+              if (!session) return;
+              const allMovies = await fetchAllMovies(session.token);
+              if (allMovies?.movies?.length && onBackendShows) {
+                const data = backendMoviesToShowsV2(allMovies);
+                onBackendShows(data, []);
               }
-            });
+            })();
           }}
           onClose={() => setScannerOpen(false)}
         />
