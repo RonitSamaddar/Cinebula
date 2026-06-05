@@ -83,9 +83,27 @@ func QueryDirection(userX, userY float64, direction string, radius float64, topN
 			// Use cos^2 for sharper directional focus (narrower cone weighting)
 			dirWeight := cosAngle * cosAngle
 
-			// Distance weight: use radius as the scale factor for decay.
-			// Movies at distance == radius get weight ~0.5, closer get more, farther get less.
-			distWeight := 1.0 / (1.0 + dist/radius)
+			// Distance weight: bump function peaking at dist == radius.
+			// - Rise (dist < radius): quadratic, strongly suppresses very close movies
+			//   so nearby clusters don't bias the direction.
+			// - Decay (dist > radius): gentle exponential, so farther content still
+			//   contributes meaningfully.
+			//
+			//   weight
+			//     1 |        *
+			//       |      *   *
+			//       |    *       *
+			//       |  *           *
+			//       |*               *  *  *
+			//     0 +-----|-----|-----|-----> dist
+			//       0   radius      2r    3r
+			t := dist / radius
+			var distWeight float64
+			if t <= 1.0 {
+				distWeight = t * t // quadratic rise: 0 at user, 1 at radius
+			} else {
+				distWeight = math.Exp(-1.0 * (t - 1.0)) // gentle decay: ~0.37 at 2r, ~0.14 at 3r
+			}
 
 			score := dirWeight * distWeight
 
