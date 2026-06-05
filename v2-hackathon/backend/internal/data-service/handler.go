@@ -32,43 +32,58 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	language := strings.TrimSpace(q.Get("language"))
 	movieName := strings.TrimSpace(q.Get("movie_name"))
 
-	result, err := Fetch(genre, keyword, language, movieName)
-	if err != nil {
-		http.Error(w, "upstream error: "+err.Error(), http.StatusBadGateway)
-		return
+	cacheKey := "movies:" + genre + ":" + keyword + ":" + language + ":" + movieName
+
+	var result *MoviesResponse
+	if cached, ok := cacheGet(cacheKey); ok {
+		result = cached
+	} else {
+		var err error
+		result, err = Fetch(genre, keyword, language, movieName)
+		if err != nil {
+			http.Error(w, "upstream error: "+err.Error(), http.StatusBadGateway)
+			return
+		}
+
+		// Compute priority scores (IMDb weighted rating, normalised 0–100)
+		// using the catalog returned by this request as the scoring universe.
+		if len(result.Movies) > 0 {
+			avgs := make([]float64, len(result.Movies))
+			counts := make([]int, len(result.Movies))
+			for i, m := range result.Movies {
+				avgs[i] = m.VoteAverage
+				counts[i] = m.VoteCount
+			}
+			scores := priority.Compute(avgs, counts)
+			for i := range result.Movies {
+				result.Movies[i].Priority = scores[i]
+			}
+		}
+
+		cacheSet(cacheKey, result)
 	}
 
-	// Compute priority scores (IMDb weighted rating, normalised 0–100)
-	// using the catalog returned by this request as the scoring universe.
-	if len(result.Movies) > 0 {
-		avgs := make([]float64, len(result.Movies))
-		counts := make([]int, len(result.Movies))
-		for i, m := range result.Movies {
-			avgs[i] = m.VoteAverage
-			counts[i] = m.VoteCount
-		}
-		scores := priority.Compute(avgs, counts)
-		for i := range result.Movies {
-			result.Movies[i].Priority = scores[i]
-		}
-	}
+	// Copy movies slice so is_watched annotation doesn't mutate the cache.
+	movies := make([]Movie, len(result.Movies))
+	copy(movies, result.Movies)
 
 	// Enrich is_watched from ACR data if a valid JWT is present.
 	if authHeader := r.Header.Get("Authorization"); strings.HasPrefix(authHeader, "Bearer ") {
 		tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
 		if claims, err := auth.ParseToken(tokenStr); err == nil {
 			if watched, err := acrprocessor.WatchedTitlesForUser(claims.UserID); err == nil && len(watched) > 0 {
-				for i, m := range result.Movies {
+				for i, m := range movies {
 					if watched[strings.ToLower(strings.TrimSpace(m.MovieName))] {
-						result.Movies[i].IsWatched = true
+						movies[i].IsWatched = true
 					}
 				}
 			}
 		}
 	}
 
+	out := &MoviesResponse{Count: result.Count, Movies: movies}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(result)
+	json.NewEncoder(w).Encode(out)
 }
 
 // SimilarHandler handles GET /api/similar
@@ -99,38 +114,53 @@ func SimilarHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	result, err := FetchSimilar(movie, k)
-	if err != nil {
-		http.Error(w, "upstream error: "+err.Error(), http.StatusBadGateway)
-		return
+	cacheKey := "similar:" + strings.ToLower(movie) + ":" + strconv.Itoa(k)
+
+	var result *MoviesResponse
+	if cached, ok := cacheGet(cacheKey); ok {
+		result = cached
+	} else {
+		var err error
+		result, err = FetchSimilar(movie, k)
+		if err != nil {
+			http.Error(w, "upstream error: "+err.Error(), http.StatusBadGateway)
+			return
+		}
+
+		if len(result.Movies) > 0 {
+			avgs := make([]float64, len(result.Movies))
+			counts := make([]int, len(result.Movies))
+			for i, m := range result.Movies {
+				avgs[i] = m.VoteAverage
+				counts[i] = m.VoteCount
+			}
+			scores := priority.Compute(avgs, counts)
+			for i := range result.Movies {
+				result.Movies[i].Priority = scores[i]
+			}
+		}
+
+		cacheSet(cacheKey, result)
 	}
 
-	if len(result.Movies) > 0 {
-		avgs := make([]float64, len(result.Movies))
-		counts := make([]int, len(result.Movies))
-		for i, m := range result.Movies {
-			avgs[i] = m.VoteAverage
-			counts[i] = m.VoteCount
-		}
-		scores := priority.Compute(avgs, counts)
-		for i := range result.Movies {
-			result.Movies[i].Priority = scores[i]
-		}
-	}
+	// Copy movies slice so is_watched annotation doesn't mutate the cache.
+	movies := make([]Movie, len(result.Movies))
+	copy(movies, result.Movies)
 
 	if authHeader := r.Header.Get("Authorization"); strings.HasPrefix(authHeader, "Bearer ") {
 		tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
 		if claims, err := auth.ParseToken(tokenStr); err == nil {
 			if watched, err := acrprocessor.WatchedTitlesForUser(claims.UserID); err == nil && len(watched) > 0 {
-				for i, m := range result.Movies {
+				for i, m := range movies {
 					if watched[strings.ToLower(strings.TrimSpace(m.MovieName))] {
-						result.Movies[i].IsWatched = true
+						movies[i].IsWatched = true
 					}
 				}
 			}
 		}
 	}
 
+	out := &MoviesResponse{Count: result.Count, Movies: movies}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(result)
+	json.NewEncoder(w).Encode(out)
 }
