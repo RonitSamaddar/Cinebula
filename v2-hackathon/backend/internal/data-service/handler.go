@@ -9,6 +9,7 @@ import (
 	acrprocessor "cinebula/backend/internal/acr-data-processor"
 	"cinebula/backend/internal/auth"
 	"cinebula/backend/internal/priority"
+	"cinebula/backend/internal/user"
 )
 
 // Handler handles GET /api/movies
@@ -126,10 +127,28 @@ func HandlerV2(w http.ResponseWriter, r *http.Request) {
 	if authHeader := r.Header.Get("Authorization"); strings.HasPrefix(authHeader, "Bearer ") {
 		tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
 		if claims, err := auth.ParseToken(tokenStr); err == nil {
+			// Enrich is_watched
 			if watched, err := acrprocessor.WatchedTitlesForUser(claims.UserID); err == nil && len(watched) > 0 {
 				for i, m := range movies {
 					if watched[strings.ToLower(strings.TrimSpace(m.MovieName))] {
 						movies[i].IsWatched = true
+					}
+				}
+			}
+
+			// Boost priority based on user's top 3 genres
+			if u, err := user.GetByID(claims.UserID); err == nil && u.DeviceID != "" {
+				if topGenres, err := acrprocessor.TopGenresForDevice(u.DeviceID); err == nil && len(topGenres) >= 3 {
+					top3 := []string{topGenres[0].Genre, topGenres[1].Genre, topGenres[2].Genre}
+					scores := make([]float64, len(movies))
+					movieGenres := make([][]string, len(movies))
+					for i, m := range movies {
+						scores[i] = m.Priority
+						movieGenres[i] = m.Genres
+					}
+					priority.BoostForUser(scores, movieGenres, top3)
+					for i := range movies {
+						movies[i].Priority = scores[i]
 					}
 				}
 			}

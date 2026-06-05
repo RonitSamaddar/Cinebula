@@ -3,6 +3,7 @@ package priority
 import (
 	"math"
 	"sort"
+	"strings"
 )
 
 // Compute applies the IMDb weighted rating formula to a movie catalog and
@@ -83,4 +84,51 @@ func percentile(sorted []int, pct float64) int {
 		idx = 0
 	}
 	return sorted[idx]
+}
+
+// BoostForUser adjusts priority scores based on the user's top 3 genres.
+// - Movies matching any of the top 3 genres: +20% (capped at 100)
+// - Movies matching NONE of the top 3 genres: -20% (floored at 0.01)
+// Modifies scores in-place and returns the same slice.
+func BoostForUser(scores []float64, movieGenres [][]string, userTop3 []string) []float64 {
+	if len(userTop3) == 0 || len(scores) == 0 {
+		return scores
+	}
+
+	// Build lookup set for top 3 genres (case-insensitive)
+	top3Set := make(map[string]bool, 3)
+	for _, g := range userTop3 {
+		if len(g) > 0 {
+			top3Set[strings.ToLower(g)] = true
+		}
+	}
+
+	for i, score := range scores {
+		if i >= len(movieGenres) {
+			break
+		}
+		matched := false
+		for _, g := range movieGenres[i] {
+			if top3Set[strings.ToLower(g)] {
+				matched = true
+				break
+			}
+		}
+		if matched {
+			// Boost by 20%, cap at 100
+			boosted := score * 1.2
+			if boosted > 100 {
+				boosted = 100
+			}
+			scores[i] = math.Round(boosted*100) / 100
+		} else {
+			// Reduce by 20%, floor at 0.01
+			reduced := score * 0.8
+			if reduced < 0.01 {
+				reduced = 0.01
+			}
+			scores[i] = math.Round(reduced*100) / 100
+		}
+	}
+	return scores
 }
