@@ -206,6 +206,10 @@
             max-width: 70rem;
         }
 
+        [data-slide="8"] .headline {
+            font-size: 8rem;
+        }
+
         .slide-paradox.active .headline {
             animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
         }
@@ -760,8 +764,8 @@
         }
 
         .caricature-scene .scene-svg {
-            width: 85%;
-            max-width: 1400px;
+            width: 170%;
+            max-width: 2800px;
             height: auto;
         }
 
@@ -806,21 +810,21 @@
             color: var(--accent-red);
         }
 
-        /* Scene timing: 1→2→3→4 sequenced on slide activation */
+        /* Scene timing: 1→2→3→4 sequenced on slide activation, 4s each */
         .slide.active .caricature-scene-1 {
-            animation: sceneIn 0.6s ease 0.3s forwards, sceneOut 0.6s ease 5s forwards;
+            animation: sceneIn 0.6s ease 0.3s forwards, sceneOut 0.6s ease 4.3s forwards;
         }
 
         .slide.active .caricature-scene-2 {
-            animation: sceneIn 0.6s ease 5.5s forwards, sceneOut 0.6s ease 11s forwards;
+            animation: sceneIn 0.6s ease 4.8s forwards, sceneOut 0.6s ease 8.8s forwards;
         }
 
         .slide.active .caricature-scene-3 {
-            animation: sceneIn 0.6s ease 11.5s forwards, sceneOut 0.6s ease 15.5s forwards;
+            animation: sceneIn 0.6s ease 9.3s forwards, sceneOut 0.6s ease 13.3s forwards;
         }
 
         .slide.active .caricature-scene-4 {
-            animation: sceneIn 0.6s ease 16s forwards;
+            animation: sceneIn 0.6s ease 13.8s forwards;
         }
 
         @keyframes sceneIn {
@@ -1010,6 +1014,30 @@
         }
 
 
+        /* Tick tick */
+        .tick-tick .tick1 { animation: tickFade 1.2s infinite; }
+        .tick-tick .tick2 { animation: tickFade 1.2s infinite 0.4s; }
+        .tick-tick .tick3 { animation: tickFade 1.2s infinite 0.8s; }
+        @keyframes tickFade {
+            0%,100% { opacity: 0.1; }
+            50%     { opacity: 0.6; }
+        }
+
+        .tick-tick-loud .tick1 { animation: tickLoud 0.8s infinite; }
+        .tick-tick-loud .tick2 { animation: tickLoud 0.8s infinite 0.27s; }
+        .tick-tick-loud .tick3 { animation: tickLoud 0.8s infinite 0.54s; }
+        @keyframes tickLoud {
+            0%,100% { opacity: 0.2; transform: scale(1); }
+            50%     { opacity: 1; transform: scale(1.1); }
+        }
+
+        .clock-pulse {
+            animation: clockGlow 1s infinite;
+        }
+        @keyframes clockGlow {
+            0%,100% { filter: drop-shadow(0 0 0px transparent); }
+            50%     { filter: drop-shadow(0 0 12px rgba(255,68,68,0.4)); }
+        }
 
         .ir-signal {
             animation: irPulse 2s infinite;
@@ -1929,6 +1957,11 @@
                                 stroke-linecap="round" />
                             <ellipse cx="390" cy="335" rx="22" ry="8" fill="#3a2a20" />
                         </g>
+                        <!-- Tick tick -->
+                        <g class="tick-tick">
+                            <text x="430" y="185" fill="rgba(244,235,217,0.55)" font-size="13" font-weight="300" class="tick1">tick</text>
+                            <text x="435" y="205" fill="rgba(244,235,217,0.55)" font-size="13" font-weight="300" class="tick2">tick</text>
+                        </g>
                         <!-- LG TV ON -->
                         <rect x="830" y="440" width="200" height="50" rx="4" fill="#1a1828" />
                         <rect x="970" y="430" width="24" height="12" rx="2" fill="#1a1a28" />
@@ -2011,12 +2044,12 @@
                         <rect x="698" y="90" width="7" height="37" rx="1" fill="#2a4a3a" />
                         <rect x="708" y="87" width="9" height="40" rx="1" fill="#3a3a5a" />
                         <!-- Clock (8:27) -->
-                        <circle cx="440" cy="130" r="40" fill="#14121f" stroke="#3a3855" stroke-width="2" />
-                        <line x1="440" y1="130" x2="420" y2="142" stroke="white" stroke-width="2"
+                        <circle cx="440" cy="130" r="40" fill="#14121f" stroke="var(--accent-red)" stroke-width="2.5" class="clock-pulse"/>
+                        <line x1="440" y1="130" x2="420" y2="142" stroke="var(--accent-red)" stroke-width="2"
                             stroke-linecap="round" />
-                        <line x1="440" y1="130" x2="447" y2="152" stroke="white" stroke-width="1.2"
+                        <line x1="440" y1="130" x2="447" y2="152" stroke="var(--accent-red)" stroke-width="1.2"
                             stroke-linecap="round" />
-                        <circle cx="440" cy="130" r="3" fill="white" />
+                        <circle cx="440" cy="130" r="3" fill="var(--accent-red)" />
                         <!-- Sofa -->
                         <rect x="250" y="400" width="250" height="90" rx="25" fill="#2d2548" />
                         <rect x="250" y="380" width="250" height="35" rx="15" fill="#352d52" />
@@ -2073,6 +2106,12 @@
                                 stroke-width="1.5" />
                             <ellipse cx="390" cy="335" rx="22" ry="8" fill="#3a2a20" />
                             <path d="M 375 335 Q 380 328 385 335 Q 390 325 395 335 Q 400 328 405 335" fill="#3a2a20" />
+                        </g>
+                        <!-- TICK TICK LOUD -->
+                        <g class="tick-tick-loud">
+                            <text x="420" y="185" fill="var(--accent-red)" font-size="16" font-weight="700" class="tick1">TICK</text>
+                            <text x="430" y="210" fill="var(--accent-red)" font-size="16" font-weight="700" class="tick2">TICK</text>
+                            <text x="418" y="235" fill="var(--accent-red)" font-size="16" font-weight="700" class="tick3">TICK</text>
                         </g>
                         <!-- LG TV still scrolling -->
                         <rect x="830" y="440" width="200" height="50" rx="4" fill="#1a1828" />
@@ -2140,12 +2179,12 @@
                         <line x1="680" y1="130" x2="780" y2="130" stroke="#2a2838" stroke-width="1" opacity="0.5" />
                         <line x1="680" y1="180" x2="780" y2="180" stroke="#2a2838" stroke-width="1" opacity="0.5" />
                         <!-- Clock (8:28) -->
-                        <circle cx="440" cy="130" r="40" fill="#14121f" stroke="#3a3855" stroke-width="2" />
-                        <line x1="440" y1="130" x2="420" y2="142" stroke="white" stroke-width="2"
+                        <circle cx="440" cy="130" r="40" fill="#14121f" stroke="var(--accent-red)" stroke-width="2" class="clock-pulse"/>
+                        <line x1="440" y1="130" x2="420" y2="142" stroke="var(--accent-red)" stroke-width="2"
                             stroke-linecap="round" />
-                        <line x1="440" y1="130" x2="448" y2="152" stroke="white" stroke-width="1.2"
+                        <line x1="440" y1="130" x2="448" y2="152" stroke="var(--accent-red)" stroke-width="1.2"
                             stroke-linecap="round" />
-                        <circle cx="440" cy="130" r="3" fill="white" />
+                        <circle cx="440" cy="130" r="3" fill="var(--accent-red)" />
                         <!-- Sofa (dim) -->
                         <rect x="250" y="400" width="250" height="90" rx="25" fill="#2d2548" opacity="0.7" />
                         <rect x="250" y="380" width="250" height="35" rx="15" fill="#352d52" opacity="0.7" />
@@ -2341,8 +2380,7 @@
                 <div class="paradox-section paradox-body-section">
                     <p class="paradox-text">Cinebula is an intelligent <em>spatial discovery experience</em> for
                         streaming — a <em>phone-native</em> companion to the TV that turns content browsing into
-                        <em>exploration</em>, and turns that exploration into a new layer of <em>first-party signal</em>
-                        for LG
+                        <em>exploration</em>, and empowers users to find their next favorite show with ease and delight.
                     </p>
                 </div>
                 <div class="paradox-section"></div>
@@ -2353,11 +2391,10 @@
         <div class="slide" data-slide="9">
             <div class="eyebrow">Live Demo</div>
             <h1 class="headline"><em>Experience</em> Cinebula</h1>
-            <div class="demo-cta">▶ &nbsp; SHOW THE DEMO</div>
         </div>
 
-        <!-- SLIDE 11: ROI -->
-        <div class="slide" data-slide="11">
+        <!-- SLIDE 10: ROI -->
+        <div class="slide" data-slide="10">
             <h1 class="headline">The discovery experience creates the engagement.<br><em>The data captures the
                     value.</em></h1>
             <div class="roi-grid">
@@ -2380,8 +2417,8 @@
             </div>
         </div>
 
-        <!-- SLIDE 12: FUTURE -->
-        <div class="slide" data-slide="12">
+        <!-- SLIDE 11: FUTURE -->
+        <div class="slide" data-slide="11">
             <h1 class="headline">Aiming for the <em>stars</em></h1>
             <div class="direction-grid" style="grid-template-columns: 1fr; max-width: 40rem;">
                 <div class="direction-card" style="text-align:left; padding: 4rem 3rem;">
@@ -2392,8 +2429,8 @@
             </div>
         </div>
 
-        <!-- SLIDE 13: THANK YOU -->
-        <div class="slide slide-title" data-slide="13">
+        <!-- SLIDE 12: THANK YOU -->
+        <div class="slide slide-title" data-slide="12">
             <div class="title-name">Thank You</div>
         </div>
 
