@@ -43,10 +43,13 @@ const GalaxyBackground = forwardRef<GalaxyHandle>(function GalaxyBackground(_, r
   const glowDivRef = useRef<HTMLDivElement>(null);
   const effectsCanvasRef = useRef<HTMLCanvasElement>(null);
   const effectsRendererRef = useRef<EffectsRenderer | null>(null);
-  const [isMobile] = useState(() =>
-    typeof window !== "undefined" &&
-    ("ontouchstart" in window || navigator.maxTouchPoints > 0)
-  );
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(
+      "ontouchstart" in window || navigator.maxTouchPoints > 0
+    );
+  }, []);
 
   useImperativeHandle(ref, () => ({
     update(cx: number, cy: number) {

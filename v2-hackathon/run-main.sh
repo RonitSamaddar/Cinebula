@@ -29,6 +29,26 @@ echo "Cleaning up existing processes..."
 lsof -ti:$BACKEND_PORT | xargs kill 2>/dev/null || true
 lsof -ti:$FRONTEND_PORT | xargs kill 2>/dev/null || true
 lsof -ti:7700 | xargs kill 2>/dev/null || true
+
+# Clear backend queue cache
+echo "Clearing queue cache..."
+rm -f "$BACKEND_DIR/data-dirs/queue.json"
+
+# Clear frontend localStorage (injected on next page load)
+echo "Clearing frontend local caches..."
+rm -rf "$FRONTEND_DIR/.next/cache"
+
+# Generate self-signed certs if not present
+CERTS_DIR="$FRONTEND_DIR/certs"
+if [ ! -f "$CERTS_DIR/key.pem" ] || [ ! -f "$CERTS_DIR/cert.pem" ]; then
+  echo "Generating self-signed HTTPS certificates..."
+  mkdir -p "$CERTS_DIR"
+  openssl req -x509 -newkey rsa:2048 -keyout "$CERTS_DIR/key.pem" -out "$CERTS_DIR/cert.pem" \
+    -days 365 -nodes -subj "/CN=localhost" \
+    -addext "subjectAltName=DNS:localhost,IP:127.0.0.1,IP:10.4.0.215" 2>/dev/null
+  echo "Certs created at $CERTS_DIR/"
+fi
+
 sleep 1
 
 # --- Backend (port 8080) ---

@@ -251,6 +251,50 @@ export async function searchMovies(query: string, token: string): Promise<string
   }
 }
 
+// Language name → ISO 639-1 code mapping
+const LANG_TO_ISO: Record<string, string> = {
+  Arabic: "ar", Bengali: "bn", Bosnian: "bs", Chinese: "zh", Danish: "da",
+  German: "de", Greek: "el", English: "en", Spanish: "es", Persian: "fa",
+  French: "fr", Hebrew: "he", Hindi: "hi", Hungarian: "hu", Indonesian: "id",
+  Italian: "it", Japanese: "ja", Kannada: "kn", Korean: "ko", Malayalam: "ml",
+  Marathi: "mr", Dutch: "nl", Punjabi: "pa", Polish: "pl", Portuguese: "pt",
+  Russian: "ru", "Serbo-Croatian": "sh", Serbian: "sr", Swedish: "sv",
+  Tamil: "ta", Telugu: "te", Thai: "th", Tagalog: "tl", Tswana: "tn", Turkish: "tr",
+};
+
+/**
+ * Fetch movies filtered by genre and/or language from backend.
+ */
+export async function fetchFilteredMovies(
+  token: string,
+  genre?: string,
+  language?: string,
+): Promise<MoviesResponse | null> {
+  const params: string[] = [];
+  // Backend supports comma-separated multi-value for genre/language
+  if (genre) {
+    const genres = genre.split(",").map(g => g.trim().toLowerCase()).filter(Boolean).join(",");
+    if (genres) params.push(`genre=${encodeURIComponent(genres)}`);
+  }
+  if (language) {
+    const langs = language.split(",").map(l => {
+      const trimmed = l.trim();
+      return LANG_TO_ISO[trimmed] || trimmed.toLowerCase().slice(0, 2);
+    }).filter(Boolean).join(",");
+    if (langs) params.push(`language=${encodeURIComponent(langs)}`);
+  }
+  if (params.length === 0) return null;
+  try {
+    const res = await fetch(proxyUrl(`/api/movies?${params.join("&")}`), {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data: MoviesResponse = await res.json();
+    return data;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Fetch all movies from /api/movies/v2 — no filters, returns the full catalog.
  */
@@ -382,6 +426,16 @@ export interface DustParticle {
   poster?: string; // poster thumbnail for large dust (priority >= 80)
 }
 
+export interface CoordBounds {
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
+  worldW: number;
+  worldH: number;
+  padding: number;
+}
+
 export interface ZoomLevelShows {
   z0: import("@/types").Show[];
   z1: import("@/types").Show[];
@@ -392,6 +446,7 @@ export interface ZoomLevelShows {
   dustZ1: DustParticle[];
   dustZ2: DustParticle[];
   dustZ3: DustParticle[];
+  bounds?: CoordBounds;
 }
 
 export function backendMoviesToShows(
@@ -585,8 +640,9 @@ function makeShow(
  * Grid-based collision culling removes overlapping dust particles.
  */
 export function backendMoviesToShowsV2(moviesResponse: MoviesResponse): ZoomLevelShows {
-  const WORLD_W = 1600;
-  const WORLD_H = 2200;
+  const BASE_WORLD_W = 1600;
+  const BASE_WORLD_H = 2200;
+  const BASE_COUNT = 800; // full dataset ~800 tiles at z3
   const SHOWS_Z0 = 80;
   const SHOWS_Z1 = 200;
   const SHOWS_Z2 = 400;
@@ -596,20 +652,26 @@ export function backendMoviesToShowsV2(moviesResponse: MoviesResponse): ZoomLeve
   const ZOOM_SCALE_3 = 14;
   const PADDING = 50;
 
-  // Grid cell sizes for dust collision culling (px)
-  const DUST_GRID_Z0 = 25;
-  const DUST_GRID_Z1 = 15;
-  const DUST_GRID_Z2 = 10;
-  const DUST_GRID_Z3 = 7;
-
-  const DUST_COLORS = [
-    "#4da6e0", "#45c9a0", "#e0a033", "#e06070", "#40cc70", "#e0c040", "#60b8d0",
-  ];
-
   const movies = moviesResponse.movies || [];
   if (!movies.length) {
     return { z0: [], z1: [], z2: [], z3: [], dust: [], dustZ0: [], dustZ1: [], dustZ2: [], dustZ3: [] };
   }
+
+  // Scale world size by sqrt of movie count ratio — fewer movies = smaller space
+  const countRatio = Math.min(1, movies.length / BASE_COUNT);
+  const scaleFactor = Math.max(0.3, Math.sqrt(countRatio)); // min 30% of full world
+  const WORLD_W = Math.round(BASE_WORLD_W * scaleFactor);
+  const WORLD_H = Math.round(BASE_WORLD_H * scaleFactor);
+
+  // Grid cell sizes for dust collision culling — scale with world size
+  const DUST_GRID_Z0 = Math.round(25 * scaleFactor);
+  const DUST_GRID_Z1 = Math.round(15 * scaleFactor);
+  const DUST_GRID_Z2 = Math.round(10 * scaleFactor);
+  const DUST_GRID_Z3 = Math.max(3, Math.round(7 * scaleFactor));
+
+  const DUST_COLORS = [
+    "#4da6e0", "#45c9a0", "#e0a033", "#e06070", "#40cc70", "#e0c040", "#60b8d0",
+  ];
 
   // Sort by priority descending
   const sorted = [...movies].sort((a, b) => b.priority - a.priority);
@@ -812,7 +874,7 @@ export function backendMoviesToShowsV2(moviesResponse: MoviesResponse): ZoomLeve
   const dustZ3 = generateDust(z3TileIdxs, DUST_THRESHOLD_Z3, DUST_GRID_Z3, ZOOM_SCALE_3);
 
   log(`V2 — Z0: ${z0Shows.length} tiles + ${dustZ0.length} dust, Z1: ${z1Shows.length} tiles + ${dustZ1.length} dust, Z2: ${z2Shows.length} tiles + ${dustZ2.length} dust, Z3: ${z3Shows.length} tiles + ${dustZ3.length} dust`);
-  return { z0: z0Shows, z1: z1Shows, z2: z2Shows, z3: z3Shows, dust: dustZ0, dustZ0, dustZ1, dustZ2, dustZ3 };
+  return { z0: z0Shows, z1: z1Shows, z2: z2Shows, z3: z3Shows, dust: dustZ0, dustZ0, dustZ1, dustZ2, dustZ3, bounds: { minX, maxX, minY, maxY, worldW: WORLD_W, worldH: WORLD_H, padding: PADDING } };
 }
 
 function makeShowV2(

@@ -15,7 +15,7 @@ import RecDialog from "@/components/chrome/RecDialog";
 import ConnectDialog from "@/components/chrome/ConnectDialog";
 import LoadingScreen from "@/components/chrome/LoadingScreen";
 import QRScanner from "@/components/chrome/QRScanner";
-import { loginAndFetchGenres, fetchAllMovies, backendMoviesToShowsV2, searchMovies } from "@/services/backend";
+import { loginAndFetchGenres, fetchAllMovies, fetchFilteredMovies, backendMoviesToShowsV2, searchMovies } from "@/services/backend";
 import { buildCategories } from "@/data/categories";
 import { initAudio, toggleAudio, isAudioPlaying } from "@/lib/audio";
 import type { Show, Category } from "@/types";
@@ -26,8 +26,8 @@ import { searchShows, spiralLayout, hasActiveFilters as checkFilters, type Searc
 const wrap = (v: number, max: number) => ((v % max) + max) % max;
 
 export default function Home() {
-  // Raw unwrapped camera — accumulates freely, never jumps
-  const cameraRef = useRef({ x: WORLD_W / 2, y: WORLD_H / 2 });
+  // Raw unwrapped camera — starts at a random point in space
+  const cameraRef = useRef({ x: WORLD_W * (0.2 + Math.random() * 0.6), y: WORLD_H * (0.2 + Math.random() * 0.6) });
   const velRef = useRef({ x: 0, y: 0 });
   const dragRef = useRef({ active: false, lastX: 0, lastY: 0, lastT: 0, startX: 0, startY: 0 });
   const momentumRef = useRef(0);
@@ -53,6 +53,10 @@ export default function Home() {
   const [recOpen, setRecOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useState(false);
   const [audioOn, setAudioOn] = useState(false);
+  // Filter state lifted from MenuDrawer so it persists across open/close
+  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+  const [selectedLangs, setSelectedLangs] = useState<string[]>([]);
+  const [selectedActors, setSelectedActors] = useState<string[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const dragIdleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const galaxyContainerRef = useRef<HTMLDivElement>(null);
@@ -69,8 +73,8 @@ export default function Home() {
   const dustZ3Ref = useRef<import("@/services/backend").DustParticle[]>([]);
 
   // Connection flow states
-  const [connected, setConnected] = useState(true); // skip QR — go straight to galaxy
-  const [loading, setLoading] = useState(true);     // start loading immediately
+  const [connected, setConnected] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [scannerOpen, setScannerOpen] = useState(false);
 
   // Init audio context on first render
@@ -78,23 +82,19 @@ export default function Home() {
     initAudio();
   }, []);
 
-  // Auto-load galaxy data on mount (bypasses QR flow)
+  // Load galaxy immediately with anonymous device, then QR upgrades later
   useEffect(() => {
     (async () => {
-      const deviceId = "direct-access"; // skip QR
+      const deviceId = "anonymous-" + Date.now();
       const session = await loginAndFetchGenres(deviceId);
-      if (!session) {
-        setLoading(false);
-        return;
-      }
+      if (!session) { setLoading(false); return; }
 
       const { token } = session;
       tokenRef.current = token;
 
       const loadingStart = Date.now();
-      const LOADING_DURATION = 15000;
+      const LOADING_DURATION = 2000;
 
-      // Single call to get all movies
       const allMovies = await fetchAllMovies(token);
       if (allMovies?.movies?.length) {
         const data = backendMoviesToShowsV2(allMovies);
@@ -109,12 +109,17 @@ export default function Home() {
         dustZ2Ref.current = data.dustZ2;
         dustZ3Ref.current = data.dustZ3;
         cardsRef.current?.setShows(data.z0, data.dustZ0);
+        // Pass coordinate bounds to compass labels for API calls
+        if (data.bounds) {
+          compassRef.current?.setBounds(data.bounds);
+        }
       }
 
       const elapsed = Date.now() - loadingStart;
       if (elapsed < LOADING_DURATION) {
         await new Promise((r) => setTimeout(r, LOADING_DURATION - elapsed));
       }
+      setConnected(true);
       setLoading(false);
     })();
   }, []);
@@ -129,7 +134,7 @@ export default function Home() {
     labelsRef.current?.update(wx, wy, z);
     cardsRef.current?.update(wx, wy, z);
     pillRef.current?.update(wx, wy);
-    compassRef.current?.update(wx, wy);
+    compassRef.current?.update(wx, wy, z);
   }, []);
 
   // Fly-to animation — 800ms cubic ease-out to target world coords
@@ -425,6 +430,9 @@ export default function Home() {
   const handleReset = useCallback(() => {
     setMenuOpen(false);
     setActiveFilters(false);
+    setSelectedGenres([]);
+    setSelectedLangs([]);
+    setSelectedActors([]);
     cardsRef.current?.setShows(allShowsRef.current);
   }, []);
 
@@ -441,9 +449,9 @@ export default function Home() {
         onPointerCancel={onPointerUp}
       >
         <GalaxyBackground ref={galaxyRef} />
+
         <ShowCards ref={cardsRef} onShowTap={(show, sx, sy) => setSelectedShow({ show, sx, sy })} />
         {/* CategoryLabels and CategoryPill removed — compass center label replaces them */}
-        {zoomLevel === 0 && <CompassLabels ref={compassRef} onNavigate={flyTo} visible={true} />}
 
         {/* Alien companion */}
         <AlienCompanion
@@ -452,7 +460,7 @@ export default function Home() {
         />
 
         {/* Burger menu button */}
-        {zoomLevel === 0 && (
+        {!menuOpen && (
           <button
             className="pointer-events-auto absolute flex flex-col items-center justify-center gap-[4px] rounded-full active:scale-90"
             style={{
@@ -485,15 +493,24 @@ export default function Home() {
         )}
       </div>
 
+      {/* Direction compass labels — rendered at root to avoid overflow:hidden clipping */}
+      <CompassLabels ref={compassRef} visible={!isDragging} />
+
       {/* Overlays — rendered at root level for full-screen coverage */}
-      {queueOpen && <QueuePanel onClose={() => setQueueOpen(false)} />}
+      {queueOpen && <QueuePanel onClose={() => { setQueueOpen(false); compassRef.current?.refresh(); }} />}
 
       {menuOpen && (
         <MenuDrawer
-          onClose={() => setMenuOpen(false)}
+          onClose={() => { setMenuOpen(false); compassRef.current?.refresh(); }}
           onSearch={handleSearch}
           onReset={handleReset}
           hasActiveFilters={activeFilters}
+          selectedGenres={selectedGenres}
+          setSelectedGenres={setSelectedGenres}
+          selectedLangs={selectedLangs}
+          setSelectedLangs={setSelectedLangs}
+          selectedActors={selectedActors}
+          setSelectedActors={setSelectedActors}
           audioOn={audioOn}
           onAudioToggle={() => {
             const playing = toggleAudio();
@@ -549,7 +566,48 @@ export default function Home() {
             z2ShowsRef.current = data.z2;
             z3ShowsRef.current = data.z3;
             allShowsRef.current = [...data.z0, ...data.z1, ...data.z2, ...data.z3];
+            dustRef.current = data.dustZ0;
+            dustZ0Ref.current = data.dustZ0;
+            dustZ1Ref.current = data.dustZ1;
+            dustZ2Ref.current = data.dustZ2;
+            dustZ3Ref.current = data.dustZ3;
+            cardsRef.current?.setShows(data.z0, data.dustZ0);
+            // Jump to a new random origin after QR scan
+            const newX = WORLD_W * (0.2 + Math.random() * 0.6);
+            const newY = WORLD_H * (0.2 + Math.random() * 0.6);
+            cameraRef.current = { x: newX, y: newY };
+            pushCamera(newX, newY);
+          }}
+          onBackendFilter={async (genre, language) => {
+            const resp = await fetchFilteredMovies(tokenRef.current, genre, language);
+            if (!resp || resp.length === 0) return;
+            const data = backendMoviesToShowsV2(resp);
+            // Invalidate all tile caches
+            z0ShowsRef.current = data.z0;
+            z1ShowsRef.current = data.z1;
+            z2ShowsRef.current = data.z2;
+            z3ShowsRef.current = data.z3;
+            allShowsRef.current = [...data.z0, ...data.z1, ...data.z2, ...data.z3];
+            // Invalidate all dust caches
+            dustRef.current = data.dustZ0;
+            dustZ0Ref.current = data.dustZ0;
+            dustZ1Ref.current = data.dustZ1;
+            dustZ2Ref.current = data.dustZ2;
+            dustZ3Ref.current = data.dustZ3;
+            // Update compass bounds
+            if (data.bounds) compassRef.current?.setBounds(data.bounds);
+            // Reset view with fresh data
             cardsRef.current?.setShows(data.z0);
+            galaxyRef.current?.update(0, 0);
+            // Zoom to fit filtered results
+            if (data.z0.length > 0) {
+              const xs = data.z0.map(s => s.worldX);
+              const ys = data.z0.map(s => s.worldY);
+              const cx = (Math.min(...xs) + Math.max(...xs)) / 2;
+              const cy = (Math.min(...ys) + Math.max(...ys)) / 2;
+              flyTo(cx, cy);
+              applyZoom(1, window.innerWidth / 2, window.innerHeight / 2);
+            }
           }}
         />
       )}
@@ -559,90 +617,68 @@ export default function Home() {
           show={selectedShow.show}
           screenX={selectedShow.sx}
           screenY={selectedShow.sy}
-          onClose={() => setSelectedShow(null)}
+          onClose={() => { setSelectedShow(null); compassRef.current?.refresh(); }}
         />
       )}
 
       {recOpen && (
         <RecDialog
           shows={allShowsRef.current}
-          onClose={() => setRecOpen(false)}
+          onClose={() => { setRecOpen(false); compassRef.current?.refresh(); }}
         />
       )}
 
-      {/* Initial connect dialog — COMMENTED OUT (QR bypassed)
+      {/* Connect dialog */}
       {!connected && !loading && !scannerOpen && (
         <ConnectDialog onConnect={() => setScannerOpen(true)} />
       )}
-      */}
 
-      {/* QR Scanner — COMMENTED OUT (direct load)
+      {/* QR Scanner — scans device ID, calls v2 API */}
       {!connected && scannerOpen && (
         <QRScanner
           onScan={(deviceId) => {
             setScannerOpen(false);
             setLoading(true);
             setConnected(true);
+            // Immediately jump camera to a new random origin so the space changes on connect
+            const newX = WORLD_W * (0.2 + Math.random() * 0.6);
+            const newY = WORLD_H * (0.2 + Math.random() * 0.6);
+            cameraRef.current = { x: newX, y: newY };
+            pushCamera(newX, newY);
             (async () => {
               try {
                 const session = await loginAndFetchGenres(deviceId);
-                if (!session || !session.topGenres || session.topGenres.length === 0) {
-                  return;
-                }
+                if (!session) { setLoading(false); return; }
 
-                const { topGenres, token } = session;
-                const categories = buildCategories(topGenres.map(g => g.genre));
-                categoriesRef.current = categories;
+                const { token } = session;
+                tokenRef.current = token;
 
-                const moviesByGenre: Record<string, import("@/services/backend").MoviesResponse> = {};
+                // Notify backend that QR scan succeeded (TV can read this)
+                fetch("/api/proxy?path=/api/qr", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ device_id: deviceId, token }),
+                }).catch(() => {});
 
-                // Helper: rebuild shows from whatever we have so far
-                const rebuildShows = () => {
-                  const data = backendMoviesToShows(topGenres, moviesByGenre, categories);
+                const loadingStart = Date.now();
+                const LOADING_DURATION = 2000;
+
+                const allMovies = await fetchAllMovies(token);
+                if (allMovies?.movies?.length) {
+                  const data = backendMoviesToShowsV2(allMovies);
                   z0ShowsRef.current = data.z0;
                   z1ShowsRef.current = data.z1;
                   z2ShowsRef.current = data.z2;
                   z3ShowsRef.current = data.z3;
                   allShowsRef.current = [...data.z0, ...data.z1, ...data.z2, ...data.z3];
-                  cardsRef.current?.setShows(data.z0);
-                };
-
-                // Start 10s loading timer — loading screen stays for exactly 10s
-                const loadingStart = Date.now();
-                const LOADING_DURATION = 15000;
-
-                // Phase 1: Load center genre (position index 3)
-                const centerIdx = Math.min(LOAD_ORDER_CENTER, topGenres.length - 1);
-                const centerGenre = topGenres[centerIdx];
-                if (centerGenre) {
-                  const result = await fetchGenreMovies(centerGenre.genre, token);
-                  if (result?.movies?.length) moviesByGenre[centerGenre.genre] = result;
-                }
-                rebuildShows();
-
-                // Phase 2: Load 4 side genres one by one
-                for (const idx of LOAD_ORDER_SIDES) {
-                  if (idx >= topGenres.length) continue;
-                  const g = topGenres[idx];
-                  const result = await fetchGenreMovies(g.genre, token);
-                  if (result?.movies?.length) {
-                    moviesByGenre[g.genre] = result;
-                    rebuildShows();
-                  }
+                  dustRef.current = data.dustZ0;
+                  dustZ0Ref.current = data.dustZ0;
+                  dustZ1Ref.current = data.dustZ1;
+                  dustZ2Ref.current = data.dustZ2;
+                  dustZ3Ref.current = data.dustZ3;
+                  cardsRef.current?.setShows(data.z0, data.dustZ0);
                 }
 
-                // Phase 3: Load remaining genres
-                for (const idx of LOAD_ORDER_REMAINING) {
-                  if (idx >= topGenres.length) continue;
-                  const g = topGenres[idx];
-                  const result = await fetchGenreMovies(g.genre, token);
-                  if (result?.movies?.length) {
-                    moviesByGenre[g.genre] = result;
-                    rebuildShows();
-                  }
-                }
-
-                // Wait until 10s have passed since loading started
                 const elapsed = Date.now() - loadingStart;
                 if (elapsed < LOADING_DURATION) {
                   await new Promise((r) => setTimeout(r, LOADING_DURATION - elapsed));
@@ -652,51 +688,11 @@ export default function Home() {
               } finally {
                 setLoading(false);
               }
-              const { topGenres, token } = session;
-              const categories = buildCategories(topGenres.map(g => g.genre));
-              categoriesRef.current = categories;
-              const moviesByGenre: Record<string, import("@/services/backend").MoviesResponse> = {};
-              const rebuildShows = () => {
-                const data = backendMoviesToShows(topGenres, moviesByGenre, categories);
-                z0ShowsRef.current = data.z0;
-                z1ShowsRef.current = data.z1;
-                z2ShowsRef.current = data.z2;
-                z3ShowsRef.current = data.z3;
-                allShowsRef.current = [...data.z0, ...data.z1, ...data.z2, ...data.z3];
-                cardsRef.current?.setShows(data.z0);
-              };
-              const loadingStart = Date.now();
-              const LOADING_DURATION = 15000;
-              const centerIdx = Math.min(LOAD_ORDER_CENTER, topGenres.length - 1);
-              const centerGenre = topGenres[centerIdx];
-              if (centerGenre) {
-                const result = await fetchGenreMovies(centerGenre.genre, token);
-                if (result?.movies?.length) moviesByGenre[centerGenre.genre] = result;
-              }
-              rebuildShows();
-              for (const idx of LOAD_ORDER_SIDES) {
-                if (idx >= topGenres.length) continue;
-                const g = topGenres[idx];
-                const result = await fetchGenreMovies(g.genre, token);
-                if (result?.movies?.length) { moviesByGenre[g.genre] = result; rebuildShows(); }
-              }
-              for (const idx of LOAD_ORDER_REMAINING) {
-                if (idx >= topGenres.length) continue;
-                const g = topGenres[idx];
-                const result = await fetchGenreMovies(g.genre, token);
-                if (result?.movies?.length) { moviesByGenre[g.genre] = result; rebuildShows(); }
-              }
-              const elapsed = Date.now() - loadingStart;
-              if (elapsed < LOADING_DURATION) {
-                await new Promise((r) => setTimeout(r, LOADING_DURATION - elapsed));
-              }
-              setLoading(false);
             })();
           }}
           onClose={() => setScannerOpen(false)}
         />
       )}
-      */}
 
       {/* Loading screen — while fetching genres/shows */}
       {loading && <LoadingScreen />}

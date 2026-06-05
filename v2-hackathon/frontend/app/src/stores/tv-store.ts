@@ -12,10 +12,7 @@ interface TVState {
 }
 
 export const useTVStore = create<TVState>((set) => ({
-  deviceId:
-    typeof window !== "undefined"
-      ? localStorage.getItem("cinebula_device_id")
-      : null,
+  deviceId: null,
 
   setDeviceId: (id) => {
     localStorage.setItem("cinebula_device_id", id);

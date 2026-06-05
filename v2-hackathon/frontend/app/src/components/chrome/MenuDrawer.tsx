@@ -9,12 +9,12 @@ import { useRef, useState, useCallback, useEffect } from "react";
 import type { SearchFilters } from "@/lib/search";
 import { useQueueStore } from "@/stores/queue-store";
 import { useTVStore } from "@/stores/tv-store";
-import { initializeBackend, backendMoviesToShows } from "@/services/backend";
-import { buildCategories } from "@/data/categories";
+import { loginAndFetchGenres, fetchAllMovies, backendMoviesToShowsV2 } from "@/services/backend";
 import type { Show, Category } from "@/types";
 import QRScanner from "./QRScanner";
 
-const DEFAULT_LANGUAGES = ["English", "Spanish", "Korean", "Japanese", "French", "German"];
+const DEFAULT_LANGUAGES = ["English", "Hindi", "Spanish", "French", "German", "Korean", "Japanese", "Chinese", "Italian", "Portuguese", "Russian", "Arabic", "Bengali", "Dutch", "Greek", "Hebrew", "Persian", "Polish", "Serbian", "Swedish", "Tagalog", "Tamil", "Telugu", "Thai", "Turkish"];
+const DEFAULT_GENRES = ["Action", "Adventure", "Animation", "Comedy", "Crime", "Documentary", "Drama", "Fantasy", "Horror", "Mystery", "Romance", "Sci-Fi", "Thriller", "Western", "Family", "War"];
 const DEFAULT_ACTORS = [
   "Bryan Cranston", "Aaron Paul", "Bob Odenkirk", "Millie Bobby Brown",
   "Pedro Pascal", "Emilia Clarke", "Kit Harington", "Jason Bateman",
@@ -44,22 +44,35 @@ interface MenuDrawerProps {
   onSelectMovie?: (movieName: string) => void;
   /** Called with show sets and dynamic categories when backend data loads after QR scan */
   onBackendShows?: (data: { z0: Show[]; z1: Show[]; z2: Show[]; z3: Show[] }, categories: Category[]) => void;
+  /** Filter movies by genre/language via backend */
+  onBackendFilter?: (genre: string, language: string) => Promise<void>;
+  /** Persisted filter state — lifted to parent so it survives menu close/open */
+  selectedGenres: string[];
+  setSelectedGenres: (v: string[] | ((prev: string[]) => string[])) => void;
+  selectedLangs: string[];
+  setSelectedLangs: (v: string[] | ((prev: string[]) => string[])) => void;
+  selectedActors: string[];
+  setSelectedActors: (v: string[] | ((prev: string[]) => string[])) => void;
 }
 
-export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilters, actors, languages, audioOn = false, onAudioToggle, onViewQueue, onBackendSearch, onSelectMovie, onBackendShows }: MenuDrawerProps) {
+export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilters, actors, languages, audioOn = false, onAudioToggle, onViewQueue, onBackendSearch, onSelectMovie, onBackendShows, onBackendFilter, selectedGenres, setSelectedGenres, selectedLangs, setSelectedLangs, selectedActors, setSelectedActors }: MenuDrawerProps) {
   const LANGUAGES = languages ?? DEFAULT_LANGUAGES;
+  const GENRES = DEFAULT_GENRES;
   const ACTORS = actors ?? DEFAULT_ACTORS;
   const queueCount = useQueueStore((s) => s.items.length);
   const { deviceId, setDeviceId, disconnect } = useTVStore();
   const [scannerOpen, setScannerOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [language, setLanguage] = useState("");
+  const [genreInput, setGenreInput] = useState("");
+  const [genreOpen, setGenreOpen] = useState(false);
+  const [langInput, setLangInput] = useState("");
   const [langOpen, setLangOpen] = useState(false);
-  const [actor, setActor] = useState("");
+  const [actorInput, setActorInput] = useState("");
   const [actorOpen, setActorOpen] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
+  const [filterLoading, setFilterLoading] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
   const dragX = useRef({ active: false, startX: 0, currentX: 0 });
@@ -91,24 +104,45 @@ export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilter
     };
   }, [query, onBackendSearch]);
 
-  const filteredLangs = language
-    ? LANGUAGES.filter((l) => l.toLowerCase().includes(language.toLowerCase()))
-    : LANGUAGES;
+  const filteredGenres = genreInput
+    ? GENRES.filter((g) => g.toLowerCase().includes(genreInput.toLowerCase()) && !selectedGenres.includes(g))
+    : GENRES.filter((g) => !selectedGenres.includes(g));
 
-  const filteredActors = actor
-    ? ACTORS.filter((a) => a.toLowerCase().includes(actor.toLowerCase()))
-    : ACTORS;
+  const filteredLangs = langInput
+    ? LANGUAGES.filter((l) => l.toLowerCase().includes(langInput.toLowerCase()) && !selectedLangs.includes(l))
+    : LANGUAGES.filter((l) => !selectedLangs.includes(l));
 
-  const handleGo = () => {
+  const filteredActors = actorInput
+    ? ACTORS.filter((a) => a.toLowerCase().includes(actorInput.toLowerCase()) && !selectedActors.includes(a))
+    : ACTORS.filter((a) => !selectedActors.includes(a));
+
+  const hasAnyFilter = selectedGenres.length > 0 || selectedLangs.length > 0 || selectedActors.length > 0 || query.trim().length > 0;
+
+  const handleGo = async () => {
     setLangOpen(false);
+    setGenreOpen(false);
     setActorOpen(false);
-    onSearch({ query, genres: [], language, actor });
+    if ((selectedGenres.length > 0 || selectedLangs.length > 0) && onBackendFilter) {
+      setFilterLoading(true);
+      try {
+        await onBackendFilter(selectedGenres.join(","), selectedLangs.join(","));
+      } finally {
+        setFilterLoading(false);
+      }
+    } else {
+      onSearch({ query, genres: [], language: selectedLangs[0] || "", actor: selectedActors[0] || "" });
+    }
   };
 
   const handleReset = () => {
     setQuery("");
-    setLanguage("");
-    setActor("");
+    setGenreInput("");
+    setSelectedGenres([]);
+    setLangInput("");
+    setSelectedLangs([]);
+    setActorInput("");
+    setSelectedActors([]);
+    setGenreOpen(false);
     setLangOpen(false);
     setActorOpen(false);
     onReset();
@@ -216,15 +250,6 @@ export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilter
                   border: "1px solid rgba(255,255,255,0.1)",
                 }}
               />
-              <button
-                className="shrink-0 rounded-lg px-3 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-white active:scale-95"
-                style={{
-                  background: "linear-gradient(135deg, #7c6bf0, #b56cff)",
-                }}
-                onClick={() => { setSuggestionsOpen(false); handleGo(); }}
-              >
-                GO
-              </button>
             </div>
 
             {/* Meilisearch suggestions dropdown */}
@@ -274,39 +299,51 @@ export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilter
           onPointerMove={(e) => e.stopPropagation()}
           onPointerUp={(e) => e.stopPropagation()}
         >
+          {/* Genre combobox */}
+          <div className="relative mb-2">
+            <label className="mb-1 block font-mono text-[8px] uppercase tracking-[0.2em] text-white/40">
+              Genre
+            </label>
+            <input
+              type="text"
+              value={genreInput}
+              onChange={(e) => { setGenreInput(e.target.value); setGenreOpen(true); }}
+              onFocus={() => setGenreOpen(true)}
+              onBlur={() => setTimeout(() => setGenreOpen(false), 150)}
+              placeholder="Type or select…"
+              className="w-full rounded-lg px-2.5 py-1.5 text-[11px] text-white placeholder-white/30 outline-none"
+              style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
+            />
+            {genreOpen && filteredGenres.length > 0 && (
+              <div className="absolute left-0 right-0 mt-1 max-h-[120px] overflow-y-auto rounded-lg" style={{ zIndex: 50, background: "rgba(14, 12, 24, 0.98)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                {filteredGenres.map((g) => (
+                  <button key={g} onMouseDown={(e) => e.preventDefault()} className="w-full px-3 py-1 text-left text-[11px] text-white/70 hover:text-white active:bg-white/10" onClick={() => { setSelectedGenres(prev => [...prev, g]); setGenreInput(""); setGenreOpen(false); }}>
+                    {g}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
           {/* Language combobox */}
-          <div className="relative mb-4">
-            <label className="mb-2 block font-mono text-[9px] uppercase tracking-[0.2em] text-white/40">
+          <div className="relative mb-2">
+            <label className="mb-1 block font-mono text-[8px] uppercase tracking-[0.2em] text-white/40">
               Language
             </label>
             <input
               type="text"
-              value={language}
-              onChange={(e) => { setLanguage(e.target.value); setLangOpen(true); }}
+              value={langInput}
+              onChange={(e) => { setLangInput(e.target.value); setLangOpen(true); }}
               onFocus={() => setLangOpen(true)}
-              onKeyDown={(e) => { if (e.key === "Enter") { setLangOpen(false); handleGo(); } }}
+              onBlur={() => setTimeout(() => setLangOpen(false), 150)}
               placeholder="Type or select…"
-              className="w-full rounded-lg px-3 py-2 text-[12px] text-white placeholder-white/30 outline-none"
-              style={{
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.1)",
-              }}
+              className="w-full rounded-lg px-2.5 py-1.5 text-[11px] text-white placeholder-white/30 outline-none"
+              style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
             />
             {langOpen && filteredLangs.length > 0 && (
-              <div
-                className="absolute left-0 right-0 mt-1 max-h-[140px] overflow-y-auto rounded-lg"
-                style={{
-                  zIndex: 5,
-                  background: "rgba(14, 12, 24, 0.98)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                }}
-              >
+              <div className="absolute left-0 right-0 mt-1 max-h-[120px] overflow-y-auto rounded-lg" style={{ zIndex: 50, background: "rgba(14, 12, 24, 0.98)", border: "1px solid rgba(255,255,255,0.1)" }}>
                 {filteredLangs.map((l) => (
-                  <button
-                    key={l}
-                    className="w-full px-3 py-1.5 text-left text-[12px] text-white/70 hover:text-white active:bg-white/10"
-                    onClick={() => { setLanguage(l); setLangOpen(false); }}
-                  >
+                  <button key={l} onMouseDown={(e) => e.preventDefault()} className="w-full px-3 py-1 text-left text-[11px] text-white/70 hover:text-white active:bg-white/10" onClick={() => { setSelectedLangs(prev => [...prev, l]); setLangInput(""); setLangOpen(false); }}>
                     {l}
                   </button>
                 ))}
@@ -315,44 +352,69 @@ export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilter
           </div>
 
           {/* Actor combobox */}
-          <div className="relative mb-4">
-            <label className="mb-2 block font-mono text-[9px] uppercase tracking-[0.2em] text-white/40">
+          <div className="relative mb-2">
+            <label className="mb-1 block font-mono text-[8px] uppercase tracking-[0.2em] text-white/40">
               Actor
             </label>
             <input
               type="text"
-              value={actor}
-              onChange={(e) => { setActor(e.target.value); setActorOpen(true); }}
+              value={actorInput}
+              onChange={(e) => { setActorInput(e.target.value); setActorOpen(true); }}
               onFocus={() => setActorOpen(true)}
-              onKeyDown={(e) => { if (e.key === "Enter") { setActorOpen(false); handleGo(); } }}
+              onBlur={() => setTimeout(() => setActorOpen(false), 150)}
               placeholder="Type or select…"
-              className="w-full rounded-lg px-3 py-2 text-[12px] text-white placeholder-white/30 outline-none"
-              style={{
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.1)",
-              }}
+              className="w-full rounded-lg px-2.5 py-1.5 text-[11px] text-white placeholder-white/30 outline-none"
+              style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
             />
             {actorOpen && filteredActors.length > 0 && (
-              <div
-                className="absolute left-0 right-0 mt-1 max-h-[140px] overflow-y-auto rounded-lg"
-                style={{
-                  zIndex: 5,
-                  background: "rgba(14, 12, 24, 0.98)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                }}
-              >
+              <div className="absolute left-0 right-0 mt-1 max-h-[120px] overflow-y-auto rounded-lg" style={{ zIndex: 50, background: "rgba(14, 12, 24, 0.98)", border: "1px solid rgba(255,255,255,0.1)" }}>
                 {filteredActors.map((a) => (
-                  <button
-                    key={a}
-                    className="w-full px-3 py-1.5 text-left text-[12px] text-white/70 hover:text-white active:bg-white/10"
-                    onClick={() => { setActor(a); setActorOpen(false); }}
-                  >
+                  <button key={a} onMouseDown={(e) => e.preventDefault()} className="w-full px-3 py-1 text-left text-[11px] text-white/70 hover:text-white active:bg-white/10" onClick={() => { setSelectedActors(prev => [...prev, a]); setActorInput(""); setActorOpen(false); }}>
                     {a}
                   </button>
                 ))}
               </div>
             )}
           </div>
+
+          {/* Selected filters chips */}
+          {hasAnyFilter && (
+            <div className="mb-2 flex flex-wrap gap-1.5 rounded-lg p-2" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+              {selectedGenres.map((g) => (
+                <span key={`g-${g}`} className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] text-white/80" style={{ background: "rgba(124,107,240,0.3)", border: "1px solid rgba(124,107,240,0.5)" }}>
+                  {g}
+                  <button className="text-white/50 hover:text-white" onClick={() => setSelectedGenres(prev => prev.filter(x => x !== g))}>×</button>
+                </span>
+              ))}
+              {selectedLangs.map((l) => (
+                <span key={`l-${l}`} className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] text-white/80" style={{ background: "rgba(69,201,160,0.3)", border: "1px solid rgba(69,201,160,0.5)" }}>
+                  {l}
+                  <button className="text-white/50 hover:text-white" onClick={() => setSelectedLangs(prev => prev.filter(x => x !== l))}>×</button>
+                </span>
+              ))}
+              {selectedActors.map((a) => (
+                <span key={`a-${a}`} className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] text-white/80" style={{ background: "rgba(224,160,51,0.3)", border: "1px solid rgba(224,160,51,0.5)" }}>
+                  {a}
+                  <button className="text-white/50 hover:text-white" onClick={() => setSelectedActors(prev => prev.filter(x => x !== a))}>×</button>
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* GO button */}
+          <button
+            disabled={filterLoading || !hasAnyFilter}
+            className="mt-2 w-full rounded-lg py-2.5 font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-white active:scale-[0.97] transition-all disabled:opacity-40"
+            style={{ background: "linear-gradient(135deg, #7c6bf0, #b56cff)" }}
+            onClick={handleGo}
+          >
+            {filterLoading ? (
+              <div className="flex items-center justify-center gap-2">
+                <span className="text-[16px] animate-bounce">👽</span>
+                <span className="text-[10px] tracking-wider animate-pulse">Searching the galaxy…</span>
+              </div>
+            ) : "GO"}
+          </button>
         </div>
 
         {/* Reset button */}
@@ -476,13 +538,7 @@ export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilter
             </span>
           </button>
 
-          {/* Show connected ID for validation */}
-          {deviceId && (
-            <div className="mt-2 rounded-lg px-3 py-2" style={{ background: "rgba(127, 255, 127, 0.05)", border: "1px solid rgba(127, 255, 127, 0.1)" }}>
-              <p className="font-mono text-[8px] uppercase tracking-[0.2em] text-white/30 mb-1">Device ID</p>
-              <p className="font-mono text-[11px] text-[#7fff7f] break-all">{deviceId}</p>
-            </div>
-          )}
+
         </div>
       </div>
 
@@ -492,13 +548,23 @@ export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilter
           onScan={(id) => {
             setDeviceId(id);
             setScannerOpen(false);
-            initializeBackend(id).then((result) => {
-              if (result && onBackendShows) {
-                const categories = buildCategories(result.topGenres.map(g => g.genre));
-                const data = backendMoviesToShows(result.topGenres, result.moviesByGenre, categories);
-                onBackendShows(data, categories);
+            (async () => {
+              const session = await loginAndFetchGenres(id);
+              if (!session) return;
+
+              // Notify backend that QR scan succeeded
+              fetch("/api/proxy?path=/api/qr", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ device_id: id, token: session.token }),
+              }).catch(() => {});
+
+              const allMovies = await fetchAllMovies(session.token);
+              if (allMovies?.movies?.length && onBackendShows) {
+                const data = backendMoviesToShowsV2(allMovies);
+                onBackendShows(data, []);
               }
-            });
+            })();
           }}
           onClose={() => setScannerOpen(false)}
         />

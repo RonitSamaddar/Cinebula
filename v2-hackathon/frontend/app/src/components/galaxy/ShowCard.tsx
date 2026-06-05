@@ -18,8 +18,6 @@ interface ShowCardProps {
 
 export default function ShowCard({ show, isQueued, onTap }: ShowCardProps) {
   const size = SHOW_SIZE_PX[show.size] ?? 50;
-  const fontSize = size >= 70 ? 9 : size >= 50 ? 7 : 6;
-  const showTitle = size >= 40;
   const downPos = useRef({ x: 0, y: 0 });
   const [imgError, setImgError] = useState(false);
   const hasPoster = show.poster && !imgError;
@@ -115,20 +113,6 @@ export default function ShowCard({ show, isQueued, onTap }: ShowCardProps) {
           }}
         >
           ★
-        </div>
-      )}
-
-      {/* Title */}
-      {showTitle && (
-        <div
-          className="relative w-full truncate px-0.5 pb-0.5 text-center font-mono font-medium leading-tight text-white/90"
-          style={{
-            fontSize,
-            background: hasPoster ? "linear-gradient(transparent, rgba(0,0,0,0.8))" : undefined,
-            paddingTop: hasPoster ? 8 : undefined,
-          }}
-        >
-          {show.title}
         </div>
       )}
     </div>

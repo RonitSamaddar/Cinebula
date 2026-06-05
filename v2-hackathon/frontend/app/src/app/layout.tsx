@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import localFont from "next/font/local";
+import Script from "next/script";
 import "./globals.css";
 
 const inter = Inter({
@@ -51,18 +52,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${inter.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable} h-full`}
     >
       <head>
         <link rel="apple-touch-icon" href="/icons/icon-180.png" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `if("serviceWorker"in navigator){navigator.serviceWorker.getRegistrations().then(r=>r.forEach(reg=>reg.unregister()))}`,
-          }}
-        />
       </head>
-      <body className="h-full overflow-hidden bg-[#07070c] text-[#f4ebd9]">
+      <body className="h-full overflow-hidden bg-[#07070c] text-[#f4ebd9]" suppressHydrationWarning>
         {children}
+        <Script id="sw-cleanup" strategy="afterInteractive">{`if("serviceWorker"in navigator){navigator.serviceWorker.getRegistrations().then(r=>r.forEach(reg=>reg.unregister()))}`}</Script>
       </body>
     </html>
   );
