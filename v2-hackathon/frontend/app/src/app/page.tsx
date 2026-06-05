@@ -15,7 +15,7 @@ import RecDialog from "@/components/chrome/RecDialog";
 import ConnectDialog from "@/components/chrome/ConnectDialog";
 import LoadingScreen from "@/components/chrome/LoadingScreen";
 import QRScanner from "@/components/chrome/QRScanner";
-import { loginAndFetchGenres, fetchAllMovies, backendMoviesToShowsV2, searchMovies } from "@/services/backend";
+import { loginAndFetchGenres, fetchAllMovies, fetchFilteredMovies, backendMoviesToShowsV2, searchMovies } from "@/services/backend";
 import { buildCategories } from "@/data/categories";
 import { initAudio, toggleAudio, isAudioPlaying } from "@/lib/audio";
 import type { Show, Category } from "@/types";
@@ -441,9 +441,9 @@ export default function Home() {
         onPointerCancel={onPointerUp}
       >
         <GalaxyBackground ref={galaxyRef} />
+
         <ShowCards ref={cardsRef} onShowTap={(show, sx, sy) => setSelectedShow({ show, sx, sy })} />
         {/* CategoryLabels and CategoryPill removed — compass center label replaces them */}
-        {zoomLevel === 0 && <CompassLabels ref={compassRef} onNavigate={flyTo} visible={true} />}
 
         {/* Alien companion */}
         <AlienCompanion
@@ -452,7 +452,7 @@ export default function Home() {
         />
 
         {/* Burger menu button */}
-        {zoomLevel === 0 && (
+        {!menuOpen && (
           <button
             className="pointer-events-auto absolute flex flex-col items-center justify-center gap-[4px] rounded-full active:scale-90"
             style={{
@@ -550,6 +550,36 @@ export default function Home() {
             z3ShowsRef.current = data.z3;
             allShowsRef.current = [...data.z0, ...data.z1, ...data.z2, ...data.z3];
             cardsRef.current?.setShows(data.z0);
+          }}
+          onBackendFilter={async (genre, language) => {
+            const resp = await fetchFilteredMovies(tokenRef.current, genre, language);
+            if (!resp || resp.length === 0) return;
+            const data = backendMoviesToShowsV2(resp);
+            // Invalidate all tile caches
+            z0ShowsRef.current = data.z0;
+            z1ShowsRef.current = data.z1;
+            z2ShowsRef.current = data.z2;
+            z3ShowsRef.current = data.z3;
+            allShowsRef.current = [...data.z0, ...data.z1, ...data.z2, ...data.z3];
+            // Invalidate all dust caches
+            dustRef.current = data.dustZ0;
+            dustZ0Ref.current = data.dustZ0;
+            dustZ1Ref.current = data.dustZ1;
+            dustZ2Ref.current = data.dustZ2;
+            dustZ3Ref.current = data.dustZ3;
+            // Reset view with fresh data
+            cardsRef.current?.setShows(data.z0);
+            galaxyRef.current?.update(0, 0);
+            // Zoom to fit filtered results
+            if (data.z0.length > 0) {
+              const xs = data.z0.map(s => s.worldX);
+              const ys = data.z0.map(s => s.worldY);
+              const cx = (Math.min(...xs) + Math.max(...xs)) / 2;
+              const cy = (Math.min(...ys) + Math.max(...ys)) / 2;
+              flyTo(cx, cy);
+              applyZoom(1, window.innerWidth / 2, window.innerHeight / 2);
+            }
+            setMenuOpen(false);
           }}
         />
       )}

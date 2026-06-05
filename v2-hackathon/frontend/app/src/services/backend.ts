@@ -251,6 +251,48 @@ export async function searchMovies(query: string, token: string): Promise<string
   }
 }
 
+// Language name → ISO 639-1 code mapping
+const LANG_TO_ISO: Record<string, string> = {
+  Arabic: "ar", Bengali: "bn", Bosnian: "bs", Chinese: "zh", Danish: "da",
+  German: "de", Greek: "el", English: "en", Spanish: "es", Persian: "fa",
+  French: "fr", Hebrew: "he", Hindi: "hi", Hungarian: "hu", Indonesian: "id",
+  Italian: "it", Japanese: "ja", Kannada: "kn", Korean: "ko", Malayalam: "ml",
+  Marathi: "mr", Dutch: "nl", Punjabi: "pa", Polish: "pl", Portuguese: "pt",
+  Russian: "ru", "Serbo-Croatian": "sh", Serbian: "sr", Swedish: "sv",
+  Tamil: "ta", Telugu: "te", Thai: "th", Tagalog: "tl", Tswana: "tn", Turkish: "tr",
+};
+
+/**
+ * Fetch movies filtered by genre and/or language from backend.
+ */
+export async function fetchFilteredMovies(
+  token: string,
+  genre?: string,
+  language?: string,
+): Promise<MoviesResponse | null> {
+  const params: string[] = [];
+  // Backend supports single genre/language — use first selected
+  if (genre) {
+    const first = genre.split(",")[0].trim();
+    if (first) params.push(`genre=${encodeURIComponent(first.toLowerCase())}`);
+  }
+  if (language) {
+    const first = language.split(",")[0].trim();
+    const code = LANG_TO_ISO[first] || first.toLowerCase().slice(0, 2);
+    if (code) params.push(`language=${encodeURIComponent(code)}`);
+  }
+  if (params.length === 0) return null;
+  try {
+    const res = await fetch(proxyUrl(`/api/movies?${params.join("&")}`), {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data: MoviesResponse = await res.json();
+    return data;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Fetch all movies from /api/movies/v2 — no filters, returns the full catalog.
  */
@@ -585,8 +627,9 @@ function makeShow(
  * Grid-based collision culling removes overlapping dust particles.
  */
 export function backendMoviesToShowsV2(moviesResponse: MoviesResponse): ZoomLevelShows {
-  const WORLD_W = 1600;
-  const WORLD_H = 2200;
+  const BASE_WORLD_W = 1600;
+  const BASE_WORLD_H = 2200;
+  const BASE_COUNT = 800; // full dataset ~800 tiles at z3
   const SHOWS_Z0 = 80;
   const SHOWS_Z1 = 200;
   const SHOWS_Z2 = 400;
@@ -596,20 +639,26 @@ export function backendMoviesToShowsV2(moviesResponse: MoviesResponse): ZoomLeve
   const ZOOM_SCALE_3 = 14;
   const PADDING = 50;
 
-  // Grid cell sizes for dust collision culling (px)
-  const DUST_GRID_Z0 = 25;
-  const DUST_GRID_Z1 = 15;
-  const DUST_GRID_Z2 = 10;
-  const DUST_GRID_Z3 = 7;
-
-  const DUST_COLORS = [
-    "#4da6e0", "#45c9a0", "#e0a033", "#e06070", "#40cc70", "#e0c040", "#60b8d0",
-  ];
-
   const movies = moviesResponse.movies || [];
   if (!movies.length) {
     return { z0: [], z1: [], z2: [], z3: [], dust: [], dustZ0: [], dustZ1: [], dustZ2: [], dustZ3: [] };
   }
+
+  // Scale world size by sqrt of movie count ratio — fewer movies = smaller space
+  const countRatio = Math.min(1, movies.length / BASE_COUNT);
+  const scaleFactor = Math.max(0.3, Math.sqrt(countRatio)); // min 30% of full world
+  const WORLD_W = Math.round(BASE_WORLD_W * scaleFactor);
+  const WORLD_H = Math.round(BASE_WORLD_H * scaleFactor);
+
+  // Grid cell sizes for dust collision culling — scale with world size
+  const DUST_GRID_Z0 = Math.round(25 * scaleFactor);
+  const DUST_GRID_Z1 = Math.round(15 * scaleFactor);
+  const DUST_GRID_Z2 = Math.round(10 * scaleFactor);
+  const DUST_GRID_Z3 = Math.max(3, Math.round(7 * scaleFactor));
+
+  const DUST_COLORS = [
+    "#4da6e0", "#45c9a0", "#e0a033", "#e06070", "#40cc70", "#e0c040", "#60b8d0",
+  ];
 
   // Sort by priority descending
   const sorted = [...movies].sort((a, b) => b.priority - a.priority);

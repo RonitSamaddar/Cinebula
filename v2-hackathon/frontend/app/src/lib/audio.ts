@@ -88,15 +88,17 @@ export function toggleAudio(): boolean {
 
   const now = ctx.currentTime;
   if (isPlaying) {
-    // Fade out
+    // Fade out to absolute zero — also disconnect LFO so it can't modulate
     masterGain.gain.cancelScheduledValues(now);
     masterGain.gain.setValueAtTime(masterGain.gain.value, now);
     masterGain.gain.linearRampToValueAtTime(0, now + 0.5);
+    if (lfoGain) lfoGain.disconnect();
     isPlaying = false;
   } else {
-    // Fade in
+    // Fade in — reconnect LFO
+    if (lfoGain && masterGain) lfoGain.connect(masterGain.gain);
     masterGain.gain.cancelScheduledValues(now);
-    masterGain.gain.setValueAtTime(masterGain.gain.value, now);
+    masterGain.gain.setValueAtTime(0, now);
     masterGain.gain.linearRampToValueAtTime(0.15, now + 0.5);
     isPlaying = true;
   }
