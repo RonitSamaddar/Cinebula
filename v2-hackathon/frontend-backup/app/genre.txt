@@ -1,9 +1,0 @@
-Adventure
-Action
-Fantasy
-Sci-Fi
-Family
-Animation
-Comedy
-Western
-Drama
