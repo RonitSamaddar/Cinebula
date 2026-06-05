@@ -8,6 +8,7 @@ import (
 	dataservice "cinebula/backend/internal/data-service"
 	"cinebula/backend/internal/filter"
 	"cinebula/backend/internal/logger"
+	"cinebula/backend/internal/queue"
 	"cinebula/backend/internal/search"
 	topgenres "cinebula/backend/internal/top-genres"
 	"cinebula/backend/internal/user"
@@ -38,6 +39,11 @@ func main() {
 
 	// User profile (JWT protected)
 	mux.Handle("GET /user/profile", auth.Middleware(http.HandlerFunc(user.ProfileHandler)))
+
+	// Queue — phone sends queue, TV page reads it
+	mux.HandleFunc("POST /api/queue", queue.PostHandler)
+	mux.HandleFunc("GET /api/queue", queue.GetHandler)
+	mux.HandleFunc("OPTIONS /api/queue", queue.PostHandler) // CORS preflight
 
 	logger.Log("Cinebula backend listening on :8080")
 	if err := http.ListenAndServe(":8080", logger.Middleware(mux)); err != nil {

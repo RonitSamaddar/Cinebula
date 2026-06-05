@@ -48,7 +48,7 @@
        TV FRAME (16:9 centered)
     ═══════════════════════════════════════════ */
     .tv-frame {
-      width: 100vw; height: 100vh;
+      width: 100vw; height: 100dvh;
       display: flex;
       background: var(--bg);
       position: relative;
@@ -300,9 +300,9 @@
     .app-row::-webkit-scrollbar { display: none; }
 
     .app-icon {
-      width: 56px; height: 56px;
+      flex: 1;
+      height: 56px;
       border-radius: var(--radius-md);
-      flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
       cursor: pointer;
       transition: all var(--transition);
@@ -975,8 +975,8 @@
           <span class="hero-badge-dot"></span>
           <span id="heroBadge">Featured</span>
         </div>
-        <h1 class="hero-title" id="heroTitle">KING BLAKE</h1>
-        <p class="hero-subtitle" id="heroSubtitle">An epic medieval saga of courage, betrayal, and the fight for a kingdom.</p>
+        <h1 class="hero-title" id="heroTitle">SEVERANCE</h1>
+        <p class="hero-subtitle" id="heroSubtitle">A mind-bending thriller about work-life balance taken to its darkest extreme.</p>
         <div class="hero-actions">
           <button class="hero-btn hero-btn-primary" data-nav="hero-btn" data-col="0">▶ Watch Now</button>
           <button class="hero-btn hero-btn-secondary" data-nav="hero-btn" data-col="1">+ Add to List</button>
@@ -984,9 +984,6 @@
       </div>
       <div class="hero-dots" id="heroDots"></div>
     </div>
-
-    <!-- CATEGORY BUTTONS -->
-    <div class="categories" id="categories"></div>
 
     <!-- APP LAUNCHER ROW -->
     <div class="app-row" id="appRow"></div>
@@ -1142,32 +1139,28 @@ qrOverlay.addEventListener('click', (e) => {
 // ═══════════════════════════════════════════
 const HERO_SLIDES = [
   {
-    title: 'KING BLAKE',
-    subtitle: 'An epic medieval saga of courage, betrayal, and the fight for a kingdom.',
-    badge: 'Featured',
-    gradient: 'linear-gradient(135deg, #1a1a2e 0%, #3d2c5e 40%, #5c4a72 70%, #2a2a3a 100%)',
-    color: '#5c4a72'
-  },
-  {
     title: 'SEVERANCE',
     subtitle: 'A mind-bending thriller about work-life balance taken to its darkest extreme.',
     badge: 'Trending',
     gradient: 'linear-gradient(135deg, #0a1628 0%, #1a3a5c 40%, #2a5a8c 70%, #0a1628 100%)',
-    color: '#2a5a8c'
+    color: '#2a5a8c',
+    image: 'https://image.tmdb.org/t/p/w1280/i9Ek5cSAduHLYD3ndgxmOWBQWt9.jpg'
   },
   {
     title: 'THE BEAR',
     subtitle: 'A young chef returns to Chicago to run his family sandwich shop.',
     badge: 'Popular',
     gradient: 'linear-gradient(135deg, #1a0a0a 0%, #5c2a1a 40%, #8c4a2a 70%, #1a0a0a 100%)',
-    color: '#8c4a2a'
+    color: '#8c4a2a',
+    image: 'https://image.tmdb.org/t/p/w1280/iZuZjmEeWR0D8ak67FNKJuGr7gL.jpg'
   },
   {
     title: 'SHOGUN',
     subtitle: 'Set in 1600 Japan — a war-torn land of feudal lords, political intrigue, and shifting alliances.',
     badge: 'New',
     gradient: 'linear-gradient(135deg, #0a1a0a 0%, #2a4a1a 40%, #4a6a2a 70%, #0a1a0a 100%)',
-    color: '#4a6a2a'
+    color: '#4a6a2a',
+    image: 'https://image.tmdb.org/t/p/w1280/liUAfEcHbK16zbHfTHgaUmAEFRC.jpg'
   }
 ];
 
@@ -1180,33 +1173,31 @@ const CATEGORIES = [
 ];
 
 const APPS = [
-  { name: 'Apps', icon: 'grid', bg: '#2a2a3a', textColor: '#fff' },
-  { name: 'Netflix', icon: null, bg: '#000', text: 'NETFLIX', textColor: '#e50914', fontWeight: 900, fontSize: '11px' },
-  { name: 'Prime Video', icon: null, bg: '#00050d', text: 'prime\nvideo', textColor: '#00a8e1', fontSize: '9px' },
-  { name: 'Disney+', icon: null, bg: '#040814', text: 'Disney+', textColor: '#1a94ff', fontSize: '10px', fontWeight: 700 },
-  { name: 'HBO Max', icon: null, bg: '#000', text: 'HBO', textColor: '#b19cd9', fontSize: '13px', fontWeight: 800 },
-  { name: 'Hulu', icon: null, bg: '#1ce783', text: 'hulu', textColor: '#000', fontSize: '14px', fontWeight: 900 },
-  { name: 'Apple TV', icon: null, bg: '#000', text: '🍎 tv+', textColor: '#fff', fontSize: '11px' },
-  { name: 'YouTube', icon: null, bg: '#ff0000', text: '▶', textColor: '#fff', fontSize: '20px' },
-  { name: 'Peacock', icon: null, bg: '#000', text: '🦚', textColor: '#fff', fontSize: '22px' },
-  { name: 'Sling', icon: null, bg: '#02223b', text: 'sling', textColor: '#2196f3', fontSize: '11px', fontWeight: 700 },
-  { name: 'Paramount+', icon: null, bg: '#0064ff', text: '⛰', textColor: '#fff', fontSize: '18px' },
-  { name: 'Tubi', icon: null, bg: '#fa382f', text: 'tubi', textColor: '#fff', fontSize: '11px', fontWeight: 800 },
-  { name: 'Discovery+', icon: null, bg: '#003', text: 'd+', textColor: '#00d4ff', fontSize: '14px', fontWeight: 800 },
-  { name: 'Cinebula', icon: null, bg: 'linear-gradient(135deg, #07070c, #1a0a2e)', text: '✦', textColor: '#b56cff', fontSize: '22px', special: true }
+  { name: 'Netflix', icon: null, bg: '#000', text: null, textColor: '#e50914', fontWeight: 900, fontSize: '14px', logo: 'https://images.ctfassets.net/4cd45et68cgf/7LrExJ6PAj6MSIPkDyCO86/542b1dfb3f34f694b01571b4ky5fAvhJ/Netflix-Logo.wine.png' },
+  { name: 'Prime Video', icon: null, bg: '#00050d', text: null, textColor: '#00a8e1', fontSize: '12px', logo: 'https://m.media-amazon.com/images/G/01/digital/video/web/Logo-min.png' },
+  { name: 'Disney+', icon: null, bg: '#040814', text: null, textColor: '#1a94ff', fontSize: '13px', fontWeight: 700, logo: 'https://cnbl-cdn.bamgrid.com/assets/7ecc8bcb60ad77193058d63e321bd21cbac2fc67/original' },
+  { name: 'HBO Max', icon: null, bg: '#000', text: 'HBO', textColor: '#b19cd9', fontSize: '16px', fontWeight: 800 },
+  { name: 'Hulu', icon: null, bg: '#1ce783', text: 'hulu', textColor: '#000', fontSize: '17px', fontWeight: 900 },
+  { name: 'Apple TV', icon: null, bg: '#000', text: '🍎 tv+', textColor: '#fff', fontSize: '14px' },
+  { name: 'YouTube', icon: null, bg: '#ff0000', text: '▶', textColor: '#fff', fontSize: '24px' },
+  { name: 'Peacock', icon: null, bg: '#000', text: '🦚', textColor: '#fff', fontSize: '26px' },
+  { name: 'Sling', icon: null, bg: '#02223b', text: 'sling', textColor: '#2196f3', fontSize: '14px', fontWeight: 700 },
+  { name: 'Paramount+', icon: null, bg: '#0064ff', text: '⛰', textColor: '#fff', fontSize: '22px' },
+  { name: 'Tubi', icon: null, bg: '#fa382f', text: 'tubi', textColor: '#fff', fontSize: '14px', fontWeight: 800 },
+  { name: 'Discovery+', icon: null, bg: '#003', text: 'd+', textColor: '#00d4ff', fontSize: '17px', fontWeight: 800 }
 ];
 
 const TOP_PICKS = [
-  { title: 'Dune: Part Two', badge: '4K HDR', gradient: 'linear-gradient(135deg, #1a1a00, #4a3a00, #2a2000)' },
-  { title: 'The Last of Us', badge: 'HBO', gradient: 'linear-gradient(135deg, #0a1a0a, #1a3a1a, #0a200a)' },
-  { title: 'Oppenheimer', badge: '4K', gradient: 'linear-gradient(135deg, #1a0a00, #3a2000, #1a1000)' },
-  { title: 'House of the Dragon', badge: 'HBO', gradient: 'linear-gradient(135deg, #2a0a0a, #5a1a1a, #2a0a0a)' },
-  { title: 'Fallout', badge: 'Prime', gradient: 'linear-gradient(135deg, #1a1a00, #3a3a00, #1a1a00)' },
-  { title: 'Baby Reindeer', badge: 'Netflix', gradient: 'linear-gradient(135deg, #0a0a1a, #1a1a3a, #0a0a1a)' },
-  { title: 'Shōgun', badge: 'FX', gradient: 'linear-gradient(135deg, #0a1a0a, #2a3a1a, #0a1a0a)' },
-  { title: 'The Gentlemen', badge: 'Netflix', gradient: 'linear-gradient(135deg, #1a1a1a, #2a2a2a, #1a1a1a)' },
-  { title: 'Ripley', badge: 'Netflix', gradient: 'linear-gradient(135deg, #1a1a1a, #3a3a3a, #1a1a1a)' },
-  { title: '3 Body Problem', badge: 'Netflix', gradient: 'linear-gradient(135deg, #0a0a2a, #1a1a4a, #0a0a2a)' }
+  { title: 'Dune: Part Two', badge: '4K HDR', gradient: 'linear-gradient(135deg, #1a1a00, #4a3a00, #2a2000)', image: 'https://image.tmdb.org/t/p/w500/uhUO7vQQKvCTfQWubOt5MAKokbL.jpg' },
+  { title: 'The Last of Us', badge: 'HBO', gradient: 'linear-gradient(135deg, #0a1a0a, #1a3a1a, #0a200a)', image: 'https://image.tmdb.org/t/p/w500/pbrkL804c8yAv3zBZR4QPEafpAR.jpg' },
+  { title: 'Oppenheimer', badge: '4K', gradient: 'linear-gradient(135deg, #1a0a00, #3a2000, #1a1000)', image: 'https://image.tmdb.org/t/p/w500/fm6KqXpk3M2HVveHwCrBSSBaO0V.jpg' },
+  { title: 'House of the Dragon', badge: 'HBO', gradient: 'linear-gradient(135deg, #2a0a0a, #5a1a1a, #2a0a0a)', image: 'https://image.tmdb.org/t/p/w500/8ZTVqvKDQ8emSGUEMjsS4yHAwrp.jpg' },
+  { title: 'Fallout', badge: 'Prime', gradient: 'linear-gradient(135deg, #1a1a00, #3a3a00, #1a1a00)', image: 'https://image.tmdb.org/t/p/w500/5GeglKAHMaK1pFvZJQ7KidIeUtd.jpg' },
+  { title: 'Baby Reindeer', badge: 'Netflix', gradient: 'linear-gradient(135deg, #0a0a1a, #1a1a3a, #0a0a1a)', image: 'https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg' },
+  { title: 'Shōgun', badge: 'FX', gradient: 'linear-gradient(135deg, #0a1a0a, #2a3a1a, #0a1a0a)', image: 'https://image.tmdb.org/t/p/w500/liUAfEcHbK16zbHfTHgaUmAEFRC.jpg' },
+  { title: 'The Gentlemen', badge: 'Netflix', gradient: 'linear-gradient(135deg, #1a1a1a, #2a2a2a, #1a1a1a)', image: 'https://image.tmdb.org/t/p/w500/tintsaQ0WLzZsTMkTiqtMB3rfc8.jpg' },
+  { title: 'Ripley', badge: 'Netflix', gradient: 'linear-gradient(135deg, #1a1a1a, #3a3a3a, #1a1a1a)', image: 'https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg' },
+  { title: '3 Body Problem', badge: 'Netflix', gradient: 'linear-gradient(135deg, #0a0a2a, #1a1a4a, #0a0a2a)', image: 'https://image.tmdb.org/t/p/w500/8ZTVqvKDQ8emSGUEMjsS4yHAwrp.jpg' }
 ];
 
 // ═══════════════════════════════════════════
@@ -1246,7 +1237,14 @@ function renderHeroDots() {
 function setHeroSlide(idx) {
   currentHero = idx;
   const slide = HERO_SLIDES[idx];
-  heroBg.style.background = slide.gradient;
+  if (slide.image) {
+    heroBg.style.background = `${slide.gradient}`;
+    heroBg.style.backgroundImage = `url(${slide.image})`;
+    heroBg.style.backgroundSize = 'cover';
+    heroBg.style.backgroundPosition = 'center';
+  } else {
+    heroBg.style.background = slide.gradient;
+  }
   heroTitle.textContent = slide.title;
   heroSubtitle.textContent = slide.subtitle;
   heroBadge.textContent = slide.badge;
@@ -1258,21 +1256,6 @@ renderHeroDots();
 setInterval(() => {
   setHeroSlide((currentHero + 1) % HERO_SLIDES.length);
 }, 6000);
-
-// ═══════════════════════════════════════════
-// CATEGORIES
-// ═══════════════════════════════════════════
-const categoriesEl = document.getElementById('categories');
-CATEGORIES.forEach((cat, i) => {
-  const btn = document.createElement('button');
-  btn.className = 'cat-btn';
-  btn.style.background = cat.color;
-  btn.textContent = cat.label;
-  btn.setAttribute('data-nav', 'categories');
-  btn.setAttribute('data-col', i);
-  btn.tabIndex = 0;
-  categoriesEl.appendChild(btn);
-});
 
 // ═══════════════════════════════════════════
 // APP ICONS
@@ -1292,8 +1275,18 @@ APPS.forEach((app, i) => {
     el.style.background = app.bg;
   }
 
-  if (app.icon === 'grid') {
-    el.innerHTML = `<svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:${app.textColor}"><path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z"/></svg>`;
+  if (app.logo) {
+    const img = document.createElement('img');
+    img.src = app.logo;
+    img.alt = app.name;
+    img.style.width = '100%';
+    img.style.height = '100%';
+    img.style.objectFit = 'contain';
+    img.style.padding = '8px';
+    img.onerror = function() {
+      el.innerHTML = `<span class="app-text" style="color:${app.textColor};font-size:${app.fontSize || '10px'};font-weight:${app.fontWeight || 600}">${app.name}</span>`;
+    };
+    el.appendChild(img);
   } else if (app.text) {
     const span = document.createElement('span');
     span.className = 'app-text';
@@ -1313,28 +1306,15 @@ APPS.forEach((app, i) => {
 // ═══════════════════════════════════════════
 const topPicks = document.getElementById('topPicks');
 
-// Input card first
-const inputCard = document.createElement('div');
-inputCard.className = 'input-card';
-inputCard.setAttribute('data-nav', 'picks');
-inputCard.setAttribute('data-col', '0');
-inputCard.tabIndex = 0;
-inputCard.innerHTML = `
-  <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM4 6h6v5H4V6z"/></svg>
-  <span class="input-card-label">Kürzliche E...</span>
-  <span class="input-card-title">PC · HDMI 1</span>
-`;
-topPicks.appendChild(inputCard);
-
 TOP_PICKS.forEach((pick, i) => {
   const card = document.createElement('div');
   card.className = 'content-card';
   card.setAttribute('data-nav', 'picks');
-  card.setAttribute('data-col', i + 1);
+  card.setAttribute('data-col', i);
   card.tabIndex = 0;
 
   card.innerHTML = `
-    <div class="content-card-bg" style="width:100%;height:100%;background:${pick.gradient};"></div>
+    ${pick.image ? `<img class="content-card-bg" src="${pick.image}" alt="${pick.title}" />` : `<div class="content-card-bg" style="width:100%;height:100%;background:${pick.gradient};"></div>`}
     <div class="content-card-badge">${pick.badge}</div>
     <div class="content-card-label">${pick.title}</div>
   `;
@@ -1346,20 +1326,50 @@ TOP_PICKS.forEach((pick, i) => {
 // Shows queued from Cinebula phone and sent to TV
 // Row only visible when queue has items
 // ═══════════════════════════════════════════
-const CINEBULA_QUEUE = [
+const CINEBULA_QUEUE_STATIC = [
   { title: 'Severance S2', match: 92, gradient: 'linear-gradient(135deg, #0a1628, #1a3a5c, #0a1628)',
+    image: 'https://image.tmdb.org/t/p/w500/i9Ek5cSAduHLYD3ndgxmOWBQWt9.jpg',
     desc: 'Mark scouts the mysterious Revolving Door between his work and personal lives.',
     genre: 'Sci-Fi', subgenre: 'Thriller', year: 2025, seasons: 2, episodes: 19, rating: 'TV-MA',
     creator: 'Dan Erickson', cast: 'Adam Scott, Zach Cherry, Britt Lower', runtime: '45 min' },
   { title: 'Dark', match: 88, gradient: 'linear-gradient(135deg, #0a0a1a, #1a1a3a, #0a0a1a)',
+    image: 'https://image.tmdb.org/t/p/w500/zleUYDMDiaOcUdKKg6e2mVTn6wo.jpg',
     desc: 'A missing child sets four families on a frantic hunt for answers as they unearth a mind-bending mystery.',
     genre: 'Mystery', subgenre: 'Sci-Fi', year: 2017, seasons: 3, episodes: 26, rating: 'TV-MA',
     creator: 'Baran bo Odar', cast: 'Louis Hofmann, Lisa Vicari, Oliver Masucci', runtime: '52 min' },
   { title: 'The Bear S3', match: 85, gradient: 'linear-gradient(135deg, #1a0a0a, #5c2a1a, #1a0a0a)',
+    image: 'https://image.tmdb.org/t/p/w500/iZuZjmEeWR0D8ak67FNKJuGr7gL.jpg',
     desc: 'Carmy pushes himself and his crew to transform their restaurant while battling his own demons.',
     genre: 'Drama', subgenre: 'Comedy', year: 2024, seasons: 3, episodes: 28, rating: 'TV-MA',
     creator: 'Christopher Storer', cast: 'Jeremy Allen White, Ayo Edebiri, Ebon Moss-Bachrach', runtime: '32 min' }
 ];
+
+// Read queue from localStorage (written by the phone frontend)
+const LS_KEY = 'cinebula-queue';
+function getQueueFromLocalStorage() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return [];
+    const items = JSON.parse(raw);
+    return items.map(item => ({
+      title: item.title || 'Untitled',
+      match: item.match || 0,
+      image: item.poster || '',
+      gradient: 'linear-gradient(135deg, #1a1028, #2a1a3a, #1a1028)',
+      desc: item.description || '',
+      genre: (item.genres || '').split(',')[0]?.trim() || '',
+      subgenre: (item.genres || '').split(',')[1]?.trim() || '',
+      year: item.year || 0,
+      runtime: item.runtime || '',
+      rating: '',
+      seasons: 0, episodes: 0, creator: '', cast: ''
+    }));
+  } catch { return []; }
+}
+
+// Use localStorage queue if available, otherwise fall back to static
+let CINEBULA_QUEUE = getQueueFromLocalStorage();
+if (CINEBULA_QUEUE.length === 0) CINEBULA_QUEUE = CINEBULA_QUEUE_STATIC;
 
 const queueSection = document.getElementById('cinebulaQueueSection');
 const queueRow = document.getElementById('cinebulaQueueRow');
@@ -1381,7 +1391,7 @@ function renderCinebulaQueue() {
     card.setAttribute('data-col', i);
     card.tabIndex = 0;
     card.innerHTML = `
-      <div class="queue-card-bg" style="width:100%;height:100%;background:${item.gradient};"></div>
+      ${item.image ? `<img class="queue-card-bg" src="${item.image}" alt="${item.title}" style="width:100%;height:100%;object-fit:cover;" />` : `<div class="queue-card-bg" style="width:100%;height:100%;background:${item.gradient};"></div>`}
       <div class="queue-card-match">${item.match}%</div>
       <div class="queue-card-bottom">
         <div class="queue-card-label">${item.title}</div>
@@ -1401,7 +1411,11 @@ renderCinebulaQueue();
 const showDetailOverlay = document.getElementById('showDetailOverlay');
 
 function openShowDetail(item) {
-  document.getElementById('showDetailHero').style.background = item.gradient;
+  if (item.image) {
+    document.getElementById('showDetailHero').style.background = `url(${item.image}) center/cover`;
+  } else {
+    document.getElementById('showDetailHero').style.background = item.gradient;
+  }
   document.getElementById('showDetailTitle').textContent = item.title;
   document.getElementById('showDetailMeta').innerHTML = `
     <span class="show-detail-match">${item.match}% Match</span>
@@ -1524,6 +1538,43 @@ document.querySelectorAll('[data-nav]').forEach(el => {
 
 // Initial focus on hero
 setTimeout(() => setFocus(1, 0), 100);
+
+// ═══════════════════════════════════════════
+// LIVE QUEUE SYNC FROM BACKEND API
+// Poll every 5s
+// ═══════════════════════════════════════════
+let lastQueueJSON = '';
+
+function refreshQueueFromBackend() {
+  fetch('http://localhost:8080/api/queue')
+    .then(r => r.json())
+    .then(items => {
+      const raw = JSON.stringify(items);
+      if (raw === lastQueueJSON) return;
+      lastQueueJSON = raw;
+      if (items && items.length > 0) {
+        CINEBULA_QUEUE = items.map(item => ({
+          title: item.title || 'Untitled',
+          match: item.match || 0,
+          image: item.poster || '',
+          gradient: 'linear-gradient(135deg, #1a1028, #2a1a3a, #1a1028)',
+          desc: item.description || '',
+          genre: (item.genres || '').split(',')[0]?.trim() || '',
+          subgenre: (item.genres || '').split(',')[1]?.trim() || '',
+          year: item.year || 0,
+          runtime: item.runtime || '',
+          rating: '', seasons: 0, episodes: 0, creator: '', cast: ''
+        }));
+      } else {
+        CINEBULA_QUEUE = CINEBULA_QUEUE_STATIC;
+      }
+      renderCinebulaQueue();
+    })
+    .catch(() => {});
+}
+
+refreshQueueFromBackend();
+setInterval(refreshQueueFromBackend, 5000);
 
 </script>
 
