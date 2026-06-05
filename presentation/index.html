@@ -537,10 +537,29 @@
             left: 3rem;
             font-family: 'Instrument Serif', serif;
             font-style: italic;
-            font-size: 1.5rem;
+            font-size: 2rem;
             color: var(--ink);
             z-index: 100;
             letter-spacing: 0.02em;
+        }
+
+        /* Title slide */
+        .slide-title {
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide-title .title-name {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-size: 8rem;
+            color: var(--ink);
+            letter-spacing: 0.02em;
+            opacity: 0;
+        }
+
+        .slide-title.active .title-name {
+            animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
         }
 
         /* Demo slide special */
@@ -640,7 +659,7 @@
         }
 
         .slide.active .user-character {
-            animation: scene1-appear 1.2s ease 0.5s forwards, scene1-fade-out 1s ease 10s forwards;
+            animation: scene1-appear 1.2s ease 0.5s forwards, scene1-fade-out 1s ease 5s forwards;
         }
 
         /* Speech bubble positioning for Phase 1 — anchored at top-right of head */
@@ -651,10 +670,6 @@
 
         .slide.active .user-character .bubble-hello {
             animation: bubbleIn 0.8s ease 2s forwards, bubbleOut 0.6s ease 4.5s forwards;
-        }
-
-        .slide.active .user-character .bubble-thought {
-            animation: bubbleIn 0.8s ease 5.5s forwards;
         }
 
         /* Phase 2: Living room — TV+sofa in top 70%, title in bottom 30% */
@@ -668,7 +683,7 @@
         }
 
         .slide.active .living-room {
-            animation: scene2-appear 1.5s ease 11s forwards;
+            animation: scene2-appear 1.5s ease 6s forwards;
         }
 
         .living-room-scene {
@@ -744,15 +759,7 @@
             transform: translateX(-50%);
         }
 
-        /* Frustration bubble — anchored at top-right of seated user's head */
-        .sofa-user .bubble-frustration {
-            top: -2.5rem;
-            left: 5.5rem;
-        }
-
-        .slide.active .sofa-user .bubble-frustration {
-            animation: bubbleIn 0.8s ease 21.5s forwards;
-        }
+        /* Frustration bubble — removed */
 
         /* TV in living room scene — positioned higher with more gap */
         .scene-tv {
@@ -887,7 +894,7 @@
 
         /* Minute hand: rotates 180deg (30 min) over 8 seconds, then stops */
         .slide.active .clock-hand-min {
-            animation: clock-spin-30min 8s linear 11.5s forwards;
+            animation: clock-spin-30min 8s linear 6.5s forwards;
         }
 
         .clock-hand-hour {
@@ -918,7 +925,7 @@
         }
 
         .slide.active .clock-label {
-            animation: clockLabelIn 0.8s ease 20s forwards;
+            animation: clockLabelIn 0.8s ease 15s forwards;
         }
 
         @keyframes clockLabelIn {
@@ -943,7 +950,7 @@
         }
 
         .slide.active .story-title {
-            animation: bubbleIn 1s ease 23.5s forwards;
+            animation: bubbleIn 1s ease 7.5s forwards;
         }
 
         .story-title h1 {
@@ -1064,6 +1071,64 @@
             animation: bubbleIn 1s ease 15.5s forwards;
         }
 
+        /* === SLIDE 5: Right Surface === */
+        .slide-surface {
+            padding: 0 !important;
+        }
+
+        .surface-layout {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .surface-top {
+            height: 60%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .surface-img-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10%;
+            opacity: 0;
+        }
+
+        .surface-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0.8rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .surface-bottom {
+            height: 40%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .surface-bottom .headline {
+            margin-bottom: 0;
+        }
+
+        .slide-surface.active .surface-img-wrap:nth-child(1) {
+            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+        }
+
+        .slide-surface.active .surface-img-wrap:nth-child(2) {
+            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+        }
+
+        .slide-surface.active .surface-bottom .headline {
+            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.7s both;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .stat-grid, .direction-grid {
@@ -1102,8 +1167,13 @@
 
     <div class="presentation">
 
-        <!-- SLIDE 1: WHY (Animated Story) -->
-        <div class="slide active" data-slide="1">
+        <!-- SLIDE 1: TITLE -->
+        <div class="slide slide-title active" data-slide="1">
+            <div class="title-name">Cinebula</div>
+        </div>
+
+        <!-- SLIDE 2: WHY (Animated Story) -->
+        <div class="slide" data-slide="2">
             <div class="story-scene">
                 <!-- Phase 1: User appears -->
                 <div class="user-character">
@@ -1113,7 +1183,6 @@
                         <div class="human__body"></div>
                     </div>
                     <div class="bubble bubble-hello" data-direction="right">Hi, I'm Ron 👋</div>
-                    <div class="bubble bubble-thought" data-direction="right">I want to watch something good tonight...</div>
                 </div>
 
                 <!-- Phase 2: Living room scene -->
@@ -1124,7 +1193,6 @@
                             <div class="clock-center"></div>
                             <div class="clock-hand-hour"></div>
                             <div class="clock-hand-min"></div>
-                            <span class="clock-label">30 minutes later...</span>
                         </div>
 
                         <!-- TV -->
@@ -1182,7 +1250,6 @@
                                     <div class="human__head"></div>
                                     <div class="human__shoulders"></div>
                                 </div>
-                                <div class="bubble bubble-frustration" data-direction="right">There's nothing to watch... 😩</div>
                             </div>
                             <div class="sofa-back">
                                 <div class="sofa-arm-left"></div>
@@ -1201,7 +1268,7 @@
         </div>
 
         <!-- SLIDE 2: THE PARADOX -->
-        <div class="slide slide-paradox" data-slide="2">
+        <div class="slide slide-paradox" data-slide="3">
             <div class="paradox-grid">
                 <div class="paradox-section"></div>
                 <div class="paradox-section paradox-title-section">
@@ -1215,7 +1282,7 @@
         </div>
 
         <!-- SLIDE 3: 24-HOUR STORY -->
-        <div class="slide slide-24h" data-slide="3">
+        <div class="slide slide-24h" data-slide="4">
             <div class="scene-24h">
                 <div class="scene-24h-room">
                     <!-- Clock -->
@@ -1223,7 +1290,7 @@
                         <div class="clock-center"></div>
                         <div class="clock-hand-hour clock-24h-hour"></div>
                         <div class="clock-hand-min clock-24h-min"></div>
-                        <span class="clock-label clock-24h-label">24 hours of your day</span>
+                        <span class="clock-label clock-24h-label">24 hours of user`s day</span>
                     </div>
 
                     <!-- TV (off most of the day, on at 6-8 PM) -->
@@ -1279,22 +1346,53 @@
             </div>
         </div>
 
-        <!-- SLIDE 4: WHY PHONE -->
-        <div class="slide slide-paradox" data-slide="4">
+        <!-- SLIDE 5: WHY PHONE -->
+        <div class="slide slide-paradox" data-slide="5">
             <div class="paradox-grid">
                 <div class="paradox-section"></div>
                 <div class="paradox-section paradox-title-section">
                     <h1 class="headline">We were solving the right problem<br>on the <em>wrong surface.</em></h1>
                 </div>
                 <div class="paradox-section paradox-body-section">
-                    <p class="paradox-text">The TV is a constrained surface for this job. Users sit in front of it for a few hours — tired, unwilling to spend 20 minutes on research.<br><br>We're asking them to do their highest-effort task — picking from thousands of options — on the lowest-bandwidth interaction surface in their home.<br><br>The TV is for watching, <em>not choosing.</em></p>
+                    <p class="paradox-text">The TV is a constrained surface for this job. Users sit in front of it for a few hours — tired, unwilling to spend 20 minutes on research.<br><br>We're asking them to do their highest-effort task — picking from thousands of options — on the lowest interaction media surface in their home.<br><br>The TV is for watching, <em>not choosing.</em></p>
                 </div>
                 <div class="paradox-section"></div>
             </div>
         </div>
 
-        <!-- SLIDE 5: THE PRODUCT -->
-        <div class="slide" data-slide="5">
+        <!-- SLIDE 6: RIGHT SURFACE -->
+        <div class="slide slide-surface" data-slide="6">
+            <div class="surface-layout">
+                <div class="surface-top">
+                    <div class="surface-img-wrap">
+                        <img src="https://i.insider.com/5a43f27d7101ad15d55e4a83?width=1000&format=jpeg&auto=webp" alt="People using phones">
+                    </div>
+                    <div class="surface-img-wrap">
+                        <img src="https://images.stockcake.com/public/0/1/3/013acbf0-499a-4835-9bfc-ad0ad2039d50_large/commuters-using-phones-stockcake.jpg" alt="Commuters using phones">
+                    </div>
+                </div>
+                <div class="surface-bottom">
+                    <h1 class="headline">Always on the <em>phone?.</em></h1>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: PRODUCT INTRO -->
+        <div class="slide slide-paradox" data-slide="7">
+            <div class="paradox-grid">
+                <div class="paradox-section"></div>
+                <div class="paradox-section paradox-title-section">
+                    <h1 class="headline"><em>Cinebula</em></h1>
+                </div>
+                <div class="paradox-section paradox-body-section">
+                    <p class="paradox-text">A phone-native discovery experience that turns choosing what to watch into something you do during downtime — the commute, the coffee break, ten minutes before bed.<br><br>By the time you sit on the couch, <em>the decision is already made.</em></p>
+                </div>
+                <div class="paradox-section"></div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: THE PRODUCT -->
+        <div class="slide" data-slide="8">
             <div class="eyebrow">The Solution</div>
             <h1 class="headline">The phone decides. <em>The TV plays.</em></h1>
             <p class="subtext">
@@ -1303,15 +1401,15 @@
             </p>
         </div>
 
-        <!-- SLIDE 6: DEMO -->
-        <div class="slide" data-slide="6">
+        <!-- SLIDE 9: DEMO -->
+        <div class="slide" data-slide="9">
             <div class="eyebrow">Live Demo</div>
             <h1 class="headline"><em>Experience</em> Cinebula</h1>
             <div class="demo-cta">▶ &nbsp; SHOW THE DEMO</div>
         </div>
 
-        <!-- SLIDE 7: DATA VALUE -->
-        <div class="slide" data-slide="7">
+        <!-- SLIDE 10: DATA VALUE -->
+        <div class="slide" data-slide="10">
             <div class="eyebrow">The Data Play</div>
             <h1 class="headline">Discovery wins the first click. <em>Data wins the long game.</em></h1>
             <p class="subtext">
@@ -1327,8 +1425,8 @@
             </ul>
         </div>
 
-        <!-- SLIDE 8: ROI -->
-        <div class="slide" data-slide="8">
+        <!-- SLIDE 11: ROI -->
+        <div class="slide" data-slide="11">
             <div class="eyebrow">Return on Investment</div>
             <h1 class="headline">The discovery experience is the front door. <em>The data behind it is the moat.</em></h1>
             <div class="stat-grid">
@@ -1359,8 +1457,8 @@
             </div>
         </div>
 
-        <!-- SLIDE 9: FUTURE -->
-        <div class="slide" data-slide="9">
+        <!-- SLIDE 12: FUTURE -->
+        <div class="slide" data-slide="12">
             <div class="eyebrow">What's Next</div>
             <h1 class="headline">This is the first 90 seconds of <em>something bigger.</em></h1>
             <div class="direction-grid">
@@ -1392,6 +1490,9 @@
         <div class="nav-dot" data-target="7"></div>
         <div class="nav-dot" data-target="8"></div>
         <div class="nav-dot" data-target="9"></div>
+        <div class="nav-dot" data-target="10"></div>
+        <div class="nav-dot" data-target="11"></div>
+        <div class="nav-dot" data-target="12"></div>
         <span class="nav-hint">↑↓ or ← → to navigate</span>
     </nav>
 
@@ -1466,15 +1567,18 @@
             const glow1 = document.querySelector('.glow-1');
             const glow2 = document.querySelector('.glow-2');
             const colorMap = {
-                1: ['var(--accent-red)', 'var(--accent-amber)'],
+                1: ['var(--accent-violet)', 'var(--accent-blue)'],
                 2: ['var(--accent-red)', 'var(--accent-amber)'],
-                3: ['var(--accent-amber)', 'var(--accent-red)'],
+                3: ['var(--accent-red)', 'var(--accent-amber)'],
                 4: ['var(--accent-amber)', 'var(--accent-red)'],
-                5: ['var(--accent-violet)', 'var(--accent-blue)'],
-                6: ['var(--accent-violet)', 'var(--accent-teal)'],
-                7: ['var(--accent-blue)', 'var(--accent-violet)'],
-                8: ['var(--accent-teal)', 'var(--accent-violet)'],
+                5: ['var(--accent-amber)', 'var(--accent-red)'],
+                6: ['var(--accent-blue)', 'var(--accent-violet)'],
+                7: ['var(--accent-violet)', 'var(--accent-blue)'],
+                8: ['var(--accent-violet)', 'var(--accent-blue)'],
                 9: ['var(--accent-violet)', 'var(--accent-teal)'],
+                10: ['var(--accent-blue)', 'var(--accent-violet)'],
+                11: ['var(--accent-teal)', 'var(--accent-violet)'],
+                12: ['var(--accent-violet)', 'var(--accent-teal)'],
             };
             const [c1, c2] = colorMap[slide] || colorMap[1];
             glow1.style.background = c1;
