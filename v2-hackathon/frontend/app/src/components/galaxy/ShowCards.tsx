@@ -134,7 +134,9 @@ const ShowCards = forwardRef<ShowCardsHandle, ShowCardsProps>(function ShowCards
 
   return (
     <>
-      {shows.map((show) => (
+      {shows.map((show) => {
+        const dims = ICON_DIMS[show.size] || ICON_DIMS[1];
+        return (
         <div
           key={show.id}
           ref={(el) => {
@@ -147,33 +149,59 @@ const ShowCards = forwardRef<ShowCardsHandle, ShowCardsProps>(function ShowCards
           className="pointer-events-auto absolute left-0 top-0"
           style={{
             display: "none",
+            width: dims.w,
+            height: dims.h,
             zIndex: Math.min(show.size + 1, 10),
             willChange: "transform, opacity",
           }}
         >
           <ShowCard show={show} onTap={handleTap} />
         </div>
-      ))}
-      {/* Dust particles — tiny colored rectangles filling the space */}
-      {dust.map((d) => (
-        <div
-          key={d.id}
-          ref={(el) => {
-            if (el) dustMapRef.current.set(d.id, el);
-            else dustMapRef.current.delete(d.id);
-          }}
-          className="absolute left-0 top-0 rounded-sm"
-          style={{
-            display: "none",
-            width: d.size,
-            height: d.size * 1.4,
-            backgroundColor: d.color,
-            opacity: d.opacity,
-            zIndex: 1,
-            willChange: "transform",
-          }}
-        />
-      ))}
+        );
+      })}
+      {/* Dust particles — textured circles, big ones show poster thumbnails */}
+      {dust.map((d, i) => {
+        // Random texture per particle based on index
+        const texType = i % 4;
+        const bg = d.poster
+          ? "transparent"
+          : texType === 0
+            ? `radial-gradient(circle at 35% 35%, ${d.color}, transparent 70%)`
+            : texType === 1
+              ? `radial-gradient(circle at 50% 50%, white 0%, ${d.color} 40%, transparent 75%)`
+              : texType === 2
+                ? `linear-gradient(135deg, ${d.color} 0%, transparent 60%), radial-gradient(circle, ${d.color} 30%, transparent 70%)`
+                : `radial-gradient(circle at 60% 40%, ${d.color}cc 0%, ${d.color}66 50%, transparent 80%)`;
+
+        return (
+          <div
+            key={d.id}
+            ref={(el) => {
+              if (el) dustMapRef.current.set(d.id, el);
+              else dustMapRef.current.delete(d.id);
+            }}
+            className="absolute left-0 top-0 rounded-full overflow-hidden"
+            style={{
+              display: "none",
+              width: d.size,
+              height: d.size,
+              background: bg,
+              opacity: d.opacity,
+              zIndex: 1,
+              willChange: "transform",
+            }}
+          >
+            {d.poster && (
+              <img
+                src={d.poster}
+                alt=""
+                className="w-full h-full object-cover rounded-full"
+                loading="lazy"
+              />
+            )}
+          </div>
+        );
+      })}
     </>
   );
 });

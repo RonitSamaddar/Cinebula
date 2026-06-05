@@ -44,7 +44,7 @@ export default function ShowCard({ show, isQueued, onTap }: ShowCardProps) {
 
   return (
     <div
-      className="absolute flex flex-col items-center justify-end overflow-hidden rounded-md"
+      className="flex flex-col items-center justify-end overflow-hidden rounded-md"
       style={{
         width: size,
         height: size * 1.4,

@@ -28,6 +28,9 @@ func main() {
 	// Movies — proxy to TKACR data service (genre / keyword / language / movie_name)
 	mux.HandleFunc("GET /api/movies", dataservice.Handler)
 
+	// Movies V2 — full catalog, no filters
+	mux.HandleFunc("GET /api/movies/v2", dataservice.HandlerV2)
+
 	// Similar — proxy to TKACR similar endpoint (movie + optional k)
 	mux.HandleFunc("GET /api/similar", dataservice.SimilarHandler)
 

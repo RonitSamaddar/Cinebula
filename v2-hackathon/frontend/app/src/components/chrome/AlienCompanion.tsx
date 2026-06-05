@@ -170,10 +170,15 @@ export default function AlienCompanion({ suppressBubbles = false, onRecTap }: Al
 
       {/* Alien + Ship container — alien sits on top of saucer, no dome */}
       <div
-        className={`cursor-pointer select-none ${gestureClass}`}
-        onPointerDown={handleTap}
-        style={{ touchAction: "none", opacity: 0.75, overflow: "visible", position: "relative", width: 125, height: 117 }}
+        className={`select-none ${gestureClass}`}
+        style={{ touchAction: "none", opacity: 0.75, overflow: "visible", position: "relative", width: 125, height: 117, pointerEvents: "none" }}
       >
+        {/* Reduced tap target — inset 20px from edges to prevent accidental clicks */}
+        <div
+          className="cursor-pointer absolute"
+          onPointerDown={handleTap}
+          style={{ inset: 20, zIndex: 10, pointerEvents: "auto" }}
+        />
         {/* Alien character — sitting on saucer rim, 1.3× scale */}
         <svg
           width="78" height="75" viewBox="0 -4 60 62"

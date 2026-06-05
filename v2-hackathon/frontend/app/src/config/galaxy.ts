@@ -26,33 +26,55 @@ export const ZOOM_LEVEL_0 = 1;   // galaxy overview
 export const ZOOM_LEVEL_1 = 2.5; // mid zoom
 export const ZOOM_LEVEL_2 = 5;   // deep zoom
 
-// Show card sizes (px) — 10 levels based on priority, aspect 1:1.4
-// Range: 10px (size 1) to 50px (size 10)
+// Show card sizes (px) — 20 levels based on priority, aspect 1:1.4
+// Level 1 = 17px (area-continuous with biggest dust 24px circle)
+// Level 20 = 54px
 export const SHOW_SIZE_PX: Record<number, number> = {
-  1: 13,
+  1: 17,
   2: 18,
-  3: 23,
-  4: 30,
-  5: 36,
-  6: 42,
-  7: 48,
-  8: 55,
-  9: 60,
-  10: 65,
+  3: 20,
+  4: 22,
+  5: 24,
+  6: 26,
+  7: 28,
+  8: 30,
+  9: 32,
+  10: 34,
+  11: 36,
+  12: 38,
+  13: 40,
+  14: 42,
+  15: 44,
+  16: 46,
+  17: 48,
+  18: 50,
+  19: 52,
+  20: 54,
 };
 
 // Icon collision dimensions (w × h at aspect ratio 1:1.4)
+// 20 levels: Level 1 = 17×24, Level 20 = 54×76
 export const ICON_DIMS: Record<number, { w: number; h: number }> = {
-  1: { w: 13, h: 17 },
+  1: { w: 17, h: 24 },
   2: { w: 18, h: 25 },
-  3: { w: 23, h: 33 },
-  4: { w: 30, h: 42 },
-  5: { w: 36, h: 49 },
-  6: { w: 42, h: 57 },
-  7: { w: 48, h: 68 },
-  8: { w: 55, h: 77 },
-  9: { w: 60, h: 83 },
-  10: { w: 65, h: 92 },
+  3: { w: 20, h: 28 },
+  4: { w: 22, h: 31 },
+  5: { w: 24, h: 34 },
+  6: { w: 26, h: 36 },
+  7: { w: 28, h: 39 },
+  8: { w: 30, h: 42 },
+  9: { w: 32, h: 45 },
+  10: { w: 34, h: 48 },
+  11: { w: 36, h: 50 },
+  12: { w: 38, h: 53 },
+  13: { w: 40, h: 56 },
+  14: { w: 42, h: 59 },
+  15: { w: 44, h: 62 },
+  16: { w: 46, h: 64 },
+  17: { w: 48, h: 67 },
+  18: { w: 50, h: 70 },
+  19: { w: 52, h: 73 },
+  20: { w: 54, h: 76 },
 };
 
 // Camera / physics

@@ -86,6 +86,61 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(out)
 }
 
+// HandlerV2 handles GET /api/movies/v2
+// Returns the full movie catalog with no filters. Proxies to TKACR /api/movies
+// with no query params. Computes priority and enriches is_watched like Handler.
+func HandlerV2(w http.ResponseWriter, r *http.Request) {
+	cacheKey := "movies-v2"
+
+	var result *MoviesResponse
+	if cached, ok := cacheGet(cacheKey); ok {
+		result = cached
+	} else {
+		var err error
+		result, err = Fetch("", "", "", "")
+		if err != nil {
+			http.Error(w, "upstream error: "+err.Error(), http.StatusBadGateway)
+			return
+		}
+
+		if len(result.Movies) > 0 {
+			avgs := make([]float64, len(result.Movies))
+			counts := make([]int, len(result.Movies))
+			for i, m := range result.Movies {
+				avgs[i] = m.VoteAverage
+				counts[i] = m.VoteCount
+			}
+			scores := priority.Compute(avgs, counts)
+			for i := range result.Movies {
+				result.Movies[i].Priority = scores[i]
+			}
+		}
+
+		cacheSet(cacheKey, result)
+	}
+
+	// Copy movies slice so is_watched annotation doesn't mutate the cache.
+	movies := make([]Movie, len(result.Movies))
+	copy(movies, result.Movies)
+
+	if authHeader := r.Header.Get("Authorization"); strings.HasPrefix(authHeader, "Bearer ") {
+		tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
+		if claims, err := auth.ParseToken(tokenStr); err == nil {
+			if watched, err := acrprocessor.WatchedTitlesForUser(claims.UserID); err == nil && len(watched) > 0 {
+				for i, m := range movies {
+					if watched[strings.ToLower(strings.TrimSpace(m.MovieName))] {
+						movies[i].IsWatched = true
+					}
+				}
+			}
+		}
+	}
+
+	out := &MoviesResponse{Count: result.Count, Movies: movies}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(out)
+}
+
 // SimilarHandler handles GET /api/similar
 //
 // Required query param:

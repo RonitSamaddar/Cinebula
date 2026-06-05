@@ -15,7 +15,7 @@ import RecDialog from "@/components/chrome/RecDialog";
 import ConnectDialog from "@/components/chrome/ConnectDialog";
 import LoadingScreen from "@/components/chrome/LoadingScreen";
 import QRScanner from "@/components/chrome/QRScanner";
-import { loginAndFetchGenres, fetchGenreMovies, backendMoviesToShows, LOAD_ORDER_CENTER, LOAD_ORDER_SIDES, LOAD_ORDER_REMAINING } from "@/services/backend";
+import { loginAndFetchGenres, fetchAllMovies, backendMoviesToShowsV2 } from "@/services/backend";
 import { buildCategories } from "@/data/categories";
 import { initAudio, toggleAudio, isAudioPlaying } from "@/lib/audio";
 import type { Show, Category } from "@/types";
@@ -61,6 +61,9 @@ export default function Home() {
   const z2ShowsRef = useRef<Show[]>([]);
   const allShowsRef = useRef<Show[]>([]);
   const dustRef = useRef<import("@/services/backend").DustParticle[]>([]);
+  const dustZ0Ref = useRef<import("@/services/backend").DustParticle[]>([]);
+  const dustZ1Ref = useRef<import("@/services/backend").DustParticle[]>([]);
+  const dustZ2Ref = useRef<import("@/services/backend").DustParticle[]>([]);
 
   // Connection flow states
   const [connected, setConnected] = useState(true); // skip QR — go straight to galaxy
@@ -77,59 +80,29 @@ export default function Home() {
     (async () => {
       const deviceId = "direct-access"; // skip QR
       const session = await loginAndFetchGenres(deviceId);
-      if (!session || session.topGenres.length === 0) {
+      if (!session) {
         setLoading(false);
         return;
       }
 
-      const { topGenres, token } = session;
-      const categories = buildCategories(topGenres.map(g => g.genre));
-      categoriesRef.current = categories;
-
-      const moviesByGenre: Record<string, import("@/services/backend").MoviesResponse> = {};
-
-      const rebuildShows = () => {
-        const data = backendMoviesToShows(topGenres, moviesByGenre, categories);
-        z0ShowsRef.current = data.z0;
-        z1ShowsRef.current = data.z1;
-        z2ShowsRef.current = data.z2;
-        allShowsRef.current = data.z0;
-        dustRef.current = data.dust;
-        cardsRef.current?.setShows(data.z0, data.dust);
-      };
+      const { token } = session;
 
       const loadingStart = Date.now();
       const LOADING_DURATION = 15000;
 
-      // Phase 1: center
-      const centerIdx = Math.min(LOAD_ORDER_CENTER, topGenres.length - 1);
-      const centerGenre = topGenres[centerIdx];
-      if (centerGenre) {
-        const result = await fetchGenreMovies(centerGenre.genre, token);
-        if (result?.movies?.length) moviesByGenre[centerGenre.genre] = result;
-      }
-      rebuildShows();
-
-      // Phase 2: sides
-      for (const idx of LOAD_ORDER_SIDES) {
-        if (idx >= topGenres.length) continue;
-        const g = topGenres[idx];
-        const result = await fetchGenreMovies(g.genre, token);
-        if (result?.movies?.length) {
-          moviesByGenre[g.genre] = result;
-          rebuildShows();
-        }
-      }
-
-      // Phase 3: remaining
-      for (const idx of LOAD_ORDER_REMAINING) {
-        if (idx >= topGenres.length) continue;
-        const g = topGenres[idx];
-        const result = await fetchGenreMovies(g.genre, token);
-        if (result?.movies?.length) {
-          moviesByGenre[g.genre] = result;
-          rebuildShows();
-        }
+      // Single call to get all movies
+      const allMovies = await fetchAllMovies(token);
+      if (allMovies?.movies?.length) {
+        const data = backendMoviesToShowsV2(allMovies);
+        z0ShowsRef.current = data.z0;
+        z1ShowsRef.current = data.z1;
+        z2ShowsRef.current = data.z2;
+        allShowsRef.current = data.z0;
+        dustRef.current = data.dustZ0;
+        dustZ0Ref.current = data.dustZ0;
+        dustZ1Ref.current = data.dustZ1;
+        dustZ2Ref.current = data.dustZ2;
+        cardsRef.current?.setShows(data.z0, data.dustZ0);
       }
 
       const elapsed = Date.now() - loadingStart;
@@ -236,7 +209,8 @@ export default function Home() {
     if (newLevel !== zoomLevelRef.current) {
       zoomLevelRef.current = newLevel;
       const showSet = newLevel === 0 ? z0ShowsRef.current : newLevel === 1 ? z1ShowsRef.current : z2ShowsRef.current;
-      if (showSet.length > 0) cardsRef.current?.setShows(showSet);
+      const dustSet = newLevel === 0 ? dustZ0Ref.current : newLevel === 1 ? dustZ1Ref.current : dustZ2Ref.current;
+      if (showSet.length > 0) cardsRef.current?.setShows(showSet, dustSet);
       setZoomLevel(newLevel);
     }
 

@@ -201,18 +201,6 @@ export async function loginAndFetchGenres(deviceId: string): Promise<Progressive
     return null;
   }
 
-  const authHeaders = { Authorization: `Bearer ${token}` };
-
-  let topGenres: GenreWeight[] = [];
-  try {
-    const res = await fetch(proxyUrl("/top-genres"), { headers: authHeaders });
-    const data: TopGenresResponse = await res.json();
-    topGenres = data.genres;
-    await log("GET /top-genres — success", { count: topGenres.length });
-  } catch (err) {
-    await log("GET /top-genres — FAILED", { error: String(err) });
-  }
-
   let filters: Filter[] = [];
   try {
     const res = await fetch(proxyUrl("/api/filters"));
@@ -222,7 +210,7 @@ export async function loginAndFetchGenres(deviceId: string): Promise<Progressive
     // non-critical
   }
 
-  return { token, userId, topGenres, filters };
+  return { token, userId, topGenres: [], filters };
 }
 
 export async function fetchGenreMovies(
@@ -247,6 +235,26 @@ export async function fetchGenreMovies(
 }
 
 /**
+ * Fetch all movies from /api/movies/v2 — no filters, returns the full catalog.
+ */
+export async function fetchAllMovies(token: string): Promise<MoviesResponse | null> {
+  try {
+    const res = await fetch(proxyUrl("/api/movies/v2"), {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data: MoviesResponse = await res.json();
+    await log("GET /api/movies/v2 — success", {
+      count: data.count,
+      top3: data.movies?.slice(0, 3).map((m) => m.movie_name),
+    });
+    return data;
+  } catch (err) {
+    await log("GET /api/movies/v2 — FAILED", { error: String(err) });
+    return null;
+  }
+}
+
+/**
  * Convert backend movies into frontend Show[] mapped to galaxy positions.
  * Each top genre from backend IS a category — no mapping needed.
  * Uses actual x,y from backend as relative coordinates within each genre's region.
@@ -259,23 +267,38 @@ export async function fetchGenreMovies(
  * At render time, only 10 non-overlapping shows are displayed on screen (handled by ShowCards).
  */
 
-// 10 size levels (px dimensions for collision detection, aspect 1:1.4)
+// 20 size levels (px dimensions for collision detection, aspect 1:1.4)
+// Level 1 = 17px wide (area-continuous with biggest dust 24px circle)
+// Level 20 = 54px wide
 const ICON_SIZES: Record<number, { w: number; h: number }> = {
-  1: { w: 13, h: 17 },
+  1: { w: 17, h: 24 },
   2: { w: 18, h: 25 },
-  3: { w: 23, h: 33 },
-  4: { w: 30, h: 42 },
-  5: { w: 36, h: 49 },
-  6: { w: 42, h: 57 },
-  7: { w: 48, h: 68 },
-  8: { w: 55, h: 77 },
-  9: { w: 60, h: 83 },
-  10: { w: 65, h: 92 },
+  3: { w: 20, h: 28 },
+  4: { w: 22, h: 31 },
+  5: { w: 24, h: 34 },
+  6: { w: 26, h: 36 },
+  7: { w: 28, h: 39 },
+  8: { w: 30, h: 42 },
+  9: { w: 32, h: 45 },
+  10: { w: 34, h: 48 },
+  11: { w: 36, h: 50 },
+  12: { w: 38, h: 53 },
+  13: { w: 40, h: 56 },
+  14: { w: 42, h: 59 },
+  15: { w: 44, h: 62 },
+  16: { w: 46, h: 64 },
+  17: { w: 48, h: 67 },
+  18: { w: 50, h: 70 },
+  19: { w: 52, h: 73 },
+  20: { w: 54, h: 76 },
 };
 
 function getShowSize(priority: number): import("@/types").ShowSize {
-  // Map priority 0-100 to size 1-10
-  const level = Math.ceil((Math.min(Math.max(priority, 1), 100)) / 10) as import("@/types").ShowSize;
+  // Priority clusters around 66-96 (avg 74). Map that range to levels 1-10.
+  // Below 60 → level 1, above 96 → level 10, linear in between.
+  const clamped = Math.min(Math.max(priority, 60), 96);
+  const normalized = (clamped - 60) / 36; // 0 to 1
+  const level = Math.max(1, Math.ceil(normalized * 10)) as import("@/types").ShowSize;
   return level;
 }
 
@@ -336,9 +359,10 @@ export interface DustParticle {
   id: string;
   worldX: number;
   worldY: number;
-  size: number; // 3-10px
+  size: number; // 2-30px
   color: string;
   opacity: number;
+  poster?: string; // poster thumbnail for large dust (priority >= 80)
 }
 
 export interface ZoomLevelShows {
@@ -346,6 +370,9 @@ export interface ZoomLevelShows {
   z1: import("@/types").Show[];
   z2: import("@/types").Show[];
   dust: DustParticle[];
+  dustZ0: DustParticle[];
+  dustZ1: DustParticle[];
+  dustZ2: DustParticle[];
 }
 
 export function backendMoviesToShows(
@@ -365,9 +392,7 @@ export function backendMoviesToShows(
   const ZOOM_SCALE_2 = 5;
 
   const DUST_COLORS = [
-    "#b56cff", "#6fa8e8", "#3fb89e", "#ff9f43", "#ff7a6c",
-    "#e6b04a", "#7c8a99", "#e056a0", "#c44040", "#8b5cf6",
-    "#34d399", "#f472b6", "#60a5fa", "#fbbf24",
+    "#4da6e0", "#45c9a0", "#e0a033", "#e06070", "#40cc70", "#e0c040", "#60b8d0",
   ];
 
   const z0Shows: import("@/types").Show[] = [];
@@ -482,8 +507,8 @@ export function backendMoviesToShows(
       const offsetX = ((seed * 17) % 61) - 30;
       const offsetY = ((seed * 23) % 61) - 30;
       const dustSize = 3 + (seed % 8); // 3-10px width
-      const colorIdx = (seed * 11) % DUST_COLORS.length;
-      const dustOpacity = 0.15 + ((seed % 20) / 100); // 0.15-0.35
+      const colorIdx = (seed * 13 + i) % DUST_COLORS.length;
+      const dustOpacity = 0.09 + ((seed % 20) / 100) * 0.6; // reduced 40%
       dustParticles.push({
         id: `dust-${gi}-${i}`,
         worldX: p.worldX + offsetX,
@@ -496,7 +521,7 @@ export function backendMoviesToShows(
   }
 
   log(`Z0: ${z0Shows.length}, Z1: ${z1Shows.length}, Z2: ${z2Shows.length} shows, ${dustParticles.length} dust particles`);
-  return { z0: z0Shows, z1: z1Shows, z2: z2Shows, dust: dustParticles };
+  return { z0: z0Shows, z1: z1Shows, z2: z2Shows, dust: dustParticles, dustZ0: dustParticles, dustZ1: dustParticles, dustZ2: dustParticles };
 }
 
 function makeShow(
@@ -514,6 +539,244 @@ function makeShow(
     description: movie.synopsis || `Rating: ${movie.vote_average}/10`,
     match: Math.round(movie.priority),
     category: catKey,
+    relX,
+    relY,
+    worldX,
+    worldY,
+    size,
+    opacityPenalty: opacityPenalty || 0,
+    poster: movie.image_link ? movie.image_link.replace("/w92/", "/w500/") : "",
+    gradient: `linear-gradient(135deg, hsl(${(idx * 37) % 360}, 60%, 30%), hsl(${(idx * 37 + 60) % 360}, 50%, 20%))`,
+    language: movie.language || "en",
+    actors: movie.casts?.slice(0, 3) || [],
+    tags: movie.keywords?.slice(0, 3) || [],
+    watched: movie.is_watched,
+    voteCount: movie.vote_count || 0,
+  };
+}
+
+/**
+ * Convert ALL movies from /api/movies/v2 into Show[] for a single unified space.
+ * Normalizes raw x,y into the full 1600×2200 canvas. No genre regions.
+ *
+ * Dust logic (seamless pinch-zoom):
+ * - z0 dust: movies with priority >= 50 that aren't z0 tiles (crystallize into z1 tiles)
+ * - z1 dust: movies with priority >= 30 that aren't z1 tiles (crystallize into z2 tiles)
+ * - z2 dust: remaining movies with priority >= 20 that aren't z2 tiles
+ * Grid-based collision culling removes overlapping dust particles.
+ */
+export function backendMoviesToShowsV2(moviesResponse: MoviesResponse): ZoomLevelShows {
+  const WORLD_W = 1600;
+  const WORLD_H = 2200;
+  const SHOWS_Z0 = 80;
+  const SHOWS_Z1 = 200;
+  const SHOWS_Z2 = 400;
+  const ZOOM_SCALE_1 = 2.5;
+  const ZOOM_SCALE_2 = 5;
+  const PADDING = 50;
+
+  // Grid cell sizes for dust collision culling (px)
+  const DUST_GRID_Z0 = 25;
+  const DUST_GRID_Z1 = 15;
+  const DUST_GRID_Z2 = 10;
+
+  const DUST_COLORS = [
+    "#4da6e0", "#45c9a0", "#e0a033", "#e06070", "#40cc70", "#e0c040", "#60b8d0",
+  ];
+
+  const movies = moviesResponse.movies || [];
+  if (!movies.length) {
+    return { z0: [], z1: [], z2: [], dust: [], dustZ0: [], dustZ1: [], dustZ2: [] };
+  }
+
+  // Sort by priority descending
+  const sorted = [...movies].sort((a, b) => b.priority - a.priority);
+
+  // Normalize x,y to fill the canvas
+  const allXs = sorted.map((m) => m.x);
+  const allYs = sorted.map((m) => m.y);
+  const minX = Math.min(...allXs);
+  const maxX = Math.max(...allXs);
+  const minY = Math.min(...allYs);
+  const maxY = Math.max(...allYs);
+  const rangeX = maxX - minX || 1;
+  const rangeY = maxY - minY || 1;
+
+  // Compute mean and stddev for priority to normalize tile sizes
+  const priorities = sorted.map((m) => m.priority);
+  const mean = priorities.reduce((a, b) => a + b, 0) / priorities.length;
+  const variance = priorities.reduce((a, p) => a + (p - mean) ** 2, 0) / priorities.length;
+  const stddev = Math.sqrt(variance) || 1;
+
+  // Priority thresholds for dust visibility — z-score based, adaptive to data
+  // z0: only above mean (top ~50%), z1: above mean-0.75σ (~77%), z2: above mean-1.75σ (~96%)
+  const DUST_THRESHOLD_Z0 = mean;
+  const DUST_THRESHOLD_Z1 = mean - 0.75 * stddev;
+  const DUST_THRESHOLD_Z2 = mean - 1.75 * stddev;
+
+  const positioned = sorted.map((movie, i) => {
+    const relX = (movie.x - minX) / rangeX;
+    const relY = (movie.y - minY) / rangeY;
+    const worldX = PADDING + relX * (WORLD_W - 2 * PADDING);
+    const worldY = PADDING + relY * (WORLD_H - 2 * PADDING);
+    // Z-score normalization: map [-2σ, +2σ] → levels 1-20
+    const zScore = (movie.priority - mean) / stddev;
+    const normalized = (zScore + 2) / 4; // maps -2..+2 → 0..1
+    const clamped = Math.min(Math.max(normalized, 0), 1);
+    const size = Math.max(1, Math.ceil(clamped * 20)) as import("@/types").ShowSize;
+    return { movie, relX, relY, worldX, worldY, size, idx: i };
+  });
+
+  // --- Z0 tiles ---
+  const placedZ0: PlacedShow[] = [];
+  const selectedZ0: { movie: Movie; relX: number; relY: number; worldX: number; worldY: number; size: import("@/types").ShowSize; idx: number; opacityPenalty: number }[] = [];
+  const z0TileIdxs = new Set<number>();
+
+  // Fill z0 slots from all positioned by priority order
+  for (const p of positioned) {
+    if (selectedZ0.length >= SHOWS_Z0) break;
+    const result = resolveCollision(placedZ0, p.worldX, p.worldY, p.size);
+    if (result) {
+      const dims = ICON_SIZES[result.size];
+      placedZ0.push({ worldX: p.worldX, worldY: p.worldY, w: dims.w, h: dims.h });
+      selectedZ0.push({ ...p, size: result.size, opacityPenalty: result.opacityPenalty });
+      z0TileIdxs.add(p.idx);
+    }
+  }
+
+  // --- Z1 tiles ---
+  const placedZ1: PlacedShow[] = [];
+  const selectedZ1: typeof selectedZ0 = [];
+  const z1TileIdxs = new Set<number>();
+  for (const p of positioned) {
+    if (selectedZ1.length >= SHOWS_Z1) break;
+    const dims = ICON_SIZES[p.size];
+    const scaledW = dims.w / ZOOM_SCALE_1;
+    const scaledH = dims.h / ZOOM_SCALE_1;
+    let maxOverlap = 0;
+    for (const placed of placedZ1) {
+      const ratio = overlapRatio(placed, p.worldX, p.worldY, scaledW, scaledH);
+      if (ratio > maxOverlap) maxOverlap = ratio;
+    }
+    if (maxOverlap <= 0.7) {
+      const penalty = maxOverlap > 0.4 ? 0.3 : maxOverlap > 0.2 ? 0.15 : 0;
+      const sizeReduction = maxOverlap > 0.4 ? 2 : maxOverlap > 0.2 ? 1 : 0;
+      const newSize = Math.max(1, p.size - sizeReduction) as import("@/types").ShowSize;
+      placedZ1.push({ worldX: p.worldX, worldY: p.worldY, w: scaledW, h: scaledH });
+      selectedZ1.push({ ...p, size: newSize, opacityPenalty: penalty });
+      z1TileIdxs.add(p.idx);
+    }
+  }
+
+  // --- Z2 tiles ---
+  const placedZ2: PlacedShow[] = [];
+  const selectedZ2: typeof selectedZ0 = [];
+  const z2TileIdxs = new Set<number>();
+  for (const p of positioned) {
+    if (selectedZ2.length >= SHOWS_Z2) break;
+    const dims = ICON_SIZES[p.size];
+    const scaledW = dims.w / ZOOM_SCALE_2;
+    const scaledH = dims.h / ZOOM_SCALE_2;
+    let maxOverlap = 0;
+    for (const placed of placedZ2) {
+      const ratio = overlapRatio(placed, p.worldX, p.worldY, scaledW, scaledH);
+      if (ratio > maxOverlap) maxOverlap = ratio;
+    }
+    if (maxOverlap <= 0.7) {
+      const penalty = maxOverlap > 0.4 ? 0.3 : maxOverlap > 0.2 ? 0.15 : 0;
+      const sizeReduction = maxOverlap > 0.4 ? 2 : maxOverlap > 0.2 ? 1 : 0;
+      const newSize = Math.max(1, p.size - sizeReduction) as import("@/types").ShowSize;
+      placedZ2.push({ worldX: p.worldX, worldY: p.worldY, w: scaledW, h: scaledH });
+      selectedZ2.push({ ...p, size: newSize, opacityPenalty: penalty });
+      z2TileIdxs.add(p.idx);
+    }
+  }
+
+  // Build Show objects
+  const z0Shows = selectedZ0.map((p) => makeShowV2(p));
+  const z1Shows = selectedZ1.map((p) => makeShowV2(p));
+  const z2Shows = selectedZ2.map((p) => makeShowV2(p));
+
+  // --- Dust generation with grid-based collision culling ---
+  // Helper: generate dust for a zoom level, excluding tiles at that level
+  function generateDust(
+    tileIdxs: Set<number>,
+    priorityThreshold: number,
+    gridSize: number,
+    zoomScale: number,
+  ): DustParticle[] {
+    const grid = new Map<string, { priority: number; particle: DustParticle }>();
+
+    for (const p of positioned) {
+      if (tileIdxs.has(p.idx)) continue; // skip tiles
+      if (p.movie.priority < priorityThreshold) continue; // below threshold
+
+      const worldX = p.worldX;
+      const worldY = p.worldY;
+
+      // Grid cell key — at higher zoom, effective grid is finer
+      const cellX = Math.floor(worldX / (gridSize / zoomScale));
+      const cellY = Math.floor(worldY / (gridSize / zoomScale));
+      const key = `${cellX},${cellY}`;
+
+      // Keep highest priority per cell
+      if (grid.has(key) && grid.get(key)!.priority >= p.movie.priority) continue;
+
+      // 12 dust sizes based on z-score: map [-2σ, +2σ] → sizes 2-30px
+      const dustZ = (p.movie.priority - mean) / stddev;
+      const dustNorm = Math.min(Math.max((dustZ + 2) / 4, 0), 1); // 0..1
+      // 12 levels: 2, 4, 6, 8, 10, 12, 15, 18, 21, 24, 27, 30
+      const DUST_SIZE_LEVELS = [2, 3, 4, 6, 8, 10, 12, 14, 16, 18, 21, 24];
+      const dustLevel = Math.min(11, Math.floor(dustNorm * 12));
+      const dustSize = DUST_SIZE_LEVELS[dustLevel];
+
+      // Opacity scales with z-score
+      const dustOpacity = (0.12 + dustNorm * 0.65) * 0.6; // reduced 40%
+
+      // Big dust (> +1.5σ) gets a poster thumbnail
+      const poster = dustZ >= 1.5 && p.movie.image_link
+        ? p.movie.image_link.replace("/w92/", "/w200/")
+        : undefined;
+
+      grid.set(key, {
+        priority: p.movie.priority,
+        particle: {
+          id: `dust-${p.idx}`,
+          worldX,
+          worldY,
+          size: dustSize,
+          color: DUST_COLORS[(p.idx * 13 + 3) % DUST_COLORS.length],
+          opacity: dustOpacity,
+          poster,
+        },
+      });
+    }
+
+    return Array.from(grid.values()).map((v) => v.particle);
+  }
+
+  const dustZ0 = generateDust(z0TileIdxs, DUST_THRESHOLD_Z0, DUST_GRID_Z0, 1);
+  const dustZ1 = generateDust(z1TileIdxs, DUST_THRESHOLD_Z1, DUST_GRID_Z1, ZOOM_SCALE_1);
+  const dustZ2 = generateDust(z2TileIdxs, DUST_THRESHOLD_Z2, DUST_GRID_Z2, ZOOM_SCALE_2);
+
+  log(`V2 — Z0: ${z0Shows.length} tiles + ${dustZ0.length} dust, Z1: ${z1Shows.length} tiles + ${dustZ1.length} dust, Z2: ${z2Shows.length} tiles + ${dustZ2.length} dust`);
+  return { z0: z0Shows, z1: z1Shows, z2: z2Shows, dust: dustZ0, dustZ0, dustZ1, dustZ2 };
+}
+
+function makeShowV2(
+  p: { movie: Movie; relX: number; relY: number; worldX: number; worldY: number; size: import("@/types").ShowSize; idx: number; opacityPenalty?: number },
+): import("@/types").Show {
+  const { movie, relX, relY, worldX, worldY, size, idx, opacityPenalty } = p;
+  const genre = movie.genres?.[0] || "unknown";
+  return {
+    id: `movie-${idx}`,
+    title: movie.movie_name,
+    year: 2020,
+    runtime: "2h",
+    genres: genre,
+    description: movie.synopsis || `Rating: ${movie.vote_average}/10`,
+    match: Math.round(movie.priority),
+    category: genre.toLowerCase(),
     relX,
     relY,
     worldX,
