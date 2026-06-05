@@ -1,0 +1,105 @@
+package content
+
+import (
+	"encoding/json"
+	"net/http"
+	"strconv"
+	"strings"
+)
+
+// SearchHandler handles GET /content/search?genres=action,drama&tags=revenge,survival&n=10&max_per_cluster=20
+func SearchHandler(w http.ResponseWriter, r *http.Request) {
+	q := r.URL.Query()
+
+	var genres []string
+	if g := strings.TrimSpace(q.Get("genres")); g != "" {
+		genres = strings.Split(g, ",")
+	}
+
+	var tags []string
+	if t := strings.TrimSpace(q.Get("tags")); t != "" {
+		tags = strings.Split(t, ",")
+	}
+
+	if len(genres) == 0 && len(tags) == 0 {
+		http.Error(w, "genres or tags required", http.StatusBadRequest)
+		return
+	}
+
+	n := 15
+	if nStr := q.Get("n"); nStr != "" {
+		if v, err := strconv.Atoi(nStr); err == nil && v > 0 {
+			n = v
+		}
+	}
+
+	maxPerCluster := 20
+	if mStr := q.Get("max_per_cluster"); mStr != "" {
+		if v, err := strconv.Atoi(mStr); err == nil && v > 0 {
+			maxPerCluster = v
+		}
+	}
+
+	results := Query(genres, tags, n, maxPerCluster)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(results)
+}
+
+// ClustersHandler handles GET /content/clusters - returns all clusters with names and centroids.
+func ClustersHandler(w http.ResponseWriter, r *http.Request) {
+	clusters := GetAllClusters()
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(clusters)
+}
+
+// DirectionHandler handles GET /content/direction?x=50&y=30&dir=up&radius=60&n=8
+//
+// Returns the top tags and sample movies found in the given direction from (x, y).
+// dir can be: up, down, left, right, up-left, up-right, down-left, down-right, or an angle in degrees.
+func DirectionHandler(w http.ResponseWriter, r *http.Request) {
+	q := r.URL.Query()
+
+	xStr := q.Get("x")
+	yStr := q.Get("y")
+	dir := q.Get("dir")
+
+	if xStr == "" || yStr == "" || dir == "" {
+		http.Error(w, "x, y, and dir are required", http.StatusBadRequest)
+		return
+	}
+
+	x, err := strconv.ParseFloat(xStr, 64)
+	if err != nil {
+		http.Error(w, "invalid x", http.StatusBadRequest)
+		return
+	}
+	y, err := strconv.ParseFloat(yStr, 64)
+	if err != nil {
+		http.Error(w, "invalid y", http.StatusBadRequest)
+		return
+	}
+
+	radius := 0.0
+	if rStr := q.Get("radius"); rStr != "" {
+		if v, err := strconv.ParseFloat(rStr, 64); err == nil && v > 0 {
+			radius = v
+		}
+	}
+
+	n := 0
+	if nStr := q.Get("n"); nStr != "" {
+		if v, err := strconv.Atoi(nStr); err == nil && v > 0 {
+			n = v
+		}
+	}
+
+	result := QueryDirection(x, y, dir, radius, n)
+	if result == nil {
+		http.Error(w, "invalid direction", http.StatusBadRequest)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(result)
+}
