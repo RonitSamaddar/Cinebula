@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinebula — Presentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="components/speech-bubble.css">
+    <link rel="stylesheet" href="components/human.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #07070c;
+            --ink: #f4ebd9;
+            --ink-dim: rgba(244, 235, 217, 0.5);
+            --ink-faint: rgba(244, 235, 217, 0.15);
+            --accent-violet: #a78bfa;
+            --accent-blue: #60a5fa;
+            --accent-amber: #fbbf24;
+            --accent-teal: #2dd4bf;
+            --accent-red: #f87171;
+            --glass: rgba(244, 235, 217, 0.04);
+            --glass-border: rgba(244, 235, 217, 0.08);
+            --scale: min(1vw, 1.8vh);
+        }
+
+        html {
+            font-size: var(--scale);
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Instrument Serif', serif;
+        }
+
+        /* Film grain overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        /* Presentation container */
+        .presentation {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        /* Individual slides */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 6vh 4vw;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .slide.exit-up {
+            opacity: 0;
+            transform: translateY(-40px);
+        }
+
+        /* Typography */
+        .eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            margin-bottom: 2rem;
+        }
+
+        .headline {
+            font-family: 'Instrument Serif', serif;
+            font-size: 4.5rem;
+            line-height: 1.15;
+            text-align: center;
+            max-width: 80rem;
+            margin-bottom: 2rem;
+        }
+
+        .headline em {
+            font-style: italic;
+            color: var(--accent-violet);
+        }
+
+        .subtext {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 300;
+            line-height: 1.7;
+            text-align: center;
+            max-width: 60rem;
+            color: var(--ink-dim);
+        }
+
+        .subtext em {
+            font-style: italic;
+            color: rgba(167, 139, 250, 0.55);
+        }
+
+        /* Staggered entrance for child elements */
+        .slide.active .eyebrow {
+            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+        }
+        .slide.active .headline {
+            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+        }
+        .slide.active .subtext {
+            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+        }
+        .slide.active .visual {
+            animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+        }
+        .slide.active .stat-grid {
+            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both;
+        }
+
+        /* Slide 2: Paradox layout */
+        .slide-paradox {
+            padding: 0 !important;
+        }
+
+        .paradox-grid {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-rows: 20% 30% 30% 20%;
+        }
+
+        .paradox-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .paradox-title-section .headline {
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+        .paradox-body-section {
+            padding: 0 8rem;
+        }
+
+        .paradox-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3rem;
+            font-weight: 400;
+            line-height: 1.8;
+            text-align: center;
+            color: rgba(244, 235, 217, 0.55);
+            max-width: 60rem;
+        }
+
+        .paradox-text em {
+            font-style: italic;
+            color: rgba(167, 139, 250, 0.55);
+            font-weight: 500;
+        }
+
+        .slide-paradox.active .headline {
+            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+        }
+
+        .slide-paradox.active .paradox-text {
+            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Ambient glow behind slides */
+        .glow {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            transition: all 1.2s ease;
+            pointer-events: none;
+        }
+
+        .glow-1 {
+            top: -150px;
+            right: -100px;
+            background: var(--accent-violet);
+        }
+
+        .glow-2 {
+            bottom: -200px;
+            left: -100px;
+            background: var(--accent-teal);
+        }
+
+        /* Visual elements */
+        .visual {
+            margin-top: 4vh;
+            position: relative;
+        }
+
+        /* Phone mockup */
+        .phone-mockup {
+            width: 220px;
+            height: 440px;
+            border: 2px solid var(--ink-faint);
+            border-radius: 36px;
+            position: relative;
+            overflow: hidden;
+            background: rgba(7, 7, 12, 0.8);
+            box-shadow: 0 0 60px rgba(167, 139, 250, 0.1), inset 0 0 30px rgba(167, 139, 250, 0.03);
+        }
+
+        .phone-notch {
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 24px;
+            background: var(--bg);
+            border-radius: 12px;
+        }
+
+        .phone-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px 20px;
+        }
+
+        /* Galaxy dots animation */
+        .galaxy-container {
+            width: 180px;
+            height: 180px;
+            position: relative;
+        }
+
+        .galaxy-dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            33% { transform: translate(3px, -5px); }
+            66% { transform: translate(-3px, 3px); }
+        }
+
+        /* TV mockup */
+        .tv-mockup {
+            width: 360px;
+            height: 220px;
+            border: 2px solid var(--ink-faint);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            background: rgba(7, 7, 12, 0.9);
+            box-shadow: 0 0 60px rgba(96, 165, 250, 0.08);
+        }
+
+        .tv-stand {
+            width: 120px;
+            height: 12px;
+            background: var(--ink-faint);
+            border-radius: 0 0 6px 6px;
+            margin: 0 auto;
+        }
+
+        .tv-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--ink-dim);
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Combo visual: phone + TV */
+        .dual-device {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+        }
+
+        .arrow-connector {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .arrow-connector .line {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-violet), var(--accent-blue));
+            position: relative;
+            animation: pulse-line 2s ease-in-out infinite;
+        }
+
+        .arrow-connector .line::after {
+            content: '→';
+            position: absolute;
+            right: -12px;
+            top: -10px;
+            color: var(--accent-blue);
+            font-size: 1.2rem;
+        }
+
+        @keyframes pulse-line {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        .arrow-connector span {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--ink-dim);
+            letter-spacing: 0.1em;
+        }
+
+        /* Stat grid for ROI */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+            max-width: 75rem;
+            width: 100%;
+        }
+
+        .stat-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.2rem;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(244, 235, 217, 0.15);
+        }
+
+        .stat-value {
+            font-family: 'Instrument Serif', serif;
+            font-size: 2.5rem;
+            color: var(--accent-violet);
+            margin-bottom: 0.4rem;
+        }
+
+        .stat-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--ink-dim);
+            letter-spacing: 0.05em;
+            line-height: 1.4;
+        }
+
+        /* Data signals list */
+        .signal-list {
+            list-style: none;
+            margin-top: 2rem;
+            max-width: 55rem;
+        }
+
+        .signal-list li {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: var(--ink-dim);
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            opacity: 0;
+            animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .slide.active .signal-list li:nth-child(1) { animation-delay: 0.5s; }
+        .slide.active .signal-list li:nth-child(2) { animation-delay: 0.6s; }
+        .slide.active .signal-list li:nth-child(3) { animation-delay: 0.7s; }
+        .slide.active .signal-list li:nth-child(4) { animation-delay: 0.8s; }
+        .slide.active .signal-list li:nth-child(5) { animation-delay: 0.9s; }
+        .slide.active .signal-list li:nth-child(6) { animation-delay: 1.0s; }
+
+        .signal-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* Future directions */
+        .direction-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+            max-width: 75rem;
+            width: 100%;
+        }
+
+        .direction-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.2rem;
+            padding: 2rem 1.5rem;
+            text-align: left;
+            backdrop-filter: blur(10px);
+        }
+
+        .direction-card h3 {
+            font-family: 'Instrument Serif', serif;
+            font-size: 1.4rem;
+            margin-bottom: 0.6rem;
+            color: var(--ink);
+        }
+
+        .direction-card p {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--ink-dim);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 100;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 3rem;
+            padding: 0.8rem 1.8rem;
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-dot {
+            width: 0.7rem;
+            height: 0.7rem;
+            border-radius: 50%;
+            background: var(--ink-faint);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: var(--accent-violet);
+            box-shadow: 0 0 10px rgba(167, 139, 250, 0.4);
+            transform: scale(1.3);
+        }
+
+        .nav-hint {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--ink-dim);
+            margin-left: 1rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* Slide counter */
+        .slide-counter {
+            position: fixed;
+            top: 2rem;
+            right: 3rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: var(--ink-dim);
+            z-index: 100;
+        }
+
+        /* Logo */
+        .logo {
+            position: fixed;
+            top: 2rem;
+            left: 3rem;
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-size: 1.5rem;
+            color: var(--ink);
+            z-index: 100;
+            letter-spacing: 0.02em;
+        }
+
+        /* Demo slide special */
+        .demo-cta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: var(--accent-violet);
+            padding: 1.2rem 3rem;
+            border: 1px solid var(--accent-violet);
+            border-radius: 3rem;
+            margin-top: 2rem;
+            letter-spacing: 0.05em;
+            animation: pulse-border 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-border {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(167, 139, 250, 0.3); }
+            50% { box-shadow: 0 0 20px 4px rgba(167, 139, 250, 0.15); }
+        }
+
+        /* Scrolling ticker for TV content */
+        .tv-ticker {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .tv-ticker-inner {
+            display: flex;
+            gap: 20px;
+            animation: scroll-ticker 12s linear infinite;
+            white-space: nowrap;
+        }
+
+        .tv-ticker-item {
+            width: 60px;
+            height: 36px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        @keyframes scroll-ticker {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        /* Tonight card on TV */
+        .tonight-card {
+            background: linear-gradient(135deg, rgba(167, 139, 250, 0.15), rgba(96, 165, 250, 0.1));
+            border: 1px solid rgba(167, 139, 250, 0.2);
+            border-radius: 12px;
+            padding: 16px 20px;
+            text-align: left;
+            width: 80%;
+        }
+
+        .tonight-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.5rem;
+            color: var(--accent-violet);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .tonight-title {
+            font-family: 'Instrument Serif', serif;
+            font-size: 1rem;
+            color: var(--ink);
+        }
+
+        .tonight-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.5rem;
+            color: var(--ink-dim);
+            margin-top: 4px;
+        }
+
+        /* SLIDE 1 — Animated Story */
+        .story-scene {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Phase 1: User character */
+        .user-character {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .slide.active .user-character {
+            animation: scene1-appear 1.2s ease 0.5s forwards, scene1-fade-out 1s ease 10s forwards;
+        }
+
+        /* Speech bubble positioning for Phase 1 — anchored at top-right of head */
+        .user-character .bubble {
+            top: -1.5rem;
+            left: 7.5rem;
+        }
+
+        .slide.active .user-character .bubble-hello {
+            animation: bubbleIn 0.8s ease 2s forwards, bubbleOut 0.6s ease 4.5s forwards;
+        }
+
+        .slide.active .user-character .bubble-thought {
+            animation: bubbleIn 0.8s ease 5.5s forwards;
+        }
+
+        /* Phase 2: Living room — TV+sofa in top 70%, title in bottom 30% */
+        .living-room {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+        }
+
+        .slide.active .living-room {
+            animation: scene2-appear 1.5s ease 11s forwards;
+        }
+
+        .living-room-scene {
+            position: relative;
+            width: 100%;
+            height: 60%;
+        }
+
+        /* Sofa — facing AWAY, close to TV */
+        .sofa {
+            position: absolute;
+            bottom: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .sofa-back {
+            width: 20rem;
+            height: 7.5rem;
+            background: linear-gradient(180deg, rgba(167, 139, 250, 0.18), rgba(167, 139, 250, 0.06));
+            border: 1px solid var(--glass-border);
+            border-radius: 2rem 2rem 0.3rem 0.3rem;
+            position: relative;
+        }
+
+        .sofa-back::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 1px;
+            height: 4rem;
+            background: var(--glass-border);
+            box-shadow: -5rem 0 0 var(--glass-border), 5rem 0 0 var(--glass-border);
+        }
+
+        .sofa-seat {
+            width: 22rem;
+            height: 2.5rem;
+            background: rgba(167, 139, 250, 0.1);
+            border: 1px solid var(--glass-border);
+            border-top: none;
+            border-radius: 0 0 0.6rem 0.6rem;
+            margin: 0 auto;
+        }
+
+        .sofa-arm-left, .sofa-arm-right {
+            position: absolute;
+            top: 0.8rem;
+            width: 1.6rem;
+            height: 6.5rem;
+            background: rgba(167, 139, 250, 0.12);
+            border: 1px solid var(--glass-border);
+        }
+
+        .sofa-arm-left {
+            left: -1.6rem;
+            border-radius: 1rem 0 0 1rem;
+            border-right: none;
+        }
+
+        .sofa-arm-right {
+            right: -1.6rem;
+            border-radius: 0 1rem 1rem 0;
+            border-left: none;
+        }
+
+        .sofa-user {
+            position: absolute;
+            top: -4.2rem;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Frustration bubble — anchored at top-right of seated user's head */
+        .sofa-user .bubble-frustration {
+            top: -2.5rem;
+            left: 5.5rem;
+        }
+
+        .slide.active .sofa-user .bubble-frustration {
+            animation: bubbleIn 0.8s ease 21.5s forwards;
+        }
+
+        /* TV in living room scene — positioned higher with more gap */
+        .scene-tv {
+            position: absolute;
+            top: 8%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30rem;
+            height: 18rem;
+            border: 2px solid var(--ink-faint);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            background: rgba(7, 7, 12, 0.95);
+            box-shadow: 0 0 5rem rgba(96, 165, 250, 0.1);
+        }
+
+        .scene-tv-stand {
+            position: absolute;
+            top: calc(8% + 18rem);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 7rem;
+            height: 0.8rem;
+            background: var(--ink-faint);
+            border-radius: 0 0 0.3rem 0.3rem;
+        }
+
+        /* OTT scrolling grid inside TV */
+        .ott-tile {
+            flex: 1;
+            min-width: 4rem;
+            height: 3.6rem;
+            border-radius: 0.3rem;
+            flex-shrink: 0;
+            opacity: 0.7;
+        }
+
+        .ott-tiles-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            animation: ott-scroll-vertical 5s linear infinite;
+            padding: 2.2rem 0.5rem 0.5rem;
+            width: 100%;
+        }
+
+        .ott-tiles-row {
+            display: flex;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        @keyframes ott-scroll-vertical {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-8rem); }
+        }
+
+        .scene-tv-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2rem;
+            background: rgba(7, 7, 12, 0.9);
+            display: flex;
+            align-items: center;
+            padding: 0 0.8rem;
+            gap: 0.5rem;
+            z-index: 2;
+        }
+
+        .scene-tv-header-dot {
+            width: 0.4rem;
+            height: 0.4rem;
+            border-radius: 50%;
+            background: var(--accent-red);
+        }
+
+        .scene-tv-header-dot:nth-child(2) { background: var(--accent-amber); }
+        .scene-tv-header-dot:nth-child(3) { background: var(--accent-teal); }
+
+        /* Clock — positioned top-right with more spacing from TV */
+        .wall-clock {
+            position: absolute;
+            top: 6%;
+            right: 12%;
+            width: min(80px, 10vw);
+            height: min(80px, 10vw);
+            border: 2px solid var(--ink-faint);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Clock hour markers */
+        .wall-clock::before {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--ink-dim);
+            box-shadow:
+                0 -32px 0 var(--ink-dim),
+                0 32px 0 var(--ink-dim),
+                32px 0 0 var(--ink-dim),
+                -32px 0 0 var(--ink-dim);
+        }
+
+        .clock-center {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--ink);
+            position: absolute;
+            z-index: 3;
+        }
+
+        .clock-hand-min {
+            position: absolute;
+            bottom: 50%;
+            left: calc(50% - 1px);
+            width: 2px;
+            height: 28px;
+            background: var(--ink);
+            transform-origin: bottom center;
+            transform: rotate(0deg);
+            border-radius: 1px;
+            z-index: 2;
+        }
+
+        /* Minute hand: rotates 180deg (30 min) over 8 seconds, then stops */
+        .slide.active .clock-hand-min {
+            animation: clock-spin-30min 8s linear 11.5s forwards;
+        }
+
+        .clock-hand-hour {
+            position: absolute;
+            bottom: 50%;
+            left: calc(50% - 1.25px);
+            width: 2.5px;
+            height: 18px;
+            background: var(--accent-red);
+            transform-origin: bottom center;
+            transform: rotate(240deg);
+            border-radius: 1px;
+            z-index: 1;
+        }
+
+        .clock-label {
+            position: absolute;
+            top: calc(100% + 0.4rem);
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--accent-red);
+            white-space: nowrap;
+            opacity: 0;
+            letter-spacing: 0.02em;
+            text-align: center;
+        }
+
+        .slide.active .clock-label {
+            animation: clockLabelIn 0.8s ease 20s forwards;
+        }
+
+        @keyframes clockLabelIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(0.5rem); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* 30 min = 180 degrees rotation */
+        @keyframes clock-spin-30min {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(180deg); }
+        }
+
+        /* Title in bottom 40% region */
+        .story-title {
+            height: 40%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+        }
+
+        .slide.active .story-title {
+            animation: bubbleIn 1s ease 23.5s forwards;
+        }
+
+        .story-title h1 {
+            font-family: 'Instrument Serif', serif;
+            font-size: 4.5rem;
+            line-height: 1.25;
+            text-align: center;
+        }
+
+        .story-title h1 em {
+            font-style: italic;
+            color: var(--accent-violet);
+            display: block;
+        }
+
+        @keyframes scene1-appear {
+            from { opacity: 0; transform: scale(0.7) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes scene1-fade-out {
+            to { opacity: 0; transform: scale(0.6) translateY(30px); }
+        }
+
+        @keyframes scene2-appear {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* === SLIDE 3: 24-Hour Story === */
+        .slide-24h {
+            padding: 0 !important;
+        }
+
+        .scene-24h {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .scene-24h-room {
+            position: relative;
+            width: 100%;
+            height: 60%;
+            opacity: 0;
+        }
+
+        .slide-24h.active .scene-24h-room {
+            animation: scene2-appear 1.5s ease 0.5s forwards;
+        }
+
+        /* 24h clock: spins 720° (2 full rotations = 24 hours) over 12s */
+        .slide-24h.active .clock-24h-min {
+            animation: clock-spin-24h 12s linear 1.5s both;
+        }
+
+        .slide-24h.active .clock-24h-hour {
+            animation: clock-hour-spin-24h 12s linear 1.5s both;
+        }
+
+        @keyframes clock-spin-24h {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(8640deg); }
+        }
+
+        @keyframes clock-hour-spin-24h {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(720deg); }
+        }
+
+        .slide-24h.active .clock-24h-label {
+            animation: clockLabelIn 0.8s ease 14s forwards;
+        }
+
+        /* TV is off (dimmed) for most of the day, lights up at 6-8 PM window */
+        .tv-24h {
+            opacity: 0.2;
+        }
+
+        .slide-24h.active .tv-24h {
+            animation: tv-day-cycle 12s linear 1.5s forwards;
+        }
+
+        @keyframes tv-day-cycle {
+            0% { opacity: 0.2; }
+            67% { opacity: 0.2; }
+            70% { opacity: 1; }
+            87% { opacity: 1; }
+            90% { opacity: 0.2; }
+            100% { opacity: 0.2; }
+        }
+
+        /* Sofa user appears only during 6-8 PM window */
+        .sofa-24h-user {
+            opacity: 0;
+        }
+
+        .slide-24h.active .sofa-24h-user {
+            animation: user-day-cycle 12s linear 1.5s forwards;
+        }
+
+        @keyframes user-day-cycle {
+            0% { opacity: 0; }
+            67% { opacity: 0; }
+            70% { opacity: 1; }
+            87% { opacity: 1; }
+            90% { opacity: 0; }
+            100% { opacity: 0; }
+        }
+
+        /* Title in bottom 40% */
+        .story-24h-title {
+            opacity: 0;
+        }
+
+        .slide-24h.active .story-24h-title {
+            animation: bubbleIn 1s ease 15.5s forwards;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stat-grid, .direction-grid {
+                grid-template-columns: 1fr;
+                max-width: 320px;
+            }
+            .dual-device {
+                flex-direction: column;
+                gap: 30px;
+            }
+            .arrow-connector .line {
+                width: 2px;
+                height: 40px;
+                background: linear-gradient(180deg, var(--accent-violet), var(--accent-blue));
+            }
+            .arrow-connector .line::after {
+                content: '↓';
+                right: -8px;
+                top: auto;
+                bottom: -14px;
+            }
+            .tv-mockup {
+                width: 280px;
+                height: 170px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">Cinebula</div>
+    <div class="slide-counter"><span id="current-slide">01</span> / <span id="total-slides">07</span></div>
+
+    <!-- Ambient glows -->
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+
+    <div class="presentation">
+
+        <!-- SLIDE 1: WHY (Animated Story) -->
+        <div class="slide active" data-slide="1">
+            <div class="story-scene">
+                <!-- Phase 1: User appears -->
+                <div class="user-character">
+                    <div class="human human--standing">
+                        <div class="human__head"></div>
+                        <div class="human__neck"></div>
+                        <div class="human__body"></div>
+                    </div>
+                    <div class="bubble bubble-hello" data-direction="right">Hi, I'm Ron 👋</div>
+                    <div class="bubble bubble-thought" data-direction="right">I want to watch something good tonight...</div>
+                </div>
+
+                <!-- Phase 2: Living room scene -->
+                <div class="living-room">
+                    <div class="living-room-scene">
+                        <!-- Clock -->
+                        <div class="wall-clock">
+                            <div class="clock-center"></div>
+                            <div class="clock-hand-hour"></div>
+                            <div class="clock-hand-min"></div>
+                            <span class="clock-label">30 minutes later...</span>
+                        </div>
+
+                        <!-- TV -->
+                        <div class="scene-tv">
+                            <div class="scene-tv-header">
+                                <div class="scene-tv-header-dot"></div>
+                                <div class="scene-tv-header-dot"></div>
+                                <div class="scene-tv-header-dot"></div>
+                            </div>
+                            <div class="ott-tiles-wrapper">
+                                <div class="ott-tiles-row">
+                                    <div class="ott-tile" style="background: rgba(167,139,250,0.3)"></div>
+                                    <div class="ott-tile" style="background: rgba(96,165,250,0.3)"></div>
+                                    <div class="ott-tile" style="background: rgba(251,191,36,0.2)"></div>
+                                    <div class="ott-tile" style="background: rgba(45,212,191,0.2)"></div>
+                                </div>
+                                <div class="ott-tiles-row">
+                                    <div class="ott-tile" style="background: rgba(248,113,113,0.25)"></div>
+                                    <div class="ott-tile" style="background: rgba(167,139,250,0.2)"></div>
+                                    <div class="ott-tile" style="background: rgba(45,212,191,0.3)"></div>
+                                    <div class="ott-tile" style="background: rgba(96,165,250,0.2)"></div>
+                                </div>
+                                <div class="ott-tiles-row">
+                                    <div class="ott-tile" style="background: rgba(251,191,36,0.25)"></div>
+                                    <div class="ott-tile" style="background: rgba(248,113,113,0.2)"></div>
+                                    <div class="ott-tile" style="background: rgba(167,139,250,0.25)"></div>
+                                    <div class="ott-tile" style="background: rgba(96,165,250,0.25)"></div>
+                                </div>
+                                <div class="ott-tiles-row">
+                                    <div class="ott-tile" style="background: rgba(45,212,191,0.25)"></div>
+                                    <div class="ott-tile" style="background: rgba(251,191,36,0.3)"></div>
+                                    <div class="ott-tile" style="background: rgba(248,113,113,0.3)"></div>
+                                    <div class="ott-tile" style="background: rgba(167,139,250,0.2)"></div>
+                                </div>
+                                <div class="ott-tiles-row">
+                                    <div class="ott-tile" style="background: rgba(96,165,250,0.3)"></div>
+                                    <div class="ott-tile" style="background: rgba(167,139,250,0.3)"></div>
+                                    <div class="ott-tile" style="background: rgba(45,212,191,0.2)"></div>
+                                    <div class="ott-tile" style="background: rgba(251,191,36,0.2)"></div>
+                                </div>
+                                <div class="ott-tiles-row">
+                                    <div class="ott-tile" style="background: rgba(167,139,250,0.2)"></div>
+                                    <div class="ott-tile" style="background: rgba(248,113,113,0.25)"></div>
+                                    <div class="ott-tile" style="background: rgba(96,165,250,0.3)"></div>
+                                    <div class="ott-tile" style="background: rgba(45,212,191,0.25)"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="scene-tv-stand"></div>
+
+                        <!-- Sofa (facing away from viewer, toward TV) -->
+                        <div class="sofa">
+                            <div class="sofa-user">
+                                <div class="human human--seated">
+                                    <div class="human__head"></div>
+                                    <div class="human__shoulders"></div>
+                                </div>
+                                <div class="bubble bubble-frustration" data-direction="right">There's nothing to watch... 😩</div>
+                            </div>
+                            <div class="sofa-back">
+                                <div class="sofa-arm-left"></div>
+                                <div class="sofa-arm-right"></div>
+                            </div>
+                            <div class="sofa-seat"></div>
+                        </div>
+                    </div>
+
+                    <!-- Title in bottom 30% -->
+                    <div class="story-title">
+                        <h1>Recommendations have<em>stopped recommending.</em></h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: THE PARADOX -->
+        <div class="slide slide-paradox" data-slide="2">
+            <div class="paradox-grid">
+                <div class="paradox-section"></div>
+                <div class="paradox-section paradox-title-section">
+                    <h1 class="headline">Recommendations have<br><em>stopped recommending.</em></h1>
+                </div>
+                <div class="paradox-section paradox-body-section">
+                    <p class="paradox-text">Every streaming service has a sophisticated recommendation algorithm. And yet many this week, have spent thirty minutes scrolling Netflix at 8 PM and settled for something we've already seen because there is <em>nothing to watch.</em> The algorithms got better. The experience got worse.</p>
+                </div>
+                <div class="paradox-section"></div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: 24-HOUR STORY -->
+        <div class="slide slide-24h" data-slide="3">
+            <div class="scene-24h">
+                <div class="scene-24h-room">
+                    <!-- Clock -->
+                    <div class="wall-clock clock-24h">
+                        <div class="clock-center"></div>
+                        <div class="clock-hand-hour clock-24h-hour"></div>
+                        <div class="clock-hand-min clock-24h-min"></div>
+                        <span class="clock-label clock-24h-label">24 hours of your day</span>
+                    </div>
+
+                    <!-- TV (off most of the day, on at 6-8 PM) -->
+                    <div class="scene-tv tv-24h">
+                        <div class="scene-tv-header">
+                            <div class="scene-tv-header-dot"></div>
+                            <div class="scene-tv-header-dot"></div>
+                            <div class="scene-tv-header-dot"></div>
+                        </div>
+                        <div class="ott-tiles-wrapper">
+                            <div class="ott-tiles-row">
+                                <div class="ott-tile" style="background: rgba(167,139,250,0.3)"></div>
+                                <div class="ott-tile" style="background: rgba(96,165,250,0.3)"></div>
+                                <div class="ott-tile" style="background: rgba(251,191,36,0.2)"></div>
+                                <div class="ott-tile" style="background: rgba(45,212,191,0.2)"></div>
+                            </div>
+                            <div class="ott-tiles-row">
+                                <div class="ott-tile" style="background: rgba(248,113,113,0.25)"></div>
+                                <div class="ott-tile" style="background: rgba(167,139,250,0.2)"></div>
+                                <div class="ott-tile" style="background: rgba(96,165,250,0.2)"></div>
+                                <div class="ott-tile" style="background: rgba(251,191,36,0.2)"></div>
+                            </div>
+                            <div class="ott-tiles-row">
+                                <div class="ott-tile" style="background: rgba(167,139,250,0.2)"></div>
+                                <div class="ott-tile" style="background: rgba(248,113,113,0.25)"></div>
+                                <div class="ott-tile" style="background: rgba(96,165,250,0.3)"></div>
+                                <div class="ott-tile" style="background: rgba(45,212,191,0.25)"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="scene-tv-stand"></div>
+
+                    <!-- Sofa with user (appears only during 6-8 PM window) -->
+                    <div class="sofa sofa-24h">
+                        <div class="sofa-user sofa-24h-user">
+                            <div class="human human--seated">
+                                <div class="human__head"></div>
+                                <div class="human__shoulders"></div>
+                            </div>
+                        </div>
+                        <div class="sofa-back">
+                            <div class="sofa-arm-left"></div>
+                            <div class="sofa-arm-right"></div>
+                        </div>
+                        <div class="sofa-seat"></div>
+                    </div>
+                </div>
+
+                <!-- Title in bottom 40% -->
+                <div class="story-title story-24h-title">
+                    <h1>We were solving the right problem<br><em>on the wrong surface.</em></h1>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: WHY PHONE -->
+        <div class="slide slide-paradox" data-slide="4">
+            <div class="paradox-grid">
+                <div class="paradox-section"></div>
+                <div class="paradox-section paradox-title-section">
+                    <h1 class="headline">We were solving the right problem<br>on the <em>wrong surface.</em></h1>
+                </div>
+                <div class="paradox-section paradox-body-section">
+                    <p class="paradox-text">The TV is a constrained surface for this job. Users sit in front of it for a few hours — tired, unwilling to spend 20 minutes on research.<br><br>We're asking them to do their highest-effort task — picking from thousands of options — on the lowest-bandwidth interaction surface in their home.<br><br>The TV is for watching, <em>not choosing.</em></p>
+                </div>
+                <div class="paradox-section"></div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: THE PRODUCT -->
+        <div class="slide" data-slide="5">
+            <div class="eyebrow">The Solution</div>
+            <h1 class="headline">The phone decides. <em>The TV plays.</em></h1>
+            <p class="subtext">
+                We use the time the user actually has — the commute, the coffee break, ten minutes before bed. Hours of cognitive bandwidth no TV product is using today.<br><br>
+                Cinebula is a phone-native experience that turns choosing what to watch into something pleasant. The user does the choosing during their downtime, on their phone. By the time they sit down on the couch, the decision is already made.
+            </p>
+        </div>
+
+        <!-- SLIDE 6: DEMO -->
+        <div class="slide" data-slide="6">
+            <div class="eyebrow">Live Demo</div>
+            <h1 class="headline"><em>Experience</em> Cinebula</h1>
+            <div class="demo-cta">▶ &nbsp; SHOW THE DEMO</div>
+        </div>
+
+        <!-- SLIDE 7: DATA VALUE -->
+        <div class="slide" data-slide="7">
+            <div class="eyebrow">The Data Play</div>
+            <h1 class="headline">Discovery wins the first click. <em>Data wins the long game.</em></h1>
+            <p class="subtext">
+                Today, ACR tells us what users watched. Powerful — nobody else has it.<br>But it's one signal.
+            </p>
+            <ul class="signal-list">
+                <li><span class="signal-dot" style="background: var(--accent-violet)"></span>What users almost watched</li>
+                <li><span class="signal-dot" style="background: var(--accent-blue)"></span>Which genres they explored vs. avoided</li>
+                <li><span class="signal-dot" style="background: var(--accent-teal)"></span>What they queued and then skipped</li>
+                <li><span class="signal-dot" style="background: var(--accent-amber)"></span>Mood at Sunday 3 PM vs. Tuesday 8 PM</li>
+                <li><span class="signal-dot" style="background: var(--accent-red)"></span>Entirely new categories of first-party data</li>
+                <li><span class="signal-dot" style="background: var(--ink-dim)"></span>Premium targeting — defensible — on an asset LG already owns</li>
+            </ul>
+        </div>
+
+        <!-- SLIDE 8: ROI -->
+        <div class="slide" data-slide="8">
+            <div class="eyebrow">Return on Investment</div>
+            <h1 class="headline">The discovery experience is the front door. <em>The data behind it is the moat.</em></h1>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-value">+3.2×</div>
+                    <div class="stat-label">Home screen<br>dwell time</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">6</div>
+                    <div class="stat-label">New first-party<br>data axes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">+40%</div>
+                    <div class="stat-label">Premium CPM<br>uplift potential</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">200M</div>
+                    <div class="stat-label">LG TVs with<br>ACR globally</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">Competitors with<br>cross-app data</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">OS</div>
+                    <div class="stat-label">Layer advantage<br>not app layer</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: FUTURE -->
+        <div class="slide" data-slide="9">
+            <div class="eyebrow">What's Next</div>
+            <h1 class="headline">This is the first 90 seconds of <em>something bigger.</em></h1>
+            <div class="direction-grid">
+                <div class="direction-card">
+                    <h3 style="color: var(--accent-violet)">Deeper Personalization</h3>
+                    <p>The galaxy learns from every interaction. Mood regions evolve with the user. The map becomes uniquely theirs.</p>
+                </div>
+                <div class="direction-card">
+                    <h3 style="color: var(--accent-blue)">webOS Integration</h3>
+                    <p>Not a mock — a real TV-native experience. The home screen becomes a destination, not a launcher.</p>
+                </div>
+                <div class="direction-card">
+                    <h3 style="color: var(--accent-teal)">Targeting Layer</h3>
+                    <p>Turn entirely new behavioral data into ad value. The product is the front door. The strategy is everything behind it.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-dot active" data-target="1"></div>
+        <div class="nav-dot" data-target="2"></div>
+        <div class="nav-dot" data-target="3"></div>
+        <div class="nav-dot" data-target="4"></div>
+        <div class="nav-dot" data-target="5"></div>
+        <div class="nav-dot" data-target="6"></div>
+        <div class="nav-dot" data-target="7"></div>
+        <div class="nav-dot" data-target="8"></div>
+        <div class="nav-dot" data-target="9"></div>
+        <span class="nav-hint">↑↓ or ← → to navigate</span>
+    </nav>
+
+    <script>
+        // Galaxy visual generation
+        function createGalaxy() {
+            const container = document.getElementById('galaxy-visual');
+            if (!container) return;
+            const colors = ['var(--accent-violet)', 'var(--accent-blue)', 'var(--accent-amber)', 'var(--accent-teal)', 'var(--accent-red)'];
+            const positions = [];
+
+            for (let i = 0; i < 25; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'galaxy-dot';
+                const angle = (i / 25) * Math.PI * 2 + (Math.random() * 0.5);
+                const radius = 20 + Math.random() * 65;
+                const x = 90 + Math.cos(angle) * radius;
+                const y = 90 + Math.sin(angle) * radius;
+                dot.style.left = x + 'px';
+                dot.style.top = y + 'px';
+                dot.style.background = colors[Math.floor(i / 5)];
+                dot.style.opacity = 0.4 + Math.random() * 0.6;
+                dot.style.animationDelay = (Math.random() * 3) + 's';
+                dot.style.width = (5 + Math.random() * 6) + 'px';
+                dot.style.height = dot.style.width;
+                container.appendChild(dot);
+            }
+        }
+
+        // Slide management
+        const slides = document.querySelectorAll('.slide');
+        const navDots = document.querySelectorAll('.nav-dot');
+        const totalSlides = slides.length;
+        let currentSlide = 1;
+        let isTransitioning = false;
+
+        document.getElementById('total-slides').textContent = '0' + totalSlides;
+
+        function goToSlide(n) {
+            if (n < 1 || n > totalSlides || n === currentSlide || isTransitioning) return;
+            isTransitioning = true;
+
+            const goingForward = n > currentSlide;
+            const currentEl = document.querySelector(`.slide[data-slide="${currentSlide}"]`);
+            const nextEl = document.querySelector(`.slide[data-slide="${n}"]`);
+
+            // Exit current
+            currentEl.classList.remove('active');
+            if (goingForward) {
+                currentEl.classList.add('exit-up');
+            }
+
+            // Enter next
+            setTimeout(() => {
+                currentEl.classList.remove('exit-up');
+                nextEl.classList.add('active');
+                currentSlide = n;
+                document.getElementById('current-slide').textContent = currentSlide < 10 ? '0' + currentSlide : currentSlide;
+
+                // Update nav dots
+                navDots.forEach(dot => dot.classList.remove('active'));
+                navDots[currentSlide - 1].classList.add('active');
+
+                // Update ambient glow colors
+                updateGlows(currentSlide);
+
+                setTimeout(() => { isTransitioning = false; }, 400);
+            }, 300);
+        }
+
+        function updateGlows(slide) {
+            const glow1 = document.querySelector('.glow-1');
+            const glow2 = document.querySelector('.glow-2');
+            const colorMap = {
+                1: ['var(--accent-red)', 'var(--accent-amber)'],
+                2: ['var(--accent-red)', 'var(--accent-amber)'],
+                3: ['var(--accent-amber)', 'var(--accent-red)'],
+                4: ['var(--accent-amber)', 'var(--accent-red)'],
+                5: ['var(--accent-violet)', 'var(--accent-blue)'],
+                6: ['var(--accent-violet)', 'var(--accent-teal)'],
+                7: ['var(--accent-blue)', 'var(--accent-violet)'],
+                8: ['var(--accent-teal)', 'var(--accent-violet)'],
+                9: ['var(--accent-violet)', 'var(--accent-teal)'],
+            };
+            const [c1, c2] = colorMap[slide] || colorMap[1];
+            glow1.style.background = c1;
+            glow2.style.background = c2;
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                goToSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                e.preventDefault();
+                goToSlide(currentSlide - 1);
+            }
+        });
+
+        // Mouse wheel navigation
+        let wheelTimeout;
+        document.addEventListener('wheel', (e) => {
+            if (wheelTimeout) return;
+            wheelTimeout = setTimeout(() => { wheelTimeout = null; }, 800);
+            if (e.deltaY > 0) {
+                goToSlide(currentSlide + 1);
+            } else {
+                goToSlide(currentSlide - 1);
+            }
+        }, { passive: true });
+
+        // Touch navigation
+        let touchStartY = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        });
+        document.addEventListener('touchend', (e) => {
+            const diff = touchStartY - e.changedTouches[0].clientY;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) goToSlide(currentSlide + 1);
+                else goToSlide(currentSlide - 1);
+            }
+        });
+
+        // Nav dot clicks
+        navDots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                goToSlide(parseInt(dot.dataset.target));
+            });
+        });
+
+        // Initialize
+        createGalaxy();
+        updateGlows(1);
+    </script>
+</body>
+</html>
