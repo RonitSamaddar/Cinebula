@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+:root {
+  --base: #07070c;
+  --ink: #f4ebd9;
+  --ink-soft: #c8bfa8;
+  --ink-dim: #6a6457;
+  --cat-drama: #b56cff;
+  --cat-scifi: #6fa8e8;
+  --cat-comedy: #3fb89e;
+  --cat-thriller: #ff7a6c;
+  --cat-romance: #e6b04a;
+  --cat-horror: #c44040;
+  --alien-accent: #7fff7f;
+  --queue-accent: #d4a0ff;
+  --glass-bg: rgba(14, 12, 24, 0.94);
+  --glass-border: rgba(255, 255, 255, 0.12);
+}
+
+@theme inline {
+  --color-base: var(--base);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-dim: var(--ink-dim);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-mono);
+  --font-serif: var(--font-serif);
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+body {
+  background: var(--base);
+  color: var(--ink);
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+
+@keyframes pulse-line {
+  0%, 100% { stroke-opacity: 0.1; }
+  50% { stroke-opacity: 0.3; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes popup-in {
+  from { opacity: 0; transform: scale(0.9) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes sheet-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes drawer-in {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

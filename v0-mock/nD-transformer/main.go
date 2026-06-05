@@ -20,6 +20,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/gocql/gocql"
@@ -386,7 +387,7 @@ func getMovieVector(movie string) ([]float64, error) {
 	query := map[string]interface{}{
 		"query": map[string]interface{}{
 			"term": map[string]interface{}{
-				"movie_keyword": movie,
+				"movie_keyword": strings.ToLower(movie),
 			},
 		},
 		"_source": []string{"vector"},
@@ -475,6 +476,45 @@ func findSimilarMovies(movie string, k int) ([]map[string]interface{}, error) {
 // HTTP API Server
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Response Cache
+// ---------------------------------------------------------------------------
+
+var (
+	responseCache   = make(map[string][]byte)
+	responseCacheMu sync.RWMutex
+)
+
+// serveFromCache checks the local map for a cached response and writes it if found.
+func serveFromCache(w http.ResponseWriter, cacheKey string) bool {
+	responseCacheMu.RLock()
+	data, ok := responseCache[cacheKey]
+	responseCacheMu.RUnlock()
+	if ok {
+		fmt.Printf("  ✓ cache hit: %s\n", cacheKey)
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(data)
+		return true
+	}
+	return false
+}
+
+// cacheAndRespond marshals the payload to JSON, stores it in the local map, and writes it.
+func cacheAndRespond(w http.ResponseWriter, cacheKey string, payload interface{}) {
+	data, err := json.Marshal(payload)
+	if err != nil {
+		jsonError(w, "failed to encode response", http.StatusInternalServerError)
+		return
+	}
+	responseCacheMu.Lock()
+	responseCache[cacheKey] = data
+	responseCacheMu.Unlock()
+	fmt.Printf("  ✓ cached: %s (%d bytes)\n", cacheKey, len(data))
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
+}
+
 // corsMiddleware adds CORS headers to all responses.
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -548,6 +588,12 @@ type MovieResponse struct {
 // All filters are optional and combined with AND logic. Multiple values for the same
 // filter can be comma-separated (e.g. genre=action,comedy) and are OR'd within the group.
 func handleMovies(w http.ResponseWriter, r *http.Request) {
+	cacheKey := "movies?" + r.URL.RawQuery
+	fmt.Println(cacheKey)
+	if serveFromCache(w, cacheKey) {
+		return
+	}
+
 	if cassandraSession == nil {
 		jsonError(w, "Cassandra not connected", http.StatusServiceUnavailable)
 		return
@@ -559,10 +605,10 @@ func handleMovies(w http.ResponseWriter, r *http.Request) {
 	languageParam := r.URL.Query().Get("language")
 	castParam := r.URL.Query().Get("cast")
 
-	if genreParam == "" && keywordParam == "" && languageParam == "" && castParam == "" {
-		jsonError(w, "at least one filter required: genre, keyword, language, cast", http.StatusBadRequest)
-		return
-	}
+	// if genreParam == "" && keywordParam == "" && languageParam == "" && castParam == "" {
+	// 	jsonError(w, "at least one filter required: genre, keyword, language, cast", http.StatusBadRequest)
+	// 	return
+	// }
 
 	// Build CQL WHERE clauses
 	var conditions []string
@@ -666,8 +712,7 @@ func handleMovies(w http.ResponseWriter, r *http.Request) {
 	// fmt.Printf("Query: %d movies from Cassandra, %d have vectors\n", len(movies), len(vectors))
 
 	if len(vectors) < 2 {
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]interface{}{
+		cacheAndRespond(w, cacheKey, map[string]interface{}{
 			"count":  len(movies),
 			"movies": movies,
 		})
@@ -693,8 +738,7 @@ func handleMovies(w http.ResponseWriter, r *http.Request) {
 		responseMovies = append(responseMovies, movies[idx])
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]interface{}{
+	cacheAndRespond(w, cacheKey, map[string]interface{}{
 		"count":  len(responseMovies),
 		"movies": responseMovies,
 	})
@@ -732,7 +776,13 @@ func sanitizeGenreColumn(s string) string {
 	return result
 }
 func handleSimilar(w http.ResponseWriter, r *http.Request) {
+	cacheKey := "similar?" + r.URL.RawQuery
+	if serveFromCache(w, cacheKey) {
+		return
+	}
+
 	movie := r.URL.Query().Get("movie")
+	movie = strings.ToLower(movie)
 	if movie == "" {
 		jsonError(w, "missing required query parameter: movie", http.StatusBadRequest)
 		return
@@ -751,11 +801,107 @@ func handleSimilar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"movie":   movie,
-		"k":       k,
-		"results": similar,
+	if cassandraSession == nil {
+		jsonError(w, "Cassandra not connected", http.StatusServiceUnavailable)
+		return
+	}
+
+	// Collect movie names from similar results
+	var movieNames []string
+	for _, s := range similar {
+		if name, ok := s["movie"].(string); ok {
+			movieNames = append(movieNames, name)
+		}
+	}
+
+	// Build lowercase→original name lookup from Cassandra
+	cassandraNameLookup := make(map[string]string)
+	{
+		iter := cassandraSession.Query(`SELECT movie_name FROM movies`).Iter()
+		var mName string
+		for iter.Scan(&mName) {
+			cassandraNameLookup[strings.ToLower(mName)] = mName
+		}
+		iter.Close()
+	}
+
+	// Fetch metadata from Cassandra for each similar movie
+	var movies []MovieResponse
+	var vectors [][]float64
+	var validIndices []int
+
+	for i, name := range movieNames {
+		// Resolve lowercase OpenSearch name to original Cassandra name
+		cassandraName, ok := cassandraNameLookup[strings.ToLower(name)]
+		if !ok {
+			fmt.Printf("  ⚠ No Cassandra entry for %q\n", name)
+			continue
+		}
+
+		query := `SELECT movie_name, image_link, vote_average, vote_count, 
+			revenue, budget, popularity, genres, language, imdb_rating, synopsis, keywords, casts 
+			FROM movies WHERE movie_name = ? LIMIT 1`
+		var movieName, imageLink, language, synopsis string
+		var voteAverage, popularity, imdbRating float64
+		var voteCount, revenue, budget int64
+		var genres, casts, keywords []string
+
+		if err := cassandraSession.Query(query, cassandraName).Scan(&movieName, &imageLink, &voteAverage, &voteCount,
+			&revenue, &budget, &popularity, &genres, &language, &imdbRating, &synopsis, &keywords, &casts); err != nil {
+			fmt.Printf("  ⚠ No Cassandra data for %q: %v\n", cassandraName, err)
+			continue
+		}
+
+		movies = append(movies, MovieResponse{
+			MovieName:   movieName,
+			ImageLink:   imageLink,
+			VoteAverage: voteAverage,
+			VoteCount:   voteCount,
+			Revenue:     revenue,
+			Budget:      budget,
+			Popularity:  popularity,
+			Genres:      genres,
+			Language:    language,
+			IMDBRating:  imdbRating,
+			Synopsis:    synopsis,
+			Casts:       casts,
+			Keywords:    keywords,
+		})
+
+		vec, err := getMovieVector(strings.ToLower(name))
+		if err == nil {
+			vectors = append(vectors, vec)
+			validIndices = append(validIndices, len(movies)-1)
+		}
+		_ = i
+	}
+
+	if len(movies) == 0 {
+		jsonError(w, "no movie metadata found for similar results", http.StatusNotFound)
+		return
+	}
+
+	// Run t-SNE on the vectors to get 2D coordinates
+	if len(vectors) >= 2 {
+		perplexity := 30
+		if len(vectors) <= 30 {
+			perplexity = len(vectors) - 1
+		}
+		result := runReduce(vectors, "tsne", perplexity, 42, 1000.0)
+
+		for idx, validIdx := range validIndices {
+			if idx < len(result) {
+				movies[validIdx].X = result[idx][0]
+				movies[validIdx].Y = result[idx][1]
+			}
+		}
+	}
+
+	cacheAndRespond(w, cacheKey, map[string]interface{}{
+		"movie":  movie,
+		"k":      k,
+		"count":  len(movies),
+		"movies": movies,
 	})
 }
 
@@ -771,6 +917,14 @@ func main() {
 	port := flag.String("port", "8080", "Port for the API server")
 	flag.Parse()
 
+	// --- API server mode ---
+	if *serve {
+		initCassandra()
+		if cassandraSession != nil {
+			defer cassandraSession.Close()
+		}
+	}
+
 	// Always load and ingest vectors into OpenSearch
 	var labels []string
 	var vectors [][]float64
@@ -779,7 +933,37 @@ func main() {
 		labels, vectors = loadVectorsFromCSV(*csvPath)
 		fmt.Printf("Loaded %d vectors of %d dimensions from %s\n",
 			len(vectors), len(vectors[0]), *csvPath)
-		storeVectorsInOpenSearch(labels, vectors)
+
+		// Filter: only keep vectors whose movie exists in Cassandra
+		if cassandraSession != nil {
+			// Load all movie names from Cassandra and lowercase them for comparison
+			cassandraMovies := make(map[string]bool)
+			iter := cassandraSession.Query(`SELECT movie_name FROM movies`).Iter()
+			var mName string
+			for iter.Scan(&mName) {
+				cassandraMovies[strings.ToLower(mName)] = true
+			}
+			iter.Close()
+			fmt.Printf("Loaded %d movie names from Cassandra\n", len(cassandraMovies))
+
+			var filteredLabels []string
+			var filteredVectors [][]float64
+			for i, label := range labels {
+				if cassandraMovies[strings.ToLower(label)] {
+					filteredLabels = append(filteredLabels, label)
+					filteredVectors = append(filteredVectors, vectors[i])
+				}
+			}
+			fmt.Printf("Filtered to %d vectors (out of %d) with Cassandra entries\n",
+				len(filteredLabels), len(labels))
+			labels = filteredLabels
+			vectors = filteredVectors
+		}
+
+		fmt.Println(len(labels), "vectors after filtering with Cassandra")
+		if len(vectors) > 0 {
+			storeVectorsInOpenSearch(labels, vectors)
+		}
 	} else {
 		rng := rand.New(rand.NewSource(0))
 		k, n := 50, 10
@@ -795,12 +979,7 @@ func main() {
 		fmt.Printf("Using demo data: %d vectors of %d dimensions\n", k, n)
 	}
 
-	// --- API server mode ---
 	if *serve {
-		initCassandra()
-		if cassandraSession != nil {
-			defer cassandraSession.Close()
-		}
 
 		mux := http.NewServeMux()
 		mux.HandleFunc("/api/similar", handleSimilar)

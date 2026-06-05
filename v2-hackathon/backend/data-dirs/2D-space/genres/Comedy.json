@@ -1,0 +1,110 @@
+[
+  {
+    "id": "ALP-MOVIE-000",
+    "title": "Default",
+    "x": 10.0,
+    "y": 15.0
+  },
+  {
+    "id": "ALP-MOVIE-105",
+    "title": "Deadpool",
+    "x": -78.39,
+    "y": -31.26
+  },
+  {
+    "id": "ALP-MOVIE-110",
+    "title": "Forrest Gump",
+    "x": 51.51,
+    "y": -60.0
+  },
+  {
+    "id": "ALP-MOVIE-122",
+    "title": "The Wolf of Wall Street",
+    "x": -55.15,
+    "y": 75.56
+  },
+  {
+    "id": "ALP-MOVIE-143",
+    "title": "Inside Out",
+    "x": -128.24,
+    "y": -12.51
+  },
+  {
+    "id": "ALP-MOVIE-151",
+    "title": "Up",
+    "x": 149.54,
+    "y": 148.83
+  },
+  {
+    "id": "ALP-MOVIE-155",
+    "title": "Back to the Future",
+    "x": -128.02,
+    "y": -86.05
+  },
+  {
+    "id": "ALP-MOVIE-166",
+    "title": "Coco",
+    "x": -70.44,
+    "y": 129.98
+  },
+  {
+    "id": "ALP-MOVIE-172",
+    "title": "Monsters, Inc.",
+    "x": 114.26,
+    "y": 113.78
+  },
+  {
+    "id": "ALP-MOVIE-173",
+    "title": "Toy Story",
+    "x": -39.14,
+    "y": -102.68
+  },
+  {
+    "id": "ALP-MOVIE-178",
+    "title": "The Truman Show",
+    "x": 100.12,
+    "y": 61.06
+  },
+  {
+    "id": "ALP-MOVIE-181",
+    "title": "Parasite",
+    "x": 33.5,
+    "y": 146.17
+  },
+  {
+    "id": "ALP-MOVIE-185",
+    "title": "Deadpool 2",
+    "x": 46.19,
+    "y": -147.65
+  },
+  {
+    "id": "ALP-MOVIE-189",
+    "title": "The Intouchables",
+    "x": 95.13,
+    "y": -60.19
+  },
+  {
+    "id": "ALP-MOVIE-195",
+    "title": "The Hangover",
+    "x": 49.02,
+    "y": 131.68
+  },
+  {
+    "id": "ALP-MOVIE-197",
+    "title": "Shrek",
+    "x": -109.71,
+    "y": -115.37
+  },
+  {
+    "id": "ALP-MOVIE-198",
+    "title": "Ratatouille",
+    "x": -117.89,
+    "y": 15.97
+  },
+  {
+    "id": "ALP-MOVIE-199",
+    "title": "Kingsman: The Secret Service",
+    "x": -68.3,
+    "y": 31.45
+  }
+]

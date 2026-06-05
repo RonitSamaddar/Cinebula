@@ -1,0 +1,14 @@
+user_id,name,age,gender,top_genres,created_at,device_id
+1,Ronit,23,male,"[""Adventure"",""Action"",""Sci-Fi"",""Fantasy"",""Family"",""Animation"",""Comedy"",""Drama"",""Western""]",2026-06-04T10:00:00Z,46426f9c-ssss-4593-9399-21798b0d1148
+2,Pratikesh,22,male,"[""Action"",""Adventure"",""Sci-Fi"",""Fantasy"",""Drama"",""Animation"",""Comedy"",""Family"",""Thriller""]",2026-06-04T10:01:00Z,5336afe5-ssss-4677-9b27-61253b9f6fc3
+3,Vanshika,21,female,"[""Drama"",""Fantasy"",""Adventure"",""Thriller"",""Crime"",""Action"",""Mystery"",""Comedy"",""Sci-Fi""]",2026-06-04T10:02:00Z,46d102f5-ssss-4826-accb-2815acc9378a
+4,Arpit,24,male,"[""Drama"",""Action"",""Adventure"",""Crime"",""Thriller"",""Sci-Fi"",""Fantasy"",""Mystery"",""Comedy""]",2026-06-04T10:03:00Z,9e7f94f2-ssss-47a0-9ed4-bf6d91da9988
+100,Test,25,male,"[""Action"",""Drama"",""Comedy""]",2026-06-04T10:04:00Z,
+101,guest-101,0,,[],2026-06-04T10:16:17Z,
+102,guest-102,0,,[],2026-06-04T16:40:17Z,LG_OLED65C3_001
+103,guest-103,0,,[],2026-06-04T18:02:03Z,
+104,IntegrationTestUser-Idempotent,0,,[],2026-06-04T18:02:03Z,
+105,guest-105,0,,[],2026-06-04T18:35:12Z,LG-TV-001
+106,guest-106,0,,[],2026-06-04T19:21:00Z,direct-access
+105,guest-105,0,,[],2026-06-04T19:37:59Z,http://rewards.mrmakhana.com
+1,guest-1,0,,[],2026-06-04T21:01:23Z,direct-access
