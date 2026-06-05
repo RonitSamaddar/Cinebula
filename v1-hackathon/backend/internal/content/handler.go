@@ -103,3 +103,45 @@ func DirectionHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(result)
 }
+
+// CurrentGenreHandler handles GET /content/current-genre?x=50&y=30&zoom=10
+// Returns the top 2 genres of the area around the given position.
+// zoom controls how wide an area is considered (higher zoom = smaller area).
+func CurrentGenreHandler(w http.ResponseWriter, r *http.Request) {
+	q := r.URL.Query()
+
+	xStr := q.Get("x")
+	yStr := q.Get("y")
+
+	if xStr == "" || yStr == "" {
+		http.Error(w, "x and y are required", http.StatusBadRequest)
+		return
+	}
+
+	x, err := strconv.ParseFloat(xStr, 64)
+	if err != nil {
+		http.Error(w, "invalid x", http.StatusBadRequest)
+		return
+	}
+	y, err := strconv.ParseFloat(yStr, 64)
+	if err != nil {
+		http.Error(w, "invalid y", http.StatusBadRequest)
+		return
+	}
+
+	zoom := 0.0
+	if zStr := q.Get("zoom"); zStr != "" {
+		if v, err := strconv.ParseFloat(zStr, 64); err == nil && v > 0 {
+			zoom = v
+		}
+	}
+
+	result := GetCurrentGenre(x, y, zoom)
+	if result == nil {
+		http.Error(w, "no cluster data available", http.StatusServiceUnavailable)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(result)
+}

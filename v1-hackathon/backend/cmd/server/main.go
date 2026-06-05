@@ -33,6 +33,7 @@ func main() {
 	mux.HandleFunc("GET /content/search", content.SearchHandler)
 	mux.HandleFunc("GET /content/clusters", content.ClustersHandler)
 	mux.HandleFunc("GET /content/direction", content.DirectionHandler)
+	mux.HandleFunc("GET /content/current-genre", content.CurrentGenreHandler)
 
 	// User profile (JWT protected)
 	mux.Handle("GET /user/profile", auth.Middleware(http.HandlerFunc(user.ProfileHandler)))

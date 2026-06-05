@@ -40,7 +40,7 @@ func QueryDirection(userX, userY float64, direction string, radius float64, topN
 		return nil
 	}
 	if radius <= 0 {
-		radius = 60.0
+		radius = 1.0
 	}
 	if topN <= 0 {
 		topN = 8
@@ -70,9 +70,6 @@ func QueryDirection(userX, userY float64, direction string, radius float64, topN
 			if dist < 0.01 {
 				continue // skip if movie is at exact same position
 			}
-			if dist > radius {
-				continue // outside search radius
-			}
 
 			// Direction alignment: cosine of angle between direction vector and movie vector
 			// cos(θ) = (dirX*dx + dirY*dy) / dist  (since dir is unit vector)
@@ -86,8 +83,9 @@ func QueryDirection(userX, userY float64, direction string, radius float64, topN
 			// Use cos^2 for sharper directional focus (narrower cone weighting)
 			dirWeight := cosAngle * cosAngle
 
-			// Distance weight: closer movies matter more (inverse with smooth decay)
-			distWeight := 1.0 / (1.0 + dist*0.1)
+			// Distance weight: use radius as the scale factor for decay.
+			// Movies at distance == radius get weight ~0.5, closer get more, farther get less.
+			distWeight := 1.0 / (1.0 + dist/radius)
 
 			score := dirWeight * distWeight
 

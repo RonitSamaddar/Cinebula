@@ -248,6 +248,90 @@ func Query(genres []string, tags []string, n int, maxPerCluster int) []QueryResu
 	return output
 }
 
+// CurrentGenreResult is the response for the current-genre endpoint.
+type CurrentGenreResult struct {
+	ClusterID int      `json:"cluster_id"`
+	Genres    []string `json:"genres"`
+}
+
+// GetCurrentGenre finds the genre(s) for the user's current position.
+// zoom is used as the distance decay scale — clusters closer than zoom are weighted heavily,
+// farther clusters contribute less. All clusters are considered (no hard cutoff).
+// If zoom is 0, only the nearest cluster is used.
+func GetCurrentGenre(x, y, zoom float64) *CurrentGenreResult {
+	if store == nil || len(store.Clusters) == 0 {
+		return nil
+	}
+
+	// Aggregate genres from all clusters, weighted by proximity
+	// zoom controls the decay: weight = 1 / (1 + dist/zoom)
+	type gc struct {
+		name  string
+		score float64
+	}
+	genreScores := make(map[string]float64)
+	bestIdx := 0
+	bestDist := math.MaxFloat64
+
+	for i, c := range store.Clusters {
+		dx := c.CentroidX - x
+		dy := c.CentroidY - y
+		d := math.Sqrt(dx*dx + dy*dy)
+		if d < bestDist {
+			bestDist = d
+			bestIdx = i
+		}
+
+		var weight float64
+		if zoom > 0 {
+			weight = 1.0 / (1.0 + d/zoom)
+		} else {
+			// zoom=0: only nearest matters, handled below
+			continue
+		}
+
+		for g, cnt := range c.Genres {
+			genreScores[g] += cnt * weight
+		}
+	}
+
+	// If zoom=0, just use the nearest cluster's genres
+	if zoom <= 0 {
+		c := store.Clusters[bestIdx]
+		for g, cnt := range c.Genres {
+			genreScores[g] += cnt
+		}
+	}
+
+	// Sort genres by aggregated score descending, pick top 2
+	sorted := make([]gc, 0, len(genreScores))
+	for g, s := range genreScores {
+		sorted = append(sorted, gc{g, s})
+	}
+	for i := 0; i < len(sorted); i++ {
+		for j := i + 1; j < len(sorted); j++ {
+			if sorted[j].score > sorted[i].score {
+				sorted[i], sorted[j] = sorted[j], sorted[i]
+			}
+		}
+	}
+
+	maxGenres := 2
+	if len(sorted) < maxGenres {
+		maxGenres = len(sorted)
+	}
+	genres := make([]string, maxGenres)
+	for i := 0; i < maxGenres; i++ {
+		genres[i] = sorted[i].name
+	}
+
+	// Return the nearest cluster ID for reference
+	return &CurrentGenreResult{
+		ClusterID: store.Clusters[bestIdx].ClusterID,
+		Genres:    genres,
+	}
+}
+
 // GetAllClusters returns all clusters with names and centroids (no movie lists).
 func GetAllClusters() []QueryResult {
 	if store == nil {
