@@ -69,6 +69,10 @@ const ShowCards = forwardRef<ShowCardsHandle, ShowCardsProps>(function ShowCards
     const halfH = vh / 2;
     const margin = 60;
 
+    // Scale tiles proportional to zoom — gentle growth
+    // zoom 1 → 1.0×, zoom 3 → 1.1×, zoom 7 → 1.2×, zoom 14 → 1.35×, zoom 20 → 1.5×
+    const tileScale = Math.min(1.5, 1.0 + 0.115 * Math.log2(zoom));
+
     // Position show tiles
     for (const show of showsRef.current) {
       const el = elMapRef.current.get(show.id);
@@ -80,8 +84,8 @@ const ShowCards = forwardRef<ShowCardsHandle, ShowCardsProps>(function ShowCards
       const sy = halfH + dy;
 
       const dims = ICON_DIMS[show.size] || ICON_DIMS[1];
-      const cardW = dims.w;
-      const cardH = dims.h;
+      const cardW = dims.w * tileScale;
+      const cardH = dims.h * tileScale;
 
       const inBounds =
         sx + cardW / 2 > -margin &&
@@ -91,7 +95,7 @@ const ShowCards = forwardRef<ShowCardsHandle, ShowCardsProps>(function ShowCards
 
       if (inBounds) {
         el.style.display = "block";
-        el.style.transform = `translate(${sx}px, ${sy}px) translate(-50%, -50%)`;
+        el.style.transform = `translate(${sx}px, ${sy}px) translate(-50%, -50%) scale(${tileScale})`;
       } else {
         el.style.display = "none";
       }

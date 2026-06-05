@@ -20,11 +20,14 @@ export const MAX_SHOWS_ON_SCREEN = MAX_SHOWS_BIG + MAX_SHOWS_MED + MAX_SHOWS_SMA
 export const SHOWS_PER_REGION_Z0 = 30;
 export const SHOWS_PER_REGION_Z1 = 60;
 export const SHOWS_PER_REGION_Z2 = 90;
+export const SHOWS_PER_REGION_Z3 = 120;
 
-// Zoom states — 3 discrete levels
-export const ZOOM_LEVEL_0 = 1;   // galaxy overview
-export const ZOOM_LEVEL_1 = 2.5; // mid zoom
-export const ZOOM_LEVEL_2 = 5;   // deep zoom
+// Zoom states — 4 discrete levels, wide range [1, 20]
+export const ZOOM_LEVEL_0 = 1;    // galaxy overview — 80 tiles
+export const ZOOM_LEVEL_1 = 3;    // mid zoom — 200 tiles
+export const ZOOM_LEVEL_2 = 7;    // deep zoom — 400 tiles
+export const ZOOM_LEVEL_3 = 14;   // max detail — 800 tiles
+export const ZOOM_MAX = 20;       // hard clamp
 
 // Show card sizes (px) — 20 levels based on priority, aspect 1:1.4
 // Level 1 = 17px (area-continuous with biggest dust 24px circle)

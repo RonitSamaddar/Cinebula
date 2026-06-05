@@ -235,6 +235,23 @@ export async function fetchGenreMovies(
 }
 
 /**
+ * Search movies via Meilisearch — typo-tolerant, prefix matching.
+ * Returns up to 50 movie name strings.
+ */
+export async function searchMovies(query: string, token: string): Promise<string[]> {
+  try {
+    const res = await fetch(proxyUrl(`/search?q=${encodeURIComponent(query)}`), {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return [];
+    const data: string[] = await res.json();
+    return data;
+  } catch {
+    return [];
+  }
+}
+
+/**
  * Fetch all movies from /api/movies/v2 — no filters, returns the full catalog.
  */
 export async function fetchAllMovies(token: string): Promise<MoviesResponse | null> {
@@ -369,10 +386,12 @@ export interface ZoomLevelShows {
   z0: import("@/types").Show[];
   z1: import("@/types").Show[];
   z2: import("@/types").Show[];
+  z3: import("@/types").Show[];
   dust: DustParticle[];
   dustZ0: DustParticle[];
   dustZ1: DustParticle[];
   dustZ2: DustParticle[];
+  dustZ3: DustParticle[];
 }
 
 export function backendMoviesToShows(
@@ -521,7 +540,7 @@ export function backendMoviesToShows(
   }
 
   log(`Z0: ${z0Shows.length}, Z1: ${z1Shows.length}, Z2: ${z2Shows.length} shows, ${dustParticles.length} dust particles`);
-  return { z0: z0Shows, z1: z1Shows, z2: z2Shows, dust: dustParticles, dustZ0: dustParticles, dustZ1: dustParticles, dustZ2: dustParticles };
+  return { z0: z0Shows, z1: z1Shows, z2: z2Shows, z3: z2Shows, dust: dustParticles, dustZ0: dustParticles, dustZ1: dustParticles, dustZ2: dustParticles, dustZ3: dustParticles };
 }
 
 function makeShow(
@@ -571,14 +590,17 @@ export function backendMoviesToShowsV2(moviesResponse: MoviesResponse): ZoomLeve
   const SHOWS_Z0 = 80;
   const SHOWS_Z1 = 200;
   const SHOWS_Z2 = 400;
-  const ZOOM_SCALE_1 = 2.5;
-  const ZOOM_SCALE_2 = 5;
+  const SHOWS_Z3 = 800;
+  const ZOOM_SCALE_1 = 3;
+  const ZOOM_SCALE_2 = 7;
+  const ZOOM_SCALE_3 = 14;
   const PADDING = 50;
 
   // Grid cell sizes for dust collision culling (px)
   const DUST_GRID_Z0 = 25;
   const DUST_GRID_Z1 = 15;
   const DUST_GRID_Z2 = 10;
+  const DUST_GRID_Z3 = 7;
 
   const DUST_COLORS = [
     "#4da6e0", "#45c9a0", "#e0a033", "#e06070", "#40cc70", "#e0c040", "#60b8d0",
@@ -586,7 +608,7 @@ export function backendMoviesToShowsV2(moviesResponse: MoviesResponse): ZoomLeve
 
   const movies = moviesResponse.movies || [];
   if (!movies.length) {
-    return { z0: [], z1: [], z2: [], dust: [], dustZ0: [], dustZ1: [], dustZ2: [] };
+    return { z0: [], z1: [], z2: [], z3: [], dust: [], dustZ0: [], dustZ1: [], dustZ2: [], dustZ3: [] };
   }
 
   // Sort by priority descending
@@ -609,10 +631,11 @@ export function backendMoviesToShowsV2(moviesResponse: MoviesResponse): ZoomLeve
   const stddev = Math.sqrt(variance) || 1;
 
   // Priority thresholds for dust visibility — z-score based, adaptive to data
-  // z0: only above mean (top ~50%), z1: above mean-0.75σ (~77%), z2: above mean-1.75σ (~96%)
+  // z0: only above mean (top ~50%), z1: above mean-0.75σ (~77%), z2: above mean-1.75σ (~96%), z3: above mean-2.5σ (~99%)
   const DUST_THRESHOLD_Z0 = mean;
   const DUST_THRESHOLD_Z1 = mean - 0.75 * stddev;
   const DUST_THRESHOLD_Z2 = mean - 1.75 * stddev;
+  const DUST_THRESHOLD_Z3 = mean - 2.5 * stddev;
 
   const positioned = sorted.map((movie, i) => {
     const relX = (movie.x - minX) / rangeX;
@@ -650,7 +673,8 @@ export function backendMoviesToShowsV2(moviesResponse: MoviesResponse): ZoomLeve
   const z1TileIdxs = new Set<number>();
   for (const p of positioned) {
     if (selectedZ1.length >= SHOWS_Z1) break;
-    const dims = ICON_SIZES[p.size];
+    const boostedSize = Math.max(4, p.size) as import("@/types").ShowSize;
+    const dims = ICON_SIZES[boostedSize];
     const scaledW = dims.w / ZOOM_SCALE_1;
     const scaledH = dims.h / ZOOM_SCALE_1;
     let maxOverlap = 0;
@@ -661,7 +685,7 @@ export function backendMoviesToShowsV2(moviesResponse: MoviesResponse): ZoomLeve
     if (maxOverlap <= 0.7) {
       const penalty = maxOverlap > 0.4 ? 0.3 : maxOverlap > 0.2 ? 0.15 : 0;
       const sizeReduction = maxOverlap > 0.4 ? 2 : maxOverlap > 0.2 ? 1 : 0;
-      const newSize = Math.max(1, p.size - sizeReduction) as import("@/types").ShowSize;
+      const newSize = Math.max(4, boostedSize - sizeReduction) as import("@/types").ShowSize;
       placedZ1.push({ worldX: p.worldX, worldY: p.worldY, w: scaledW, h: scaledH });
       selectedZ1.push({ ...p, size: newSize, opacityPenalty: penalty });
       z1TileIdxs.add(p.idx);
@@ -674,7 +698,8 @@ export function backendMoviesToShowsV2(moviesResponse: MoviesResponse): ZoomLeve
   const z2TileIdxs = new Set<number>();
   for (const p of positioned) {
     if (selectedZ2.length >= SHOWS_Z2) break;
-    const dims = ICON_SIZES[p.size];
+    const boostedSize2 = Math.max(9, p.size) as import("@/types").ShowSize;
+    const dims = ICON_SIZES[boostedSize2];
     const scaledW = dims.w / ZOOM_SCALE_2;
     const scaledH = dims.h / ZOOM_SCALE_2;
     let maxOverlap = 0;
@@ -685,10 +710,35 @@ export function backendMoviesToShowsV2(moviesResponse: MoviesResponse): ZoomLeve
     if (maxOverlap <= 0.7) {
       const penalty = maxOverlap > 0.4 ? 0.3 : maxOverlap > 0.2 ? 0.15 : 0;
       const sizeReduction = maxOverlap > 0.4 ? 2 : maxOverlap > 0.2 ? 1 : 0;
-      const newSize = Math.max(1, p.size - sizeReduction) as import("@/types").ShowSize;
+      const newSize = Math.max(9, boostedSize2 - sizeReduction) as import("@/types").ShowSize;
       placedZ2.push({ worldX: p.worldX, worldY: p.worldY, w: scaledW, h: scaledH });
       selectedZ2.push({ ...p, size: newSize, opacityPenalty: penalty });
       z2TileIdxs.add(p.idx);
+    }
+  }
+
+  // --- Z3 tiles ---
+  const placedZ3: PlacedShow[] = [];
+  const selectedZ3: typeof selectedZ0 = [];
+  const z3TileIdxs = new Set<number>();
+  for (const p of positioned) {
+    if (selectedZ3.length >= SHOWS_Z3) break;
+    const boostedSize3 = Math.max(12, p.size) as import("@/types").ShowSize;
+    const dims3 = ICON_SIZES[boostedSize3];
+    const scaledW = dims3.w / ZOOM_SCALE_3;
+    const scaledH = dims3.h / ZOOM_SCALE_3;
+    let maxOverlap = 0;
+    for (const placed of placedZ3) {
+      const ratio = overlapRatio(placed, p.worldX, p.worldY, scaledW, scaledH);
+      if (ratio > maxOverlap) maxOverlap = ratio;
+    }
+    if (maxOverlap <= 0.7) {
+      const penalty = maxOverlap > 0.4 ? 0.3 : maxOverlap > 0.2 ? 0.15 : 0;
+      const sizeReduction = maxOverlap > 0.4 ? 2 : maxOverlap > 0.2 ? 1 : 0;
+      const newSize = Math.max(12, boostedSize3 - sizeReduction) as import("@/types").ShowSize;
+      placedZ3.push({ worldX: p.worldX, worldY: p.worldY, w: scaledW, h: scaledH });
+      selectedZ3.push({ ...p, size: newSize, opacityPenalty: penalty });
+      z3TileIdxs.add(p.idx);
     }
   }
 
@@ -696,6 +746,7 @@ export function backendMoviesToShowsV2(moviesResponse: MoviesResponse): ZoomLeve
   const z0Shows = selectedZ0.map((p) => makeShowV2(p));
   const z1Shows = selectedZ1.map((p) => makeShowV2(p));
   const z2Shows = selectedZ2.map((p) => makeShowV2(p));
+  const z3Shows = selectedZ3.map((p) => makeShowV2(p));
 
   // --- Dust generation with grid-based collision culling ---
   // Helper: generate dust for a zoom level, excluding tiles at that level
@@ -758,9 +809,10 @@ export function backendMoviesToShowsV2(moviesResponse: MoviesResponse): ZoomLeve
   const dustZ0 = generateDust(z0TileIdxs, DUST_THRESHOLD_Z0, DUST_GRID_Z0, 1);
   const dustZ1 = generateDust(z1TileIdxs, DUST_THRESHOLD_Z1, DUST_GRID_Z1, ZOOM_SCALE_1);
   const dustZ2 = generateDust(z2TileIdxs, DUST_THRESHOLD_Z2, DUST_GRID_Z2, ZOOM_SCALE_2);
+  const dustZ3 = generateDust(z3TileIdxs, DUST_THRESHOLD_Z3, DUST_GRID_Z3, ZOOM_SCALE_3);
 
-  log(`V2 — Z0: ${z0Shows.length} tiles + ${dustZ0.length} dust, Z1: ${z1Shows.length} tiles + ${dustZ1.length} dust, Z2: ${z2Shows.length} tiles + ${dustZ2.length} dust`);
-  return { z0: z0Shows, z1: z1Shows, z2: z2Shows, dust: dustZ0, dustZ0, dustZ1, dustZ2 };
+  log(`V2 — Z0: ${z0Shows.length} tiles + ${dustZ0.length} dust, Z1: ${z1Shows.length} tiles + ${dustZ1.length} dust, Z2: ${z2Shows.length} tiles + ${dustZ2.length} dust, Z3: ${z3Shows.length} tiles + ${dustZ3.length} dust`);
+  return { z0: z0Shows, z1: z1Shows, z2: z2Shows, z3: z3Shows, dust: dustZ0, dustZ0, dustZ1, dustZ2, dustZ3 };
 }
 
 function makeShowV2(

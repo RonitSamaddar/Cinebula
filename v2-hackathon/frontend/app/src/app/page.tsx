@@ -15,7 +15,7 @@ import RecDialog from "@/components/chrome/RecDialog";
 import ConnectDialog from "@/components/chrome/ConnectDialog";
 import LoadingScreen from "@/components/chrome/LoadingScreen";
 import QRScanner from "@/components/chrome/QRScanner";
-import { loginAndFetchGenres, fetchAllMovies, backendMoviesToShowsV2 } from "@/services/backend";
+import { loginAndFetchGenres, fetchAllMovies, backendMoviesToShowsV2, searchMovies } from "@/services/backend";
 import { buildCategories } from "@/data/categories";
 import { initAudio, toggleAudio, isAudioPlaying } from "@/lib/audio";
 import type { Show, Category } from "@/types";
@@ -59,11 +59,14 @@ export default function Home() {
   const z0ShowsRef = useRef<Show[]>([]);
   const z1ShowsRef = useRef<Show[]>([]);
   const z2ShowsRef = useRef<Show[]>([]);
+  const z3ShowsRef = useRef<Show[]>([]);
   const allShowsRef = useRef<Show[]>([]);
+  const tokenRef = useRef<string>("");
   const dustRef = useRef<import("@/services/backend").DustParticle[]>([]);
   const dustZ0Ref = useRef<import("@/services/backend").DustParticle[]>([]);
   const dustZ1Ref = useRef<import("@/services/backend").DustParticle[]>([]);
   const dustZ2Ref = useRef<import("@/services/backend").DustParticle[]>([]);
+  const dustZ3Ref = useRef<import("@/services/backend").DustParticle[]>([]);
 
   // Connection flow states
   const [connected, setConnected] = useState(true); // skip QR — go straight to galaxy
@@ -86,6 +89,7 @@ export default function Home() {
       }
 
       const { token } = session;
+      tokenRef.current = token;
 
       const loadingStart = Date.now();
       const LOADING_DURATION = 15000;
@@ -97,11 +101,13 @@ export default function Home() {
         z0ShowsRef.current = data.z0;
         z1ShowsRef.current = data.z1;
         z2ShowsRef.current = data.z2;
-        allShowsRef.current = data.z0;
+        z3ShowsRef.current = data.z3;
+        allShowsRef.current = [...data.z0, ...data.z1, ...data.z2, ...data.z3];
         dustRef.current = data.dustZ0;
         dustZ0Ref.current = data.dustZ0;
         dustZ1Ref.current = data.dustZ1;
         dustZ2Ref.current = data.dustZ2;
+        dustZ3Ref.current = data.dustZ3;
         cardsRef.current?.setShows(data.z0, data.dustZ0);
       }
 
@@ -184,7 +190,7 @@ export default function Home() {
   // Continuous zoom — adjusts camera so the focal screen point stays fixed
   const applyZoom = useCallback((newZoom: number, focalScreenX?: number, focalScreenY?: number) => {
     const oldZoom = zoomRef.current;
-    const clamped = Math.max(1, Math.min(5, newZoom));
+    const clamped = Math.max(1, Math.min(20, newZoom));
     if (Math.abs(clamped - oldZoom) < 0.001) return;
 
     // Adjust camera so the world point under the focal stays in place
@@ -199,17 +205,18 @@ export default function Home() {
 
     zoomRef.current = clamped;
 
-    // Determine show-set level from continuous zoom value
+    // Determine show-set level from continuous zoom value — 4 levels
     let newLevel: number;
-    if (clamped < 1.75) newLevel = 0;
-    else if (clamped < 3.75) newLevel = 1;
-    else newLevel = 2;
+    if (clamped < 2) newLevel = 0;
+    else if (clamped < 5) newLevel = 1;
+    else if (clamped < 11) newLevel = 2;
+    else newLevel = 3;
 
     // Switch show set when crossing a threshold
     if (newLevel !== zoomLevelRef.current) {
       zoomLevelRef.current = newLevel;
-      const showSet = newLevel === 0 ? z0ShowsRef.current : newLevel === 1 ? z1ShowsRef.current : z2ShowsRef.current;
-      const dustSet = newLevel === 0 ? dustZ0Ref.current : newLevel === 1 ? dustZ1Ref.current : dustZ2Ref.current;
+      const showSet = newLevel === 0 ? z0ShowsRef.current : newLevel === 1 ? z1ShowsRef.current : newLevel === 2 ? z2ShowsRef.current : z3ShowsRef.current;
+      const dustSet = newLevel === 0 ? dustZ0Ref.current : newLevel === 1 ? dustZ1Ref.current : newLevel === 2 ? dustZ2Ref.current : dustZ3Ref.current;
       if (showSet.length > 0) cardsRef.current?.setShows(showSet, dustSet);
       setZoomLevel(newLevel);
     }
@@ -280,8 +287,7 @@ export default function Home() {
       dragRafRef.current = requestAnimationFrame(() => {
         const p = pendingDragRef.current;
         if (!p) return;
-        const z = zoomRef.current || 1;
-        pushCamera(cameraRef.current.x - p.dx / z, cameraRef.current.y - p.dy / z);
+        pushCamera(cameraRef.current.x - p.dx, cameraRef.current.y - p.dy);
 
         if (!hasDraggedRef.current && (Math.abs(p.clientX - d.startX) > 10 || Math.abs(p.clientY - d.startY) > 10)) {
           hasDraggedRef.current = true;
@@ -299,8 +305,7 @@ export default function Home() {
     cancelAnimationFrame(dragRafRef.current);
     // Flush any pending drag
     if (pendingDragRef.current) {
-      const z = zoomRef.current || 1;
-      pushCamera(cameraRef.current.x - pendingDragRef.current.dx / z, cameraRef.current.y - pendingDragRef.current.dy / z);
+      pushCamera(cameraRef.current.x - pendingDragRef.current.dx, cameraRef.current.y - pendingDragRef.current.dy);
       pendingDragRef.current = null;
     }
     // Mark idle after momentum settles
@@ -310,9 +315,10 @@ export default function Home() {
     const tick = () => {
       velRef.current.x *= decay;
       velRef.current.y *= decay;
-      if (Math.abs(velRef.current.x) < 0.1 && Math.abs(velRef.current.y) < 0.1) return;
       const z = zoomRef.current || 1;
-      pushCamera(cameraRef.current.x + velRef.current.x / z, cameraRef.current.y + velRef.current.y / z);
+      const threshold = 0.1 / z;
+      if (Math.abs(velRef.current.x) < threshold && Math.abs(velRef.current.y) < threshold) return;
+      pushCamera(cameraRef.current.x + velRef.current.x, cameraRef.current.y + velRef.current.y);
       momentumRef.current = requestAnimationFrame(tick);
     };
     momentumRef.current = requestAnimationFrame(tick);
@@ -494,12 +500,55 @@ export default function Home() {
             setAudioOn(playing);
           }}
           onViewQueue={() => { setMenuOpen(false); setQueueOpen(true); }}
+          onBackendSearch={async (q) => searchMovies(q, tokenRef.current)}
+          onSelectMovie={(movieName) => {
+            const show = z0ShowsRef.current.find(
+              (s) => s.title.toLowerCase() === movieName.toLowerCase()
+            ) || z1ShowsRef.current.find(
+              (s) => s.title.toLowerCase() === movieName.toLowerCase()
+            ) || z2ShowsRef.current.find(
+              (s) => s.title.toLowerCase() === movieName.toLowerCase()
+            ) || z3ShowsRef.current.find(
+              (s) => s.title.toLowerCase() === movieName.toLowerCase()
+            );
+            if (show) {
+              setMenuOpen(false);
+              flyTo(show.worldX, show.worldY);
+              // Smooth zoom-in after fly completes to last zoom level
+              const targetZoom = 14; // level 3 — max detail
+              const zoomDelay = 600;
+              const zoomDuration = 500;
+              setTimeout(() => {
+                const startZoom = zoomRef.current;
+                if (startZoom >= targetZoom) {
+                  // Already zoomed in enough — just show detail
+                  setTimeout(() => setSelectedShow({ show, sx: window.innerWidth / 2, sy: window.innerHeight / 2 }), 400);
+                  return;
+                }
+                const startT = performance.now();
+                const animateZoom = (now: number) => {
+                  const t = Math.min(1, (now - startT) / zoomDuration);
+                  const ease = 1 - Math.pow(1 - t, 3);
+                  const z = startZoom + (targetZoom - startZoom) * ease;
+                  applyZoom(z, window.innerWidth / 2, window.innerHeight / 2);
+                  if (t < 1) {
+                    requestAnimationFrame(animateZoom);
+                  } else {
+                    // Zoom done — show detail popup
+                    setTimeout(() => setSelectedShow({ show, sx: window.innerWidth / 2, sy: window.innerHeight / 2 }), 200);
+                  }
+                };
+                requestAnimationFrame(animateZoom);
+              }, zoomDelay);
+            }
+          }}
           onBackendShows={(data, categories) => {
             categoriesRef.current = categories;
             z0ShowsRef.current = data.z0;
             z1ShowsRef.current = data.z1;
             z2ShowsRef.current = data.z2;
-            allShowsRef.current = data.z0;
+            z3ShowsRef.current = data.z3;
+            allShowsRef.current = [...data.z0, ...data.z1, ...data.z2, ...data.z3];
             cardsRef.current?.setShows(data.z0);
           }}
         />
@@ -553,7 +602,8 @@ export default function Home() {
                   z0ShowsRef.current = data.z0;
                   z1ShowsRef.current = data.z1;
                   z2ShowsRef.current = data.z2;
-                  allShowsRef.current = data.z0;
+                  z3ShowsRef.current = data.z3;
+                  allShowsRef.current = [...data.z0, ...data.z1, ...data.z2, ...data.z3];
                   cardsRef.current?.setShows(data.z0);
                 };
 
@@ -611,7 +661,8 @@ export default function Home() {
                 z0ShowsRef.current = data.z0;
                 z1ShowsRef.current = data.z1;
                 z2ShowsRef.current = data.z2;
-                allShowsRef.current = data.z0;
+                z3ShowsRef.current = data.z3;
+                allShowsRef.current = [...data.z0, ...data.z1, ...data.z2, ...data.z3];
                 cardsRef.current?.setShows(data.z0);
               };
               const loadingStart = Date.now();

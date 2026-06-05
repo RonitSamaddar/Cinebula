@@ -38,11 +38,15 @@ interface MenuDrawerProps {
   onAudioToggle?: () => void;
   /** Open the queue panel */
   onViewQueue?: () => void;
+  /** Backend Meilisearch — returns movie name suggestions */
+  onBackendSearch?: (query: string) => Promise<string[]>;
+  /** Called when user selects a movie from search suggestions — fly to it */
+  onSelectMovie?: (movieName: string) => void;
   /** Called with show sets and dynamic categories when backend data loads after QR scan */
-  onBackendShows?: (data: { z0: Show[]; z1: Show[]; z2: Show[] }, categories: Category[]) => void;
+  onBackendShows?: (data: { z0: Show[]; z1: Show[]; z2: Show[]; z3: Show[] }, categories: Category[]) => void;
 }
 
-export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilters, actors, languages, audioOn = false, onAudioToggle, onViewQueue, onBackendShows }: MenuDrawerProps) {
+export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilters, actors, languages, audioOn = false, onAudioToggle, onViewQueue, onBackendSearch, onSelectMovie, onBackendShows }: MenuDrawerProps) {
   const LANGUAGES = languages ?? DEFAULT_LANGUAGES;
   const ACTORS = actors ?? DEFAULT_ACTORS;
   const queueCount = useQueueStore((s) => s.items.length);
@@ -53,6 +57,10 @@ export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilter
   const [langOpen, setLangOpen] = useState(false);
   const [actor, setActor] = useState("");
   const [actorOpen, setActorOpen] = useState(false);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
   const dragX = useRef({ active: false, startX: 0, currentX: 0 });
   const inputRef = useRef<HTMLInputElement>(null);
@@ -62,6 +70,26 @@ export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilter
     const t = setTimeout(() => inputRef.current?.focus(), 350);
     return () => clearTimeout(t);
   }, []);
+
+  // Debounced Meilisearch suggestions
+  useEffect(() => {
+    if (!onBackendSearch || query.trim().length < 2) {
+      setSuggestions([]);
+      setSuggestionsOpen(false);
+      return;
+    }
+    setSuggestionsLoading(true);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(async () => {
+      const results = await onBackendSearch(query.trim());
+      setSuggestions(results);
+      setSuggestionsOpen(results.length > 0);
+      setSuggestionsLoading(false);
+    }, 300);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [query, onBackendSearch]);
 
   const filteredLangs = language
     ? LANGUAGES.filter((l) => l.toLowerCase().includes(language.toLowerCase()))
@@ -172,29 +200,69 @@ export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilter
 
         {/* Search bar */}
         <div className="shrink-0 px-5 pb-4">
-          <div className="flex items-center gap-2">
-            <input
-              ref={inputRef}
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter") handleGo(); }}
-              placeholder="Search shows…"
-              className="flex-1 rounded-lg px-3 py-2.5 text-[13px] text-white placeholder-white/30 outline-none"
-              style={{
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.1)",
-              }}
-            />
-            <button
-              className="shrink-0 rounded-lg px-3 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-white active:scale-95"
-              style={{
-                background: "linear-gradient(135deg, #7c6bf0, #b56cff)",
-              }}
-              onClick={handleGo}
-            >
-              GO
-            </button>
+          <div className="relative">
+            <div className="flex items-center gap-2">
+              <input
+                ref={inputRef}
+                type="text"
+                value={query}
+                onChange={(e) => { setQuery(e.target.value); setSuggestionsOpen(true); }}
+                onKeyDown={(e) => { if (e.key === "Enter") { setSuggestionsOpen(false); handleGo(); } }}
+                onFocus={() => { if (suggestions.length > 0) setSuggestionsOpen(true); }}
+                placeholder="Search shows…"
+                className="flex-1 rounded-lg px-3 py-2.5 text-[13px] text-white placeholder-white/30 outline-none"
+                style={{
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                }}
+              />
+              <button
+                className="shrink-0 rounded-lg px-3 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-white active:scale-95"
+                style={{
+                  background: "linear-gradient(135deg, #7c6bf0, #b56cff)",
+                }}
+                onClick={() => { setSuggestionsOpen(false); handleGo(); }}
+              >
+                GO
+              </button>
+            </div>
+
+            {/* Meilisearch suggestions dropdown */}
+            {suggestionsOpen && (
+              <div
+                className="absolute left-0 right-0 mt-1 max-h-[200px] overflow-y-auto rounded-lg"
+                style={{
+                  zIndex: 10,
+                  background: "rgba(14, 12, 24, 0.98)",
+                  border: "1px solid rgba(124, 107, 240, 0.25)",
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.5)",
+                }}
+              >
+                {suggestionsLoading && (
+                  <div className="px-3 py-2 text-[11px] text-white/30 font-mono">Searching…</div>
+                )}
+                {!suggestionsLoading && suggestions.length === 0 && query.trim().length >= 2 && (
+                  <div className="px-3 py-2 text-[11px] text-white/30 font-mono">No results</div>
+                )}
+                {suggestions.map((name) => (
+                  <button
+                    key={name}
+                    className="w-full px-3 py-2 text-left text-[12px] text-white/80 hover:text-white active:bg-[rgba(124,107,240,0.15)] transition-colors"
+                    onClick={() => {
+                      setQuery(name);
+                      setSuggestionsOpen(false);
+                      if (onSelectMovie) {
+                        onSelectMovie(name);
+                      } else {
+                        onSearch({ query: name, genres: [], language, actor });
+                      }
+                    }}
+                  >
+                    {name}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
