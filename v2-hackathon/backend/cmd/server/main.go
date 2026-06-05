@@ -8,6 +8,7 @@ import (
 	dataservice "cinebula/backend/internal/data-service"
 	"cinebula/backend/internal/filter"
 	"cinebula/backend/internal/logger"
+	"cinebula/backend/internal/qr"
 	"cinebula/backend/internal/queue"
 	"cinebula/backend/internal/search"
 	topgenres "cinebula/backend/internal/top-genres"
@@ -47,6 +48,12 @@ func main() {
 	mux.HandleFunc("POST /api/queue", queue.PostHandler)
 	mux.HandleFunc("GET /api/queue", queue.GetHandler)
 	mux.HandleFunc("OPTIONS /api/queue", queue.PostHandler) // CORS preflight
+
+	// QR — phone signals successful scan, TV checks connection status
+	mux.HandleFunc("POST /api/qr", qr.PostHandler)
+	mux.HandleFunc("GET /api/qr", qr.GetHandler)
+	mux.HandleFunc("DELETE /api/qr", qr.DeleteHandler)
+	mux.HandleFunc("OPTIONS /api/qr", qr.PostHandler) // CORS preflight
 
 	logger.Log("Cinebula backend listening on :8080")
 	if err := http.ListenAndServe(":8080", logger.Middleware(mux)); err != nil {

@@ -271,15 +271,17 @@ export async function fetchFilteredMovies(
   language?: string,
 ): Promise<MoviesResponse | null> {
   const params: string[] = [];
-  // Backend supports single genre/language — use first selected
+  // Backend supports comma-separated multi-value for genre/language
   if (genre) {
-    const first = genre.split(",")[0].trim();
-    if (first) params.push(`genre=${encodeURIComponent(first.toLowerCase())}`);
+    const genres = genre.split(",").map(g => g.trim().toLowerCase()).filter(Boolean).join(",");
+    if (genres) params.push(`genre=${encodeURIComponent(genres)}`);
   }
   if (language) {
-    const first = language.split(",")[0].trim();
-    const code = LANG_TO_ISO[first] || first.toLowerCase().slice(0, 2);
-    if (code) params.push(`language=${encodeURIComponent(code)}`);
+    const langs = language.split(",").map(l => {
+      const trimmed = l.trim();
+      return LANG_TO_ISO[trimmed] || trimmed.toLowerCase().slice(0, 2);
+    }).filter(Boolean).join(",");
+    if (langs) params.push(`language=${encodeURIComponent(langs)}`);
   }
   if (params.length === 0) return null;
   try {

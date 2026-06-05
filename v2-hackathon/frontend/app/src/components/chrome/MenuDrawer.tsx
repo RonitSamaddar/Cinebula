@@ -46,9 +46,16 @@ interface MenuDrawerProps {
   onBackendShows?: (data: { z0: Show[]; z1: Show[]; z2: Show[]; z3: Show[] }, categories: Category[]) => void;
   /** Filter movies by genre/language via backend */
   onBackendFilter?: (genre: string, language: string) => Promise<void>;
+  /** Persisted filter state — lifted to parent so it survives menu close/open */
+  selectedGenres: string[];
+  setSelectedGenres: (v: string[] | ((prev: string[]) => string[])) => void;
+  selectedLangs: string[];
+  setSelectedLangs: (v: string[] | ((prev: string[]) => string[])) => void;
+  selectedActors: string[];
+  setSelectedActors: (v: string[] | ((prev: string[]) => string[])) => void;
 }
 
-export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilters, actors, languages, audioOn = false, onAudioToggle, onViewQueue, onBackendSearch, onSelectMovie, onBackendShows, onBackendFilter }: MenuDrawerProps) {
+export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilters, actors, languages, audioOn = false, onAudioToggle, onViewQueue, onBackendSearch, onSelectMovie, onBackendShows, onBackendFilter, selectedGenres, setSelectedGenres, selectedLangs, setSelectedLangs, selectedActors, setSelectedActors }: MenuDrawerProps) {
   const LANGUAGES = languages ?? DEFAULT_LANGUAGES;
   const GENRES = DEFAULT_GENRES;
   const ACTORS = actors ?? DEFAULT_ACTORS;
@@ -58,13 +65,10 @@ export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilter
   const [query, setQuery] = useState("");
   const [genreInput, setGenreInput] = useState("");
   const [genreOpen, setGenreOpen] = useState(false);
-  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [langInput, setLangInput] = useState("");
   const [langOpen, setLangOpen] = useState(false);
-  const [selectedLangs, setSelectedLangs] = useState<string[]>([]);
   const [actorInput, setActorInput] = useState("");
   const [actorOpen, setActorOpen] = useState(false);
-  const [selectedActors, setSelectedActors] = useState<string[]>([]);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
@@ -305,6 +309,7 @@ export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilter
               value={genreInput}
               onChange={(e) => { setGenreInput(e.target.value); setGenreOpen(true); }}
               onFocus={() => setGenreOpen(true)}
+              onBlur={() => setTimeout(() => setGenreOpen(false), 150)}
               placeholder="Type or select…"
               className="w-full rounded-lg px-2.5 py-1.5 text-[11px] text-white placeholder-white/30 outline-none"
               style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
@@ -330,6 +335,7 @@ export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilter
               value={langInput}
               onChange={(e) => { setLangInput(e.target.value); setLangOpen(true); }}
               onFocus={() => setLangOpen(true)}
+              onBlur={() => setTimeout(() => setLangOpen(false), 150)}
               placeholder="Type or select…"
               className="w-full rounded-lg px-2.5 py-1.5 text-[11px] text-white placeholder-white/30 outline-none"
               style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
@@ -355,6 +361,7 @@ export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilter
               value={actorInput}
               onChange={(e) => { setActorInput(e.target.value); setActorOpen(true); }}
               onFocus={() => setActorOpen(true)}
+              onBlur={() => setTimeout(() => setActorOpen(false), 150)}
               placeholder="Type or select…"
               className="w-full rounded-lg px-2.5 py-1.5 text-[11px] text-white placeholder-white/30 outline-none"
               style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
@@ -544,6 +551,14 @@ export default function MenuDrawer({ onClose, onSearch, onReset, hasActiveFilter
             (async () => {
               const session = await loginAndFetchGenres(id);
               if (!session) return;
+
+              // Notify backend that QR scan succeeded
+              fetch("/api/proxy?path=/api/qr", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ device_id: id, token: session.token }),
+              }).catch(() => {});
+
               const allMovies = await fetchAllMovies(session.token);
               if (allMovies?.movies?.length && onBackendShows) {
                 const data = backendMoviesToShowsV2(allMovies);

@@ -26,8 +26,8 @@ import { searchShows, spiralLayout, hasActiveFilters as checkFilters, type Searc
 const wrap = (v: number, max: number) => ((v % max) + max) % max;
 
 export default function Home() {
-  // Raw unwrapped camera — accumulates freely, never jumps
-  const cameraRef = useRef({ x: WORLD_W / 2, y: WORLD_H / 2 });
+  // Raw unwrapped camera — starts at a random point in space
+  const cameraRef = useRef({ x: WORLD_W * (0.2 + Math.random() * 0.6), y: WORLD_H * (0.2 + Math.random() * 0.6) });
   const velRef = useRef({ x: 0, y: 0 });
   const dragRef = useRef({ active: false, lastX: 0, lastY: 0, lastT: 0, startX: 0, startY: 0 });
   const momentumRef = useRef(0);
@@ -53,6 +53,10 @@ export default function Home() {
   const [recOpen, setRecOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useState(false);
   const [audioOn, setAudioOn] = useState(false);
+  // Filter state lifted from MenuDrawer so it persists across open/close
+  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+  const [selectedLangs, setSelectedLangs] = useState<string[]>([]);
+  const [selectedActors, setSelectedActors] = useState<string[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const dragIdleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const galaxyContainerRef = useRef<HTMLDivElement>(null);
@@ -89,7 +93,7 @@ export default function Home() {
       tokenRef.current = token;
 
       const loadingStart = Date.now();
-      const LOADING_DURATION = 15000;
+      const LOADING_DURATION = 2000;
 
       const allMovies = await fetchAllMovies(token);
       if (allMovies?.movies?.length) {
@@ -422,6 +426,9 @@ export default function Home() {
   const handleReset = useCallback(() => {
     setMenuOpen(false);
     setActiveFilters(false);
+    setSelectedGenres([]);
+    setSelectedLangs([]);
+    setSelectedActors([]);
     cardsRef.current?.setShows(allShowsRef.current);
   }, []);
 
@@ -491,6 +498,12 @@ export default function Home() {
           onSearch={handleSearch}
           onReset={handleReset}
           hasActiveFilters={activeFilters}
+          selectedGenres={selectedGenres}
+          setSelectedGenres={setSelectedGenres}
+          selectedLangs={selectedLangs}
+          setSelectedLangs={setSelectedLangs}
+          selectedActors={selectedActors}
+          setSelectedActors={setSelectedActors}
           audioOn={audioOn}
           onAudioToggle={() => {
             const playing = toggleAudio();
@@ -546,7 +559,17 @@ export default function Home() {
             z2ShowsRef.current = data.z2;
             z3ShowsRef.current = data.z3;
             allShowsRef.current = [...data.z0, ...data.z1, ...data.z2, ...data.z3];
-            cardsRef.current?.setShows(data.z0);
+            dustRef.current = data.dustZ0;
+            dustZ0Ref.current = data.dustZ0;
+            dustZ1Ref.current = data.dustZ1;
+            dustZ2Ref.current = data.dustZ2;
+            dustZ3Ref.current = data.dustZ3;
+            cardsRef.current?.setShows(data.z0, data.dustZ0);
+            // Jump to a new random origin after QR scan
+            const newX = WORLD_W * (0.2 + Math.random() * 0.6);
+            const newY = WORLD_H * (0.2 + Math.random() * 0.6);
+            cameraRef.current = { x: newX, y: newY };
+            pushCamera(newX, newY);
           }}
           onBackendFilter={async (genre, language) => {
             const resp = await fetchFilteredMovies(tokenRef.current, genre, language);
@@ -576,7 +599,6 @@ export default function Home() {
               flyTo(cx, cy);
               applyZoom(1, window.innerWidth / 2, window.innerHeight / 2);
             }
-            setMenuOpen(false);
           }}
         />
       )}
@@ -609,6 +631,11 @@ export default function Home() {
             setScannerOpen(false);
             setLoading(true);
             setConnected(true);
+            // Immediately jump camera to a new random origin so the space changes on connect
+            const newX = WORLD_W * (0.2 + Math.random() * 0.6);
+            const newY = WORLD_H * (0.2 + Math.random() * 0.6);
+            cameraRef.current = { x: newX, y: newY };
+            pushCamera(newX, newY);
             (async () => {
               try {
                 const session = await loginAndFetchGenres(deviceId);
@@ -617,8 +644,15 @@ export default function Home() {
                 const { token } = session;
                 tokenRef.current = token;
 
+                // Notify backend that QR scan succeeded (TV can read this)
+                fetch("/api/proxy?path=/api/qr", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ device_id: deviceId, token }),
+                }).catch(() => {});
+
                 const loadingStart = Date.now();
-                const LOADING_DURATION = 15000;
+                const LOADING_DURATION = 2000;
 
                 const allMovies = await fetchAllMovies(token);
                 if (allMovies?.movies?.length) {

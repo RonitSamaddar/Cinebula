@@ -88,26 +88,35 @@ Returns movies with pre-computed **2D (x, y) coordinates** for spatial rendering
 
 All query parameters are **optional**. Combine freely.
 
-| Param        | Description                       | Example                    |
-|--------------|-----------------------------------|----------------------------|
-| `genre`      | Filter by genre name              | `genre=action`             |
-| `keyword`    | Filter by keyword tag             | `keyword=heist`            |
-| `language`   | ISO 639-1 language code           | `language=en`              |
-| `movie_name` | Title substring (case-insensitive)| `movie_name=inception`     |
+| Param        | Description                                      | Example                         |
+|--------------|--------------------------------------------------|---------------------------------|
+| `genre`      | Filter by genre(s) — comma-separated for multiple | `genre=action` or `genre=crime,documentary` |
+| `keyword`    | Filter by keyword(s) — comma-separated for multiple | `keyword=heist` or `keyword=heist,dreams` |
+| `language`   | ISO 639-1 language code(s) — comma-separated      | `language=en` or `language=en,fr` |
+| `movie_name` | Title substring (case-insensitive)                | `movie_name=inception`          |
 
 **Example requests:**
 ```bash
 # Full catalog for a genre (use for seeding the space)
 curl 'http://localhost:8080/api/movies?genre=action'
 
+# Multiple genres (comma-separated)
+curl 'http://localhost:8080/api/movies?genre=crime,documentary'
+
 # Keyword filter
 curl 'http://localhost:8080/api/movies?genre=action&keyword=heist&language=en'
+
+# Multiple keywords
+curl 'http://localhost:8080/api/movies?genre=action&keyword=heist,dreams'
 
 # Title search
 curl 'http://localhost:8080/api/movies?movie_name=inception'
 
 # Language only
 curl 'http://localhost:8080/api/movies?language=en'
+
+# Multiple languages
+curl 'http://localhost:8080/api/movies?language=en,fr'
 ```
 
 **Response `200`:**
