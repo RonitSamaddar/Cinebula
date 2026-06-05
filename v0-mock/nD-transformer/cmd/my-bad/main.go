@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/gocql/gocql"
@@ -59,23 +61,31 @@ func main() {
 	fmt.Printf("  Read %d movies, found %d unique cast columns\n", len(allMovies), len(allCastColumns))
 
 	// 3. Alter table — add boolean columns for each cast member
-	fmt.Println("[3/4] Adding cast flag columns to table...")
-	added := 0
+	fmt.Printf("[3/4] Adding %d cast flag columns to table (concurrent)...\n", len(allCastColumns))
+	var added int64
+	var wg sync.WaitGroup
+	sem := make(chan struct{}, 20) // limit concurrency to 20
 	for col := range allCastColumns {
-		q := fmt.Sprintf("ALTER TABLE movies ADD %s boolean", col)
-		err := session.Query(q).Exec()
-		if err != nil {
-			// Column likely already exists, skip
-			if !strings.Contains(err.Error(), "already exist") &&
-				!strings.Contains(err.Error(), "conflicts") &&
-				!strings.Contains(err.Error(), "Invalid column name") {
-				log.Printf("  Warning: ALTER TABLE ADD %s: %v", col, err)
+		wg.Add(1)
+		go func(col string) {
+			defer wg.Done()
+			sem <- struct{}{}
+			defer func() { <-sem }()
+			q := fmt.Sprintf("ALTER TABLE movies ADD %s boolean", col)
+			err := session.Query(q).Exec()
+			if err != nil {
+				if !strings.Contains(err.Error(), "already exist") &&
+					!strings.Contains(err.Error(), "conflicts") &&
+					!strings.Contains(err.Error(), "Invalid column name") {
+					log.Printf("  Warning: ALTER TABLE ADD %s: %v", col, err)
+				}
+			} else {
+				atomic.AddInt64(&added, 1)
 			}
-		} else {
-			added++
-		}
+		}(col)
 	}
-	fmt.Printf("  Added %d new columns (%d already existed)\n", added, len(allCastColumns)-added)
+	wg.Wait()
+	fmt.Printf("  Added %d new columns (%d already existed)\n", added, int64(len(allCastColumns))-added)
 
 	// 4. Update each movie — set cast flag columns to true
 	fmt.Println("[4/4] Updating movies with cast flags...")
