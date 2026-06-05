@@ -424,6 +424,16 @@ export interface DustParticle {
   poster?: string; // poster thumbnail for large dust (priority >= 80)
 }
 
+export interface CoordBounds {
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
+  worldW: number;
+  worldH: number;
+  padding: number;
+}
+
 export interface ZoomLevelShows {
   z0: import("@/types").Show[];
   z1: import("@/types").Show[];
@@ -434,6 +444,7 @@ export interface ZoomLevelShows {
   dustZ1: DustParticle[];
   dustZ2: DustParticle[];
   dustZ3: DustParticle[];
+  bounds?: CoordBounds;
 }
 
 export function backendMoviesToShows(
@@ -861,7 +872,7 @@ export function backendMoviesToShowsV2(moviesResponse: MoviesResponse): ZoomLeve
   const dustZ3 = generateDust(z3TileIdxs, DUST_THRESHOLD_Z3, DUST_GRID_Z3, ZOOM_SCALE_3);
 
   log(`V2 — Z0: ${z0Shows.length} tiles + ${dustZ0.length} dust, Z1: ${z1Shows.length} tiles + ${dustZ1.length} dust, Z2: ${z2Shows.length} tiles + ${dustZ2.length} dust, Z3: ${z3Shows.length} tiles + ${dustZ3.length} dust`);
-  return { z0: z0Shows, z1: z1Shows, z2: z2Shows, z3: z3Shows, dust: dustZ0, dustZ0, dustZ1, dustZ2, dustZ3 };
+  return { z0: z0Shows, z1: z1Shows, z2: z2Shows, z3: z3Shows, dust: dustZ0, dustZ0, dustZ1, dustZ2, dustZ3, bounds: { minX, maxX, minY, maxY, worldW: WORLD_W, worldH: WORLD_H, padding: PADDING } };
 }
 
 function makeShowV2(

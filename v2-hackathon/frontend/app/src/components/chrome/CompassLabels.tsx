@@ -1,23 +1,17 @@
 /**
  * CompassLabels — Fixed direction labels at top/bottom/left/right edges
- * showing the nearest genre in that direction. Low opacity, clean font.
+ * showing the summary of content in that direction, fetched from the
+ * /api/direction endpoint. Debounced to avoid flooding API calls.
  */
 
 "use client";
 
-import { useRef, useImperativeHandle, forwardRef } from "react";
-import { CATEGORIES } from "@/data/categories";
-import { WORLD_W, WORLD_H } from "@/config/galaxy";
-
-function wrapDist(cam: number, pos: number, size: number): number {
-  let d = pos - cam;
-  if (d > size / 2) d -= size;
-  if (d < -size / 2) d += size;
-  return d;
-}
+import { useRef, useImperativeHandle, forwardRef, useState, useCallback } from "react";
+import type { CoordBounds } from "@/services/backend";
 
 export interface CompassLabelsHandle {
-  update: (cx: number, cy: number) => void;
+  update: (cx: number, cy: number, zoom?: number) => void;
+  setBounds: (bounds: CoordBounds) => void;
 }
 
 interface CompassLabelsProps {
@@ -25,158 +19,163 @@ interface CompassLabelsProps {
   visible?: boolean;
 }
 
-const CompassLabels = forwardRef<CompassLabelsHandle, CompassLabelsProps>(function CompassLabels({ onNavigate, visible = true }, ref) {
-  const topRef = useRef<HTMLDivElement>(null);
-  const bottomRef = useRef<HTMLDivElement>(null);
-  const leftRef = useRef<HTMLDivElement>(null);
-  const rightRef = useRef<HTMLDivElement>(null);
-  const centerRef = useRef<HTMLDivElement>(null);
-  const targetRef = useRef<{ top?: { x: number; y: number }; bottom?: { x: number; y: number }; left?: { x: number; y: number }; right?: { x: number; y: number } }>({});
+interface DirectionResponse {
+  direction: string;
+  summary: string;
+}
+
+const DIRECTIONS = ["up", "down", "left", "right"] as const;
+
+/** Convert world coordinates back to raw embedding coordinates */
+function worldToRaw(
+  worldX: number,
+  worldY: number,
+  bounds: CoordBounds,
+): { rawX: number; rawY: number } {
+  const { minX, maxX, minY, maxY, worldW, worldH, padding } = bounds;
+  const rangeX = maxX - minX || 1;
+  const rangeY = maxY - minY || 1;
+  const relX = (worldX - padding) / (worldW - 2 * padding);
+  const relY = (worldY - padding) / (worldH - 2 * padding);
+  const rawX = relX * rangeX + minX;
+  const rawY = relY * rangeY + minY;
+  return { rawX, rawY };
+}
+
+/** Compute radius based on zoom level — higher zoom = larger radius (seeing further) */
+function radiusFromZoom(zoom: number): number {
+  // zoom 1 → ~15, zoom 7 → ~105, zoom 14 → ~210, zoom 20 → 300
+  return Math.min(300, Math.max(5, Math.round(zoom * 15)));
+}
+
+const CompassLabels = forwardRef<CompassLabelsHandle, CompassLabelsProps>(function CompassLabels({ visible = true }, ref) {
+  const boundsRef = useRef<CoordBounds | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastFetchRef = useRef({ x: -Infinity, y: -Infinity, zoom: -1 });
+  const abortRef = useRef<AbortController | null>(null);
+  const lastCameraRef = useRef({ x: 0, y: 0, zoom: 1 });
+
+  const [labels, setLabels] = useState<Record<string, string>>({
+    up: "",
+    down: "",
+    left: "",
+    right: "",
+  });
+
+  const fetchDirections = useCallback(async (cx: number, cy: number, zoom: number) => {
+    const bounds = boundsRef.current;
+    if (!bounds) return;
+
+    const { rawX, rawY } = worldToRaw(cx, cy, bounds);
+    const radius = radiusFromZoom(zoom);
+
+    // Abort any in-flight requests
+    if (abortRef.current) abortRef.current.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    try {
+      const results = await Promise.all(
+        DIRECTIONS.map(async (dir) => {
+          const url = `/api/direction?x=${rawX.toFixed(2)}&y=${rawY.toFixed(2)}&dir=${dir}&radius=${radius}`;
+          const res = await fetch(url, { signal: controller.signal });
+          if (!res.ok) return { direction: dir, summary: "" };
+          const data: DirectionResponse = await res.json();
+          return data;
+        }),
+      );
+
+      if (controller.signal.aborted) return;
+
+      const next: Record<string, string> = {};
+      for (const r of results) {
+        next[r.direction] = r.summary || "";
+      }
+      setLabels(next);
+    } catch {
+      // aborted or network error — ignore
+    }
+  }, []);
 
   useImperativeHandle(ref, () => ({
-    update(cx: number, cy: number) {
-      // Compute wrapped offsets to all categories
-      const offsets = CATEGORIES.map((cat) => {
-        const dx = wrapDist(cx, cat.position.x * WORLD_W, WORLD_W);
-        const dy = wrapDist(cy, cat.position.y * WORLD_H, WORLD_H);
-        return { cat, dx, dy, dist: Math.sqrt(dx * dx + dy * dy) };
-      });
+    update(cx: number, cy: number, zoom: number = 1) {
+      lastCameraRef.current = { x: cx, y: cy, zoom };
 
-      // Find current (nearest) genre for center label
-      offsets.sort((a, b) => a.dist - b.dist);
-      const current = offsets[0];
-      if (centerRef.current && current) {
-        centerRef.current.textContent = current.cat.label;
-        centerRef.current.style.color = current.cat.accent;
-      }
+      const last = lastFetchRef.current;
+      const distMoved = Math.sqrt((cx - last.x) ** 2 + (cy - last.y) ** 2);
+      const zoomChanged = Math.abs(zoom - last.zoom) > 0.3;
+      const threshold = 30 / zoom;
 
-      // Find nearest in each cardinal direction
-      let bestTop: typeof offsets[0] | null = null;
-      let bestBottom: typeof offsets[0] | null = null;
-      let bestLeft: typeof offsets[0] | null = null;
-      let bestRight: typeof offsets[0] | null = null;
+      if (distMoved < threshold && !zoomChanged) return;
 
-      for (const o of offsets) {
-        // Skip if too close (it's the current center)
-        if (o.dist < 50) continue;
+      lastFetchRef.current = { x: cx, y: cy, zoom };
 
-        // Determine dominant direction
-        const absX = Math.abs(o.dx);
-        const absY = Math.abs(o.dy);
-
-        if (absY > absX) {
-          // Vertical dominant
-          if (o.dy < 0 && (!bestTop || o.dist < bestTop.dist)) bestTop = o;
-          if (o.dy > 0 && (!bestBottom || o.dist < bestBottom.dist)) bestBottom = o;
-        } else {
-          // Horizontal dominant
-          if (o.dx < 0 && (!bestLeft || o.dist < bestLeft.dist)) bestLeft = o;
-          if (o.dx > 0 && (!bestRight || o.dist < bestRight.dist)) bestRight = o;
-        }
-      }
-
-      // Update labels
-      if (topRef.current) {
-        if (bestTop) {
-          topRef.current.textContent = bestTop.cat.label;
-          topRef.current.style.color = bestTop.cat.accent;
-          targetRef.current.top = { x: bestTop.cat.position.x * WORLD_W, y: bestTop.cat.position.y * WORLD_H };
-        } else {
-          topRef.current.textContent = "";
-        }
-      }
-      if (bottomRef.current) {
-        if (bestBottom) {
-          bottomRef.current.textContent = bestBottom.cat.label;
-          bottomRef.current.style.color = bestBottom.cat.accent;
-          targetRef.current.bottom = { x: bestBottom.cat.position.x * WORLD_W, y: bestBottom.cat.position.y * WORLD_H };
-        } else {
-          bottomRef.current.textContent = "";
-        }
-      }
-      if (leftRef.current) {
-        if (bestLeft) {
-          leftRef.current.textContent = bestLeft.cat.label;
-          leftRef.current.style.color = bestLeft.cat.accent;
-          targetRef.current.left = { x: bestLeft.cat.position.x * WORLD_W, y: bestLeft.cat.position.y * WORLD_H };
-        } else {
-          leftRef.current.textContent = "";
-        }
-      }
-      if (rightRef.current) {
-        if (bestRight) {
-          rightRef.current.textContent = bestRight.cat.label;
-          rightRef.current.style.color = bestRight.cat.accent;
-          targetRef.current.right = { x: bestRight.cat.position.x * WORLD_W, y: bestRight.cat.position.y * WORLD_H };
-        } else {
-          rightRef.current.textContent = "";
-        }
-      }
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      debounceRef.current = setTimeout(() => {
+        fetchDirections(cx, cy, zoom);
+      }, 400);
     },
-  }));
-
-  const handleTap = (dir: "top" | "bottom" | "left" | "right") => {
-    const t = targetRef.current[dir];
-    if (t && onNavigate) onNavigate(t.x, t.y);
-  };
+    setBounds(bounds: CoordBounds) {
+      boundsRef.current = bounds;
+      // Immediately fetch directions with current camera position
+      const { x, y, zoom } = lastCameraRef.current;
+      lastFetchRef.current = { x: -Infinity, y: -Infinity, zoom: -1 }; // reset so next update also fires
+      fetchDirections(x, y, zoom);
+    },
+  }), [fetchDirections]);
 
   const baseStyle: React.CSSProperties = {
     position: "fixed",
-    opacity: visible ? 0.4 : 0,
-    pointerEvents: visible ? "auto" : "none",
-    transition: "opacity 300ms ease",
+    opacity: visible ? 0.35 : 0,
+    pointerEvents: "none",
+    transition: "opacity 500ms ease",
     zIndex: 15,
-    cursor: "pointer",
     fontFamily: "var(--font-inter), 'SF Pro Display', -apple-system, sans-serif",
-    fontSize: "11px",
+    fontSize: "10px",
     fontWeight: 500,
     letterSpacing: "0.15em",
-    textTransform: "uppercase",
-    textShadow: "0 0 10px rgba(0,0,0,0.8)",
+    textTransform: "lowercase",
+    textShadow: "0 0 8px rgba(0,0,0,0.6)",
+    color: "rgba(210, 220, 230, 0.9)",
+    maxWidth: "140px",
+    lineHeight: "1.3",
+    textAlign: "center" as const,
   };
+
+  /** Split comma-separated summary into lines */
+  const splitWords = (text: string) =>
+    text.split(",").map((w) => w.trim()).filter(Boolean);
 
   return (
     <>
-      {/* Center — current genre, very low opacity */}
-      <div
-        ref={centerRef}
-        style={{
-          ...baseStyle,
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          opacity: visible ? 0.15 : 0,
-          fontSize: "22px",
-          fontWeight: 600,
-          letterSpacing: "0.25em",
-          pointerEvents: "none",
-          cursor: "default",
-        }}
-      />
-      {/* Top — horizontal, at very top edge */}
-      <div
-        ref={topRef}
-        onPointerUp={() => handleTap("top")}
-        style={{ ...baseStyle, top: 10, left: "50%", transform: "translateX(-50%)" }}
-      />
-      {/* Bottom — horizontal, at very bottom edge */}
-      <div
-        ref={bottomRef}
-        onPointerUp={() => handleTap("bottom")}
-        style={{ ...baseStyle, bottom: 6, left: "50%", transform: "translateX(-50%)" }}
-      />
-      {/* Left — vertical, at very left edge */}
-      <div
-        ref={leftRef}
-        onPointerUp={() => handleTap("left")}
-        style={{ ...baseStyle, left: 4, top: "50%", transform: "translateY(-50%) rotate(-90deg)" }}
-      />
-      {/* Right — vertical, at very right edge */}
-      <div
-        ref={rightRef}
-        onPointerUp={() => handleTap("right")}
-        style={{ ...baseStyle, right: 4, top: "50%", transform: "translateY(-50%) rotate(90deg)" }}
-      />
+      {/* Top center — up */}
+      {labels.up && (
+        <div style={{ ...baseStyle, top: 18, left: "50%", transform: "translateX(-50%)" }}>
+          ↑ {labels.up}
+        </div>
+      )}
+      {/* Bottom center — down */}
+      {labels.down && (
+        <div style={{ ...baseStyle, bottom: 18, left: "50%", transform: "translateX(-50%)" }}>
+          ↓ {labels.down}
+        </div>
+      )}
+      {/* Left center — stacked vertically */}
+      {labels.left && (
+        <div style={{ ...baseStyle, left: 12, top: "50%", transform: "translateY(-50%)", lineHeight: "1.6" }}>
+          {splitWords(labels.left).map((word, i) => (
+            <div key={i}>{i === 0 ? `← ${word}` : word}</div>
+          ))}
+        </div>
+      )}
+      {/* Right center — stacked vertically */}
+      {labels.right && (
+        <div style={{ ...baseStyle, right: 12, top: "50%", transform: "translateY(-50%)", lineHeight: "1.6" }}>
+          {splitWords(labels.right).map((word, i) => (
+            <div key={i}>{i === 0 ? `${word} →` : word}</div>
+          ))}
+        </div>
+      )}
     </>
   );
 });
